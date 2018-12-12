@@ -114,7 +114,7 @@ public class Reception {
 	 *
 	 */
 	public void promptToTransport() {
-		List<Parcel>  deliveryParcels     = new LinkedList<>();
+		List<Parcel>  deliveryParcels     = new LinkedList<Parcel>();
 		List<Record>  recordsForTransport = new LinkedList<Record>();
 		List<Integer> redeliveryIdList   = new LinkedList<Integer>();
 		int firstElementNumber = 0;

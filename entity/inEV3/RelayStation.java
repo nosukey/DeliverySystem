@@ -20,8 +20,6 @@ public class RelayStation {
 
 	private RelayStationCommunication commToDeliverer;
 
-
-
 	private boolean canEntry;
 
 	private static final int MAX_STORAGE = 30;
