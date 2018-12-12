@@ -99,8 +99,10 @@ public class Reception {
 		// phoneNumberをStringに変更するよ！
 		int phoneNumber = boundary.inputPhoneNumber(person +"依頼人電話番号を入力してください-> ");
 		if(boundary.select("修正する", "修正しない"))
-			createPersonInfo(person);
-		return new PersonInfo(name, address, phoneNumber);
+			return createPersonInfo(person);
+		else {
+			return new PersonInfo(name, address, phoneNumber);
+		}
 	}
 
 	private boolean checkReenter(){
