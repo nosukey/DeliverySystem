@@ -141,11 +141,9 @@ public class RelayStation {
 			if(numOfParcelsToSend <= (MAX_STORAGE - numOfDeliveredParcels - storedParcels.size() - wrongRecipientParcels.size())){
                 // 通信
                 // 操作を書き込む("荷物リストを渡す")
-                //return true;
 			}else{
                 // 通信
                 // 操作を書き込む("中継所引き渡し失敗を連絡する")
-                //return false;
 			}
 	}
 
