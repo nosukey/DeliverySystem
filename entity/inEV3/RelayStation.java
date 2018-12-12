@@ -26,7 +26,7 @@ public class RelayStation {
 
 	private int numOfDeliveredParcels;
 
-	private int count = 0;
+	private int timesCameDeliveryRobot = 0;
 
 	public RelayStation(){
 		this.storedParcels         = new LinkedList<Parcel>();
@@ -200,10 +200,10 @@ public class RelayStation {
 	 *
 	 */
 	private boolean canStartDelivery() {
-		count++;
+		timesCameDeliveryRobot++;
 		// 前半：3つ以上の荷物があるときGo　　　　　　　　　　　　　　　　　　　　　　後半３回以上の仕事確認 && 荷物が１こ以上ある。
-		if((storedParcels.size() + wrongRecipientParcels.size() >= 3) || (count >= 3 && (!storedParcels.isEmpty() || !wrongRecipientParcels.isEmpty()))){
-			count = 0;
+		if((storedParcels.size() + wrongRecipientParcels.size() >= 3) || (timesCameDeliveryRobot >= 3 && (!storedParcels.isEmpty() || !wrongRecipientParcels.isEmpty()))){
+			timesCameDeliveryRobot = 0;
 			return true;
 		}
 		return false;
