@@ -31,7 +31,7 @@ public class Reception {
 	 */
 	private int newId;
 
-	/*--追加---------*/
+;	/*--追加---------*/
 	private Boundary boundary;
 
 	public Reception(){
@@ -44,6 +44,13 @@ public class Reception {
 	// テスト用getnimotu
 	public List<Parcel> getnimotu(){
 		return this.undeliveredParcels;
+	}
+	public void setRedely(List<Parcel> nimotu){
+		this.redeliveryParcels.addAll(nimotu);
+		nimotu.clear();
+	}
+	public List<Parcel> getRedelNimotu(){
+		return this.redeliveryParcels;
 	}
 
 	/**
@@ -67,13 +74,11 @@ public class Reception {
 
 		while(isReenter){
 			PersonInfo clientInfo = createPersonInfo("依頼人");
-
 			if(!boundary.isCorrectPersonInfo(clientInfo.getName(), clientInfo.getAddress(), clientInfo.getPhoneNumber())){
 				isReenter = checkReenter();
 			}else{
 				while(isReenter){
 					PersonInfo recipientInfo = createPersonInfo("受取人");
-
 					if(!boundary.isCorrectPersonInfo(recipientInfo.getName(), recipientInfo.getAddress(), recipientInfo.getPhoneNumber())){
 						isReenter = checkReenter();
 					}else{
@@ -173,6 +178,7 @@ public class Reception {
 			record.setState(State.ON_DELIVERY);
 		}
 		//本部との通信
+		//
 	}
 
 	/**
