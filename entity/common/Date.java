@@ -34,9 +34,9 @@ public class Date {
 		Calendar calender = Calendar.getInstance();
 		return new Date(
 			calender.get(Calendar.YEAR),
-			calender.get(Calendar.MONTH),
+			calender.get(Calendar.MONTH) + 1, 		// ずれ補正
 			calender.get(Calendar.DATE),
-			calender.get(Calendar.HOUR),
+			calender.get(Calendar.HOUR_OF_DAY),
 			calender.get(Calendar.MINUTE)
 		);
 	}
@@ -51,7 +51,18 @@ public class Date {
 	 *
 	 */
 	public static Date decode(String str) {
-		return null;
+		if(str.equals(",,,,")) {
+			return null;
+		} else {
+			String[] parameters = str.split(",");
+			return new Date(
+			Integer.parseInt(parameters[0]),
+			Integer.parseInt(parameters[1]),
+			Integer.parseInt(parameters[2]),
+			Integer.parseInt(parameters[3]),
+			Integer.parseInt(parameters[4])
+			);
+		}
 	}
 
 	/**
@@ -64,11 +75,14 @@ public class Date {
 	 *
 	 */
 	public static String encode(Date date) {
-		return null;
+		if(date == null)
+			return ",,,,";
+		else
+			return date.year + "," + date.month + "," + date.day + "," + date.hour + "," + date.minute;
 	}
 
 	public String toString() {
-		return this.year + "/" + this.month + "/" + this.day + "/ " + this.hour + ":" + this.minute;
+		return String.format("%d/%02d/%02d/ %02d:%02d", this.year, this.month, this.day, this.hour, this.minute);
 	}
 
 }

@@ -6,6 +6,7 @@ public class PersonInfo {
 
 	private int address;
 
+	// TODO Stringにしたい
 	private int phoneNumber;
 
 	public PersonInfo(String name, int address, int phoneNumber) {
@@ -27,7 +28,7 @@ public class PersonInfo {
 	 * ->一致していなければfalseを返すことを確認する
 	 */
 	public boolean equals(PersonInfo info) {
-		if(this.name.equals(info.getName()) && this.address == info.getAddress() && this.phoneNumber == info.getPhoneNumber()) {
+		if(this.name.equals(info.name) && this.address == info.address && this.phoneNumber == info.phoneNumber) {
 			return true;
 		} else {
 			return false;
@@ -61,7 +62,12 @@ public class PersonInfo {
 	 *
 	 */
 	public static PersonInfo decode(String str) {
-		return null;
+		String[] parameters = str.split(",");
+		return new PersonInfo(
+			parameters[0],
+			Integer.parseInt(parameters[1]),
+			Integer.parseInt(parameters[2])
+		);
 	}
 
 	/**
@@ -74,7 +80,7 @@ public class PersonInfo {
 	 *
 	 */
 	public static String encode(PersonInfo info) {
-		return null;
+		return info.name + "," + info.address + "," + info.phoneNumber;
 	}
 
 }

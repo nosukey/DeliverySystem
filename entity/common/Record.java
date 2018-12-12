@@ -27,7 +27,7 @@ public class Record {
 		this.clientInfo = clientInfo;
 		this.recipientInfo = recipientInfo;
 		this.receptionDate = receptionDate;
-		this.state = State.ready;
+		this.state = State.READY;
 	}
 
 	public int getRequestId() {
@@ -124,7 +124,7 @@ public class Record {
 	 *
 	 */
 	public boolean isWrongRecipient() {
-		if(this.state == State.wrongRecipient)
+		if(this.state == State.WRONG_RECIPIENT)
 			return true;
 		else
 			return false;
@@ -140,7 +140,20 @@ public class Record {
 	 *
 	 */
 	public static Record decode(String str) {
-		return null;
+		String[] parameters = str.split(",");
+		Record record =  new Record(
+			Integer.parseInt(parameters[0]),
+			PersonInfo.decode(parameters[1] + "," + parameters[2] + "," + parameters[3]),
+			PersonInfo.decode(parameters[4] + "," + parameters[5] + "," + parameters[6]),
+			Date.decode(parameters[7] + "," + parameters[8] + "," + parameters[9] + "," + parameters[10] + "," + parameters[11])
+		);
+		record.setTransportStartingDate(Date.decode(parameters[12] + "," + parameters[13] + "," + parameters[14] + "," + parameters[15] + "," + parameters[16]));
+		record.setTransportSuccessDate(Date.decode(parameters[17] + "," + parameters[18] + "," + parameters[19] + "," + parameters[20] + "," + parameters[21]));
+		record.setDeliveryStartingDate(Date.decode(parameters[22] + "," + parameters[23] + "," + parameters[24] + "," + parameters[25] + "," + parameters[26]));
+		record.setReceivingDate(Date.decode(parameters[27] + "," + parameters[28] + "," + parameters[29] + "," + parameters[30] + "," + parameters[31]));
+		record.setDeliverySuccessDate(Date.decode(parameters[32] + "," + parameters[33] + "," + parameters[34] + "," + parameters[35] + "," + parameters[36]));
+		record.setState(State.decode(parameters[37]));
+		return record;
 	}
 
 	/**
@@ -152,42 +165,45 @@ public class Record {
 	 * ->配達記録の情報と同じ情報の文字列を返すことを確認する
 	 *
 	 */
-	public static String encode(Record Record) {
-		return null;
+	public static String encode(Record record) {
+		String result = record.requestId + "," + PersonInfo.encode(record.clientInfo) + "," + PersonInfo.encode(record.recipientInfo) + ",";
+		result += Date.encode(record.receptionDate) + "," + Date.encode(record.transportStartingDate) + "," + Date.encode(record.transportSuccessDate) + ",";
+		result += Date.encode(record.deliveryStartingDate) + "," + Date.encode(record.receivingDate) + "," + Date.encode(record.deliverySuccessDate) + ",";
+		return result + State.encode(record.state);
 	}
 
 	public String toString() {
-		String result = "依頼ID: " + requestId + "\n"
-						+ "依頼人: " + clientInfo.getName() + "\n"
-						+ "受取人: " + recipientInfo.getName() + "\n"
-						+ "受付時間: " + receptionDate.toString() + "\n";
+		String result = "依頼ID: " + this.requestId + "\n"
+						+ "依頼人: " + this.clientInfo.getName() + "\n"
+						+ "受取人: " + this.recipientInfo.getName() + "\n"
+						+ "受付時間: " + this.receptionDate.toString() + "\n";
 
 		if(transportStartingDate != null)
-			result += "発送時間: " + transportStartingDate.toString() + "\n";
+			result += "発送時間: " + this.transportStartingDate.toString() + "\n";
 		else
 			result += "発送時間: --/--/--/ --:--\n";
 
 		if(transportSuccessDate != null)
-			result += "中継所到着時間: " + transportSuccessDate.toString() + "\n";
+			result += "中継所到着時間: " + this.transportSuccessDate.toString() + "\n";
 		else
-			result += "発送時間: --/--/--/ --:--\n";
+			result += "中継所到着時間: --/--/--/ --:--\n";
 
 		if(deliveryStartingDate != null)
-			result += "配達開始時間: " + deliveryStartingDate.toString() + "\n";
+			result += "配達開始時間: " + this.deliveryStartingDate.toString() + "\n";
 		else
 			result += "配達開始時間: --/--/--/ --:--\n";
 
 		if(receivingDate != null)
-			result += "受取時間: " + receivingDate.toString() + "\n";
+			result += "受取時間: " + this.receivingDate.toString() + "\n";
 		else
 			result += "受取時間: --/--/--/ --:--\n";
 
 		if(deliverySuccessDate != null)
-			result += "配達完了時間: " + deliverySuccessDate.toString() + "\n";
+			result += "配達完了時間: " + this.deliverySuccessDate.toString() + "\n";
 		else
 			result += "配達完了時間: --/--/--/ --:--\n";
 
-		result += "配達状況: " + state.toString();
+		result += "配達状況: " + this.state.toString();
 
 		return result;
 	}

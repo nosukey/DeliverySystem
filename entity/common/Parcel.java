@@ -59,7 +59,12 @@ public class Parcel {
 	 *
 	 */
 	public static Parcel decode(String str) {
-		return null;
+		String[] parameters = str.split(",");
+		return new Parcel(
+			Integer.parseInt(parameters[0]),
+			PersonInfo.decode(parameters[1] + "," + parameters[2] + "," + parameters[3]),
+			PersonInfo.decode(parameters[4] + "," + parameters[5] + "," + parameters[6])
+		);
 	}
 
 	/**
@@ -72,7 +77,7 @@ public class Parcel {
 	 *
 	 */
 	public static String encode(Parcel parcel) {
-		return null;
+		return parcel.requestId + "," + PersonInfo.encode(parcel.clientInfo) + "," + PersonInfo.encode(parcel.recipientInfo);
 	}
 
 }

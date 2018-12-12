@@ -1,25 +1,39 @@
 package entity.common;
 
 public enum State {
-	ready("未配達"),
+	READY("未配達"),
 
-	onDelivery("配達中"),
+	ON_DELIVERY("配達中"),
 
-	deliverySuccess("配達済み"),
+	DELIVERY_SUCCESS("配達済み"),
 
-	transportFailure("中継所引き渡し失敗"),
+	TRANSPORT_FAILURE("中継所引き渡し失敗"),
 
-	redelivery("再配達"),
+	RE_DELIVERY("再配達"),
 
-	wrongRecipient("宛先間違い");
+	WRONG_RECIPIENT("宛先間違い");
 
-	private final String strState;
+	private final String text;
 
 	private State(final String str) {
-		this.strState = str;
+		this.text = str;
 	}
 
 	public String toString() {
-		return this.strState;
+		return this.text;
 	}
+
+	public static State decode(String str) {
+		for(State state : State.values()) {
+			if(state.ordinal() == Integer.parseInt(str))
+				return state;
+		}
+
+		return null;
+	}
+
+	public static String encode(State state) {
+		return "" + state.ordinal();
+	}
+
 }
