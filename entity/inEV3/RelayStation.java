@@ -31,7 +31,8 @@ public class RelayStation {
 	public RelayStation(){
 		this.storedParcels         = new LinkedList<Parcel>();
 		this.wrongRecipientParcels = new ArrayList<Parcel>();
-		this.canEntry = true;
+		this.canEntry              = true;
+        this.numOfDeliveredParcels = 0;
 	}
 
 
@@ -61,17 +62,17 @@ public class RelayStation {
 			// 操作を書き込む("待機所で待機する");
 			enableEntry();
 		}else{
-			List<Parcel> deliveryParcels = sortingParcels();
-			numOfDeliveredParcels = deliveryParcels.size();
 			// 通信
-			// 操作を書き込む("荷物を配達する", deliveryParcels);
-			reportDeliveryStarting(deliveryParcels);
+			// 操作を書き込む("荷物を配達する", sortingParcels());
+            numOfDeliveredParcels = storedParcels.size();
+			reportDeliveryStarting();
 			enableEntry();
+            storedParcels.clear();
 		}
 	}
 
 	private List<Parcel> sortingParcels(){
-		List<Parcel> deliveryParcels = new LinkedList<>();
+		List<Parcel> deliveryParcels = new LinkedList<Parcel>();
 
 		for(int i=1; i<16; i++){
 			for(Parcel parcel : storedParcels){
@@ -80,7 +81,6 @@ public class RelayStation {
 				}
 			}
 		}
-		storedParcels.clear();
 		return deliveryParcels;
 	}
 
@@ -92,8 +92,13 @@ public class RelayStation {
 	 */
 	public void receiveFinishDeliveryNotification(String strOfReceivingDateMap, List<Parcel> withoutRecipientParcels, List<Parcel> wrongRecipientParcels) {
 		reportDeliveryResults(strOfReceivingDateMap, withoutRecipientParcels, wrongRecipientParcels);
+		// addAllする前にwithoutRecipientParcelsのソート推奨（依頼ID順)
+        // その後this.storedParcels.addAll(0, withoutRecipientParcels);
+        // そうすることでstoredParcelsは依頼ID順を保ちつつ、本部へ報告についても依頼ID順に報告が可能となる。
+        // メリットとしては依頼IDを昇順に報告される方が自然 && 本部のループ次第では高速化可能
 		this.storedParcels.addAll(withoutRecipientParcels);
 		this.wrongRecipientParcels.addAll(wrongRecipientParcels);
+		this.numOfDeliveredParcels = 0;
 		sendParcels();
 	}
 
@@ -118,8 +123,10 @@ public class RelayStation {
 	 */
 	public void fixWrongRecipient(int requestId, PersonInfo recipientInfo) {
 		Parcel parcel = removeWrongRecipientParcel(requestId);
-		parcel.setRecipientInfo(recipientInfo);
-		storedParcels.add(parcel);
+		if(parcel != null) {
+            parcel.setRecipientInfo(recipientInfo);
+            storedParcels.add(parcel);
+        }
 	}
 
 	/**
@@ -131,12 +138,14 @@ public class RelayStation {
 	 *
 	 */
 	public void canSendParcels(int numOfParcelsToSend) {
-			if(numOfParcelsToSend < (MAX_STORAGE - numOfDeliveredParcels - storedParcels.size() - wrongRecipientParcels.size())){
-				// 通信
-				// 操作を書き込む("中継所引き渡し失敗を連絡する")
+			if(numOfParcelsToSend <= (MAX_STORAGE - numOfDeliveredParcels - storedParcels.size() - wrongRecipientParcels.size())){
+                // 通信
+                // 操作を書き込む("荷物リストを渡す")
+                //return true;
 			}else{
-				// 通信
-				// 操作を書き込む("荷物リストを渡す")
+                // 通信
+                // 操作を書き込む("中継所引き渡し失敗を連絡する")
+                //return false;
 			}
 	}
 
@@ -152,8 +161,8 @@ public class RelayStation {
 	/**
 	 * ユースケース「配達開始を報告する」を包含するメソッド
 	 */
-	private void reportDeliveryStarting(List<Parcel> deliveryParcels) {
-		List<Integer> ids = newRequestIdList(deliveryParcels);
+	private void reportDeliveryStarting() {
+		List<Integer> ids = newRequestIdList(storedParcels);
 		// 通信
 		// 操作を書き込む("配達開始報告を受けとる", ids);
 	}

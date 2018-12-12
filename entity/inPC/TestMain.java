@@ -12,14 +12,41 @@ public class TestMain {
         List<Parcel> nimotuRe = rep.getRedelNimotu();
 
         RelayStation rel = new RelayStation();
-        sinnyuuTest2(rel);
+//        sinnyuuTest2(rel);
 //        rel.receiveParcels(nimotu);
 //        rel.sendParcels();
 //        rel.sendParcels();
 //        rel.sendParcels();
 //        rel.sendParcels();
+        watasuTest2(rep, nimotu, rel);
 
     }
+
+    public static void watasuTest2(Reception rep, List<Parcel> nimotu, RelayStation rel){
+        rep.receiveRequest();
+        rel.receiveParcels(nimotu);
+        // pub -> pri
+//        System.out.println(rel.canStartDelivery());
+//        System.out.println(rel.canStartDelivery());
+//        System.out.println(rel.canStartDelivery());
+        nimotu.clear();
+        rep.receiveRequest();
+        rel.receiveParcels(nimotu);
+        // pub -> pri
+//        System.out.println(rel.canStartDelivery());
+//        System.out.println(rel.canStartDelivery());
+//        System.out.println(rel.canStartDelivery());
+    }
+
+
+    public static void watasuTest1(Reception rep, List<Parcel> nimotu, RelayStation rel){
+        rep.receiveRequest();
+        rep.receiveRequest();
+        rep.receiveRequest();
+        rel.receiveParcels(nimotu);
+//        System.out.println(rel.canStartDelivery());
+    }
+
     public static void sinnnyuuTest1(RelayStation rel){
         System.out.println("first:" + rel.checkCanEntry());
         System.out.println("secound:" + rel.checkCanEntry());
