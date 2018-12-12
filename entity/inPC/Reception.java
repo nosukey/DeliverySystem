@@ -168,7 +168,7 @@ public class Reception {
 
 		for(Record record : records){
 			record.setTransportStartingDate(transportStartingDate);
-			record.setState(State.onDelivery);
+			record.setState(State.ON_DELIVERY);
 		}
 		//本部との通信
 	}
