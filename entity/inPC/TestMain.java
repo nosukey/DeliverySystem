@@ -10,24 +10,27 @@ public class TestMain {
         Reception rep = new Reception();
         List<Parcel> nimotu = rep.getnimotu();
         List<Parcel> nimotuRe = rep.getRedelNimotu();
-//        rep.receiveRequest();
-//        hassouTest1(rep, nimotu, nimotuRe);
-//        hassouTest2(rep, nimotu, nimotuRe);
-        hassouhoukokuTest1(rep, nimotu, nimotuRe);
 
-//        System.out.println("size:"+nimotu.size());
-//
-//        rep.promptToTransport();
-////        rep.promptToTransport();
-//        System.out.println("size:"+nimotu.size());
-//
-//        RelayStation rel = new RelayStation();
+        RelayStation rel = new RelayStation();
+        sinnyuuTest2(rel);
 //        rel.receiveParcels(nimotu);
 //        rel.sendParcels();
 //        rel.sendParcels();
 //        rel.sendParcels();
 //        rel.sendParcels();
 
+    }
+    public static void sinnnyuuTest1(RelayStation rel){
+        System.out.println("first:" + rel.checkCanEntry());
+        System.out.println("secound:" + rel.checkCanEntry());
+    }
+
+    public static void sinnyuuTest2(RelayStation rel){
+        System.out.println("first:" + rel.checkCanEntry());
+        System.out.println("secound:" + rel.checkCanEntry());
+//        private -> publi　の擬似テスト
+//        rel.enableEntry();
+//        System.out.println("first:" + rel.checkCanEntry());
     }
 
     public static void hassouTest1(Reception rep, List<Parcel> nimotu, List<Parcel> nimotuRe){

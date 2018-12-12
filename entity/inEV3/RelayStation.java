@@ -31,6 +31,7 @@ public class RelayStation {
 	public RelayStation(){
 		this.storedParcels         = new LinkedList<Parcel>();
 		this.wrongRecipientParcels = new ArrayList<Parcel>();
+		this.canEntry = true;
 	}
 
 
@@ -102,10 +103,11 @@ public class RelayStation {
 	 * 統合テストで確認してください
 	 *
 	 */
-	public void checkCanEntry() {
-		// 通信
-		// 真偽値を書き込む(canEntry)
-		this.canEntry = false;
+	public boolean checkCanEntry() {
+		boolean returnValue = canEntry;
+		canEntry = false;
+		return returnValue;
+		// 通信を行わないように変更しました。　12/12
 	}
 
 	/**

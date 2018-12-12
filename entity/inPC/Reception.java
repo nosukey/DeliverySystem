@@ -91,6 +91,7 @@ public class Reception {
 						boundary.printRecord(record);
 
 						// オブザーバー更新するを追加する箇所
+						// observer.update(undeliveredParcels.size() + redeliveryParcels.size());
 						isReenter = false;
 					}
 				}
@@ -139,9 +140,11 @@ public class Reception {
 			}
 		}
 		// 収集担当ロボットとの通信
+		// commToCollector.writeMethod("transportParcels", deliveryParcels);
 		// 操作を書き込む
 		reportTransportStarting(recordsForTransport, redeliveryIdList);
 		// オブザーバー初期化する
+		// observer.init(undeliveredParcels.size() + redeliveryParcels.size());
 	}
 
 	/**
@@ -151,6 +154,7 @@ public class Reception {
 	 */
 	public void receiveSuccessNotification() {
 		// オブザーバー更新する(true)
+		// observer.update(true);
 	}
 
 	/**
@@ -163,6 +167,7 @@ public class Reception {
 		redeliveryParcels.addAll(parcels);
 
 		// オブザーバー更新する
+		// observer.update(true);
 	}
 
 	/**
@@ -178,7 +183,7 @@ public class Reception {
 			record.setState(State.ON_DELIVERY);
 		}
 		//本部との通信
-		//
+		// commToHeadquarter.writeMethod("receiveTransportFailureReport", reportTransportFailureIds);
 	}
 
 	/**
@@ -188,7 +193,7 @@ public class Reception {
 		List<Integer> reportTransportFailureIds = newRequestIdList(failureParcels);
 
 		// 本部との通信
-		// 操作を書き込む
+		// commToHeadquarter.writeMethod("receiveTransportFailureReport", reportTransportFailureIds);
 	}
 
 	/**
