@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
+import lejos.hardware.lcd.LCD;
+import lejos.utility.Delay;
+
 public class RelayStation {
 
 	private List<Parcel> storedParcels;
@@ -28,13 +31,57 @@ public class RelayStation {
 
 	private int timesCameDeliveryRobot = 0;
 
+
+	public static void main(String[] args) {
+		RelayStation myself = new RelayStation();
+		myself.commToCollector   = new RelayStationCommunication(myself, "Collector1");
+		myself.commToDeliverer   = new RelayStationCommunication(myself, "Delivery1");
+		myself.commToHeadquarter = new RelayStationCommunication(myself);
+
+		LCD.clear();
+		LCD.drawString("Started.", 0, 0);
+
+		new Thread(myself.commToCollector).start();
+		new Thread(myself.commToDeliverer).start();
+
+		Delay.msDelay(60000);
+		new Thread(myself.commToHeadquarter).start();
+	}
+
 	public RelayStation(){
 		this.storedParcels         = new LinkedList<Parcel>();
 		this.wrongRecipientParcels = new ArrayList<Parcel>();
 		this.canEntry              = true;
-        this.numOfDeliveredParcels = 0;
+    this.numOfDeliveredParcels = 0;
 	}
 
+	public void connected() {
+		LCD.drawString("Connected.", 0, 1);
+
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+	}
+
+	// TODO 削除
+	public void dummy(RelayStationCommunication comm, String str) {
+		if(comm == commToHeadquarter)
+			commToDeliverer.writeString(str + " -> RelayStation");
+		else if(comm == commToDeliverer)
+			commToCollector.writeString(str + " -> RelayStation");
+		else
+			commToHeadquarter.writeString(str + "-> RelayStation");
+	}
+
+	// TODO 削除
+	public void dummy2(String str) {
+
+	}
 
 	/**
 	* ユースケース「荷物を受け取る」を包含するメソッド
@@ -43,8 +90,8 @@ public class RelayStation {
 	*
 	*/
 	public void receiveParcels(List<Parcel> parcels) {
-		// 通信
-		// 操作を書き込む("中継所引き渡し成功を連絡する");
+		commToCollector.writeMethod("notifySuccess");
+
 		storedParcels.addAll(parcels);
 		reportTransportSuccess(parcels);
 		enableEntry();
@@ -58,19 +105,18 @@ public class RelayStation {
 	 */
 	public void sendParcels() {
 		if(!canStartDelivery()){
-			// 通信
-			// 操作を書き込む("待機所で待機する");
+			commToDeliverer.writeMethod("waitInStandbyStation");
+
 			enableEntry();
 		}else{
-			// 通信
-			// 操作を書き込む("荷物を配達する", sortingParcels());
-            numOfDeliveredParcels = storedParcels.size();
+			commToDeliverer.writeMethodWithParcels("deliverParcels", sortingParcels());
+
+	    numOfDeliveredParcels = storedParcels.size();
 			reportDeliveryStarting();
 			enableEntry();
-            storedParcels.clear();
+	    storedParcels.clear();
 		}
 	}
-
 	private List<Parcel> sortingParcels(){
 		List<Parcel> deliveryParcels = new LinkedList<Parcel>();
 
@@ -92,10 +138,6 @@ public class RelayStation {
 	 */
 	public void receiveFinishDeliveryNotification(String strOfReceivingDateMap, List<Parcel> withoutRecipientParcels, List<Parcel> wrongRecipientParcels) {
 		reportDeliveryResults(strOfReceivingDateMap, withoutRecipientParcels, wrongRecipientParcels);
-		// addAllする前にwithoutRecipientParcelsのソート推奨（依頼ID順)
-        // その後this.storedParcels.addAll(0, withoutRecipientParcels);
-        // そうすることでstoredParcelsは依頼ID順を保ちつつ、本部へ報告についても依頼ID順に報告が可能となる。
-        // メリットとしては依頼IDを昇順に報告される方が自然 && 本部のループ次第では高速化可能
 		this.storedParcels.addAll(withoutRecipientParcels);
 		this.wrongRecipientParcels.addAll(wrongRecipientParcels);
 		this.numOfDeliveredParcels = 0;
@@ -109,11 +151,12 @@ public class RelayStation {
 	 *
 	 */
 	public boolean checkCanEntry() {
-		boolean returnValue = canEntry;
-		canEntry = false;
-		return returnValue;
-		// 通信を行わないように変更しました。　12/12
-	}
+ 		//System.out.println("checkCanEntry");
+ 		boolean returnValue = canEntry;
+ 		canEntry = false;
+ 		return returnValue;
+ 		// 通信を行わないように変更しました。　12/12
+ 	}
 
 	/**
 	 * ユースケース「荷物の宛先を修正する」を包含するメソッド
@@ -124,9 +167,9 @@ public class RelayStation {
 	public void fixWrongRecipient(int requestId, PersonInfo recipientInfo) {
 		Parcel parcel = removeWrongRecipientParcel(requestId);
 		if(parcel != null) {
-            parcel.setRecipientInfo(recipientInfo);
-            storedParcels.add(parcel);
-        }
+			parcel.setRecipientInfo(recipientInfo);
+      storedParcels.add(parcel);
+		}
 	}
 
 	/**
@@ -138,13 +181,11 @@ public class RelayStation {
 	 *
 	 */
 	public void canSendParcels(int numOfParcelsToSend) {
-			if(numOfParcelsToSend <= (MAX_STORAGE - numOfDeliveredParcels - storedParcels.size() - wrongRecipientParcels.size())){
-                // 通信
-                // 操作を書き込む("荷物リストを渡す")
-			}else{
-                // 通信
-                // 操作を書き込む("中継所引き渡し失敗を連絡する")
-			}
+		if(numOfParcelsToSend <= (MAX_STORAGE - numOfDeliveredParcels - storedParcels.size() - wrongRecipientParcels.size())){
+			commToCollector.writeMethod("sendParcels");
+		}else{
+			commToCollector.writeMethod("notifyFailure");
+		}
 	}
 
 	/**
@@ -152,33 +193,32 @@ public class RelayStation {
 	 */
 	private void reportTransportSuccess(List<Parcel> parcels) {
 		List<Integer> ids = newRequestIdList(parcels);
-		// 通信
-		// 操作を書き込む("中継所到着報告を受け取る", ids);
+		commToHeadquarter.writeMethodWithIds("receiveTransportSuccessReport", ids);
 	}
 
 	/**
 	 * ユースケース「配達開始を報告する」を包含するメソッド
 	 */
-	private void reportDeliveryStarting() {
-		List<Integer> ids = newRequestIdList(storedParcels);
-		// 通信
-		// 操作を書き込む("配達開始報告を受けとる", ids);
-	}
+	 private void reportDeliveryStarting() {
+ 		List<Integer> ids = newRequestIdList(storedParcels);
+
+ 		commToHeadquarter.writeMethodWithIds("receiveDeliveryStartingReport", ids);
+ 	}
 
 	/**
 	 * ユースケース「配達結果を報告する」を包含するメソッド
 	 */
 	private void reportDeliveryResults(String strOfReceivingDateMap, List<Parcel> withoutRecipientParcels, List<Parcel> wrongRecipientParcels) {
 		if(!strOfReceivingDateMap.isEmpty()){
-			// 操作を書き込む("配達完了報告を受け取る", strOfReceivingDateMap);
+			commToHeadquarter.writeMethod("receiveDeliverySuccessReport", strOfReceivingDateMap);
 		}
 		if(!withoutRecipientParcels.isEmpty()){
 			List<Integer> withoutRecipientParcelsIds = newRequestIdList(withoutRecipientParcels);
-			// 操作を書き込む("受取人不在報告を受け取る", withoutRecipientParcelsIds;
+			commToHeadquarter.writeMethodWithIds("receiveWithoutRecipientReport", withoutRecipientParcelsIds);
 		}
 		if(!wrongRecipientParcels.isEmpty()){
 			List<Integer> wrongRecipientParcelsIds = newRequestIdList(wrongRecipientParcels);
-			// 操作を書き込む("宛先間違い報告を受け取る", wrongRecipientParcelsIds);
+			commToHeadquarter.writeMethodWithIds("receiveWrongRecipientReport", wrongRecipientParcelsIds);
 		}
 	}
 
@@ -186,15 +226,15 @@ public class RelayStation {
 	 * ユースケース「進入制限を解除する」を包含するメソッド
 	 */
 	private void enableEntry() {
-
 		// 一定時間待機する処理（EV3で可能ならばなんでも良い）
-		try {
-			TimeUnit.SECONDS.sleep(1);
-		}catch (InterruptedException e){
-			System.out.println("error" + e);
-		}
-		// ここまで
-		canEntry = true;
+			try {
+				//System.out.println("enableEntry");
+				TimeUnit.SECONDS.sleep(1);
+			}catch (InterruptedException e){
+				System.out.println("error" + e);
+			}
+			// ここまで
+			canEntry = true;
 	}
 
 	/**
@@ -223,11 +263,13 @@ public class RelayStation {
 	 * これを繰り返すことで報告用の依頼IDリストを作成する
 	 */
 	private List<Integer> newRequestIdList(List<Parcel> parcels) {
+		//System.out.println("newRequestIdList");
 		List<Integer> requestIds = new LinkedList<Integer>();
 
 		for(Parcel parcel : parcels){
 			requestIds.add(parcel.getRequestId());
 		}
+		//System.out.println(requestIds);
 		return requestIds;
 	}
 
@@ -235,13 +277,13 @@ public class RelayStation {
 	 * 宛先間違いの荷物リストから引数で渡された依頼IDの荷物を取り除く
 	 * ループで該当する荷物を見つけなければならないためメソッドにした
 	 */
-	private Parcel removeWrongRecipientParcel(int requestId) {
-		for(Parcel parcel : wrongRecipientParcels){
-			if(requestId == parcel.getRequestId()){
-				return parcel;
-			}
-		}
-		return null;
-	}
+	 private Parcel removeWrongRecipientParcel(int requestId) {
+ 		for(Parcel parcel : wrongRecipientParcels){
+ 			if(requestId == parcel.getRequestId()){
+ 				return parcel;
+ 			}
+ 		}
+ 		return null;
+ 	}
 
 }

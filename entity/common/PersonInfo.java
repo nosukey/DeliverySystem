@@ -6,10 +6,9 @@ public class PersonInfo {
 
 	private int address;
 
-	// TODO Stringにしたい
-	private int phoneNumber;
+	private String phoneNumber;
 
-	public PersonInfo(String name, int address, int phoneNumber) {
+	public PersonInfo(String name, int address, String phoneNumber) {
 		this.name = name;
 		this.address = address;
 		this.phoneNumber = phoneNumber;
@@ -28,7 +27,7 @@ public class PersonInfo {
 	 * ->一致していなければfalseを返すことを確認する
 	 */
 	public boolean equals(PersonInfo info) {
-		if(this.name.equals(info.name) && this.address == info.address && this.phoneNumber == info.phoneNumber) {
+		if(this.name.equals(info.name) && this.address == info.address && this.phoneNumber.equals(info.phoneNumber)) {
 			return true;
 		} else {
 			return false;
@@ -48,7 +47,7 @@ public class PersonInfo {
 		return this.address;
 	}
 
-	public int getPhoneNumber() {
+	public String getPhoneNumber() {
 		return this.phoneNumber;
 	}
 
@@ -66,7 +65,7 @@ public class PersonInfo {
 		return new PersonInfo(
 			parameters[0],
 			Integer.parseInt(parameters[1]),
-			Integer.parseInt(parameters[2])
+			parameters[2]
 		);
 	}
 

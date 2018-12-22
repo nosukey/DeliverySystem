@@ -45,8 +45,8 @@ public class Boundary {
 	 * 引数に電話番号の入力を促すメッセージを代入し、入力を要求する
 	 * ->入力された電話番号を出力し確認する
 	 */
-	public int inputPhoneNumber(String msg) {
-		return input.inputInt(msg);
+	public String inputPhoneNumber(String msg) {
+		return input.inputString(msg);
 	}
 
 	/**
@@ -71,6 +71,16 @@ public class Boundary {
 	 * ->選択肢2が入力されたらfalseを返すことを確認する
 	 */
 	public boolean select(String msg1, String msg2) {
+		// TODO 置換
+		// int in = input.inputInt("(0)" + msg1 + ", (1)" + msg2 + "\n");
+		// if(in == 0) {
+		// 	return true;
+		// } else if(in == 1) {
+		// 	return false;
+		// } else {
+		// 	System.out.println("\n0, 1のどちらかを入力してください.\n");
+		// 	return select(msg1, msg2);
+		// }
 		if(input.inputInt("(0)" + msg1 + ", (1)" + msg2 + "\n") == 0)
 			return true;
 		else
@@ -109,7 +119,7 @@ public class Boundary {
 	 * ->名前・番地・電話番号が全て正しい入力ならtrueを返すことを確認する
 	 * ->名前・番地・電話番号でどれか一つでも不正な入力があればfalseを返すことを確認する
 	 */
-	public boolean isCorrectPersonInfo(String name, int address, int phoneNumber) {
+	public boolean isCorrectPersonInfo(String name, int address, String phoneNumber) {
 		return isCorrectName(name) && isCorrectAddress(address) && isCorrectPhoneNumber(phoneNumber);
 	}
 
@@ -130,7 +140,8 @@ public class Boundary {
 	/**
 	 * 桁数が正当であるかを判定する
 	 */
-	private boolean isCorrectPhoneNumber(int phoneNumber) {
+	private boolean isCorrectPhoneNumber(String phoneNumber) {
+		// TODO phoneNumberをString型に変更してから考える
 		return true;
 	}
 

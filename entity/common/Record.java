@@ -50,7 +50,7 @@ public class Record {
 	 *
 	 */
 	public void setRecipientInfo(PersonInfo info) {
-		this.clientInfo = info;
+		this.recipientInfo = info;
 	}
 
 	/**
@@ -138,6 +138,7 @@ public class Record {
 	 * 引数に配達記録に変換したい文字列を代入する
 	 * ->文字列の情報と同じ配達記録を返すことを確認する
 	 *
+	 * TODO もっと良いアルゴリズムに変更したい
 	 */
 	public static Record decode(String str) {
 		String[] parameters = str.split(",");

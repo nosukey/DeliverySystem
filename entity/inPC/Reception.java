@@ -1,13 +1,14 @@
 package entity.inPC;
 
-import boundary.Boundary; //追加
+// TODO 削除
+import boundary.Boundary;
+
 import comm.ReceptionCommunication;
 import controller.ReceptionObserver;
 import entity.common.*;
-
-import java.util.ArrayList; //追加
+import java.util.ArrayList;
 import java.util.List;
-import java.util.LinkedList; //追加
+import java.util.LinkedList;
 
 public class Reception {
 
@@ -31,37 +32,58 @@ public class Reception {
 	 */
 	private int newId;
 
-;	/*--追加---------*/
-	private Boundary boundary;
+	private static final String HEADQUARTER_ADDRESS = "localhost";
+	private static final int HEADQUARTER_PORT       = 10000;
+	private static final String COLLECTOR_ADDRESS   = "btspp://001653420416:1";
 
-	public Reception(){
+	public Reception() {
 		this.undeliveredParcels  = new LinkedList<Parcel>();
 		this.redeliveryParcels   = new LinkedList<Parcel>();
 		this.recordsForReporting = new ArrayList<Record>();
-		this.boundary = new Boundary();
-	}
-
-	// テスト用getnimotu
-	public List<Parcel> getnimotu(){
-		return this.undeliveredParcels;
-	}
-	public void setRedely(List<Parcel> nimotu){
-		this.redeliveryParcels.addAll(nimotu);
-		nimotu.clear();
-	}
-	public List<Parcel> getRedelNimotu(){
-		return this.redeliveryParcels;
+		this.observer = new ReceptionObserver(this);
+		this.newId = 0;
 	}
 
 	/**
-	 * 起動する
 	 * 本部との通信を確立する
 	 * 収集担当ロボットとの通信を確立する
 	 * 宅配受付所オブザーバ－をたてる
 	 */
 	public void execute() {
-		// 通信はあとで
-		//observer = new ReceptionObserver(this);
+		this.commToHeadquarter = new ReceptionCommunication(this, HEADQUARTER_ADDRESS, HEADQUARTER_PORT);
+		new Thread(commToHeadquarter).start();
+
+		this.commToCollector   = new ReceptionCommunication(this, COLLECTOR_ADDRESS);
+		new Thread(commToCollector).start();
+
+		// TODO 削除
+		Boundary io = new Boundary();
+		io.printMessage("Reception is started.");
+	}
+
+	// TODO 削除
+	public void connected() {
+		Boundary io = new Boundary();
+		io.printMessage("Reception is connected.");
+	}
+
+	// TODO 削除
+	public void dummyLoopStart(int count) {
+		System.out.println("Loop " + count + " Started.");
+		commToHeadquarter.writeString("Reception");
+	}
+
+	// TODO 削除
+	public void dummy1(ReceptionCommunication comm, String str) {
+		if(comm == commToHeadquarter)
+			commToHeadquarter.writeString(str + " -> Reception");
+		else
+			commToCollector.writeString(str + " -> Reception");
+	}
+
+	// TODO 削除
+	public void dummy2(String str) {
+		System.out.println(str);
 	}
 
 	/**
@@ -70,41 +92,43 @@ public class Reception {
 	 *
 	 */
 	public void receiveRequest() {
-		boolean isReenter = true;
+ 		boolean isReenter = true;
+		Boundary io = new Boundary();
 
-		while(isReenter){
-			PersonInfo clientInfo = createPersonInfo("依頼人");
-			if(!boundary.isCorrectPersonInfo(clientInfo.getName(), clientInfo.getAddress(), clientInfo.getPhoneNumber())){
-				isReenter = checkReenter();
-			}else{
-				while(isReenter){
-					PersonInfo recipientInfo = createPersonInfo("受取人");
-					if(!boundary.isCorrectPersonInfo(recipientInfo.getName(), recipientInfo.getAddress(), recipientInfo.getPhoneNumber())){
-						isReenter = checkReenter();
-					}else{
+ 		while(isReenter){
+ 			PersonInfo clientInfo = createPersonInfo("依頼人");
+ 			if(!io.isCorrectPersonInfo(clientInfo.getName(), clientInfo.getAddress(), clientInfo.getPhoneNumber())){
+ 				isReenter = checkReenter();
+ 			}else{
+ 				while(isReenter){
+ 					PersonInfo recipientInfo = createPersonInfo("受取人");
+ 					if(!io.isCorrectPersonInfo(recipientInfo.getName(), recipientInfo.getAddress(), recipientInfo.getPhoneNumber())){
+ 						isReenter = checkReenter();
+ 					}else{
+ 						Parcel parcel = new Parcel(newId, clientInfo, recipientInfo);
+ 						undeliveredParcels.add(parcel);
+ 						Date receptionDate = Date.getCurrentDate();
+ 						Record record = new Record(newId, clientInfo, recipientInfo, receptionDate);
+ 						recordsForReporting.add(record);
+ 						io.printRecord(record);
+
 						newId++;
-						Parcel parcel = new Parcel(newId, clientInfo, recipientInfo);
-						undeliveredParcels.add(parcel);
-						Date receptionDate = Date.getCurrentDate();
-						Record record = new Record(newId, clientInfo, recipientInfo, receptionDate);
-						recordsForReporting.add(record);
-						boundary.printRecord(record);
 
-						// オブザーバー更新するを追加する箇所
-						// observer.update(undeliveredParcels.size() + redeliveryParcels.size());
-						isReenter = false;
-					}
-				}
-			}
-		}
-	}
+ 						// オブザーバー更新するを追加する箇所
+ 						observer.update(undeliveredParcels.size() + redeliveryParcels.size());
+ 						isReenter = false;
+ 					}
+ 				}
+ 			}
+ 		}
+ 	}
 
 	private PersonInfo createPersonInfo(String person){
-		String name     = boundary.inputName(person + "名前を入力してください-> ");
-		int address     = boundary.inputAddress(person + "番地を入力してください-> ");
-		// phoneNumberをStringに変更するよ！
-		int phoneNumber = boundary.inputPhoneNumber(person +"依頼人電話番号を入力してください-> ");
-		if(boundary.select("修正する", "修正しない"))
+		Boundary io = new Boundary();
+		String name     = io.inputName(person + "名前を入力してください-> ");
+		int address     = io.inputAddress(person + "番地を入力してください-> ");
+		String phoneNumber = io.inputPhoneNumber(person +"依頼人電話番号を入力してください-> ");
+		if(io.select("修正する", "修正しない"))
 			return createPersonInfo(person);
 		else {
 			return new PersonInfo(name, address, phoneNumber);
@@ -112,8 +136,9 @@ public class Reception {
 	}
 
 	private boolean checkReenter(){
-		boundary.printMessage("不正な入力があります");
-		return boundary.select("再入力する", "再入力しない");
+		Boundary io = new Boundary();
+		io.printMessage("不正な入力があります");
+		return io.select("再入力する", "再入力しない");
 	}
 
 	/**
@@ -122,30 +147,30 @@ public class Reception {
 	 *
 	 */
 	public void promptToTransport() {
-		List<Parcel>  deliveryParcels     = new LinkedList<Parcel>();
-		List<Record>  recordsForTransport = new LinkedList<Record>();
-		List<Integer> redeliveryIdList   = new LinkedList<Integer>();
-		int firstElementNumber = 0;
+ 		List<Parcel>  deliveryParcels     = new LinkedList<Parcel>();
+ 		List<Record>  recordsForTransport = new LinkedList<Record>();
+ 		List<Integer> redeliveryIdList   = new LinkedList<Integer>();
+ 		int firstElementNumber = 0;
 
-		while(MAX_STORAGE > deliveryParcels.size() && (!redeliveryParcels.isEmpty() || !undeliveredParcels.isEmpty())){
-			if(!redeliveryParcels.isEmpty()){
-				Parcel parcel = redeliveryParcels.remove(firstElementNumber);
-				redeliveryIdList.add(parcel.getRequestId());
-				deliveryParcels.add(parcel);
-			}else{
-				Parcel parcel = undeliveredParcels.remove(firstElementNumber);
-				Record record = removeRecordForReport(parcel.getRequestId());
-				recordsForTransport.add(record);
-				deliveryParcels.add(parcel);
-			}
-		}
-		// 収集担当ロボットとの通信
-		// commToCollector.writeMethod("transportParcels", deliveryParcels);
-		// 操作を書き込む
-		reportTransportStarting(recordsForTransport, redeliveryIdList);
-		// オブザーバー初期化する
-		// observer.init(undeliveredParcels.size() + redeliveryParcels.size());
-	}
+ 		while(MAX_STORAGE > deliveryParcels.size() && (!redeliveryParcels.isEmpty() || !undeliveredParcels.isEmpty())){
+ 			if(!redeliveryParcels.isEmpty()){
+ 				Parcel parcel = redeliveryParcels.remove(firstElementNumber);
+ 				redeliveryIdList.add(parcel.getRequestId());
+ 				deliveryParcels.add(parcel);
+ 			}else{
+ 				Parcel parcel = undeliveredParcels.remove(firstElementNumber);
+ 				Record record = removeRecordForReport(parcel.getRequestId());
+ 				recordsForTransport.add(record);
+ 				deliveryParcels.add(parcel);
+ 			}
+ 		}
+ 		// 収集担当ロボットとの通信
+ 		commToCollector.writeMethodWithParcels("transportParcels", deliveryParcels);
+ 		// 操作を書き込む
+ 		reportTransportStarting(recordsForTransport, redeliveryIdList);
+ 		// オブザーバー初期化する
+ 		observer.init(undeliveredParcels.size() + redeliveryParcels.size());
+ 	}
 
 	/**
 	 * ユースケース「中継所引き渡し成功の連絡を受け取る」を包含しているメソッド
@@ -153,8 +178,7 @@ public class Reception {
 	 *
 	 */
 	public void receiveSuccessNotification() {
-		// オブザーバー更新する(true)
-		// observer.update(true);
+		observer.update(true);
 	}
 
 	/**
@@ -163,12 +187,11 @@ public class Reception {
 	 *
 	 */
 	public void receiveFailureNotification(List<Parcel> parcels) {
-		reportTransportFailure(parcels);
-		redeliveryParcels.addAll(parcels);
+ 		reportTransportFailure(parcels);
+ 		redeliveryParcels.addAll(parcels);
 
-		// オブザーバー更新する
-		// observer.update(true);
-	}
+ 		observer.update(true);
+ 	}
 
 	/**
 	 * ユースケース「発送を報告する」を包含しているメソッド
@@ -176,15 +199,14 @@ public class Reception {
 	 *
 	 */
 	private void reportTransportStarting(List<Record> records, List<Integer> requestIds) {
-		Date transportStartingDate = Date.getCurrentDate();
+ 		Date transportStartingDate = Date.getCurrentDate();
 
-		for(Record record : records){
-			record.setTransportStartingDate(transportStartingDate);
-			record.setState(State.ON_DELIVERY);
-		}
-		//本部との通信
-		// commToHeadquarter.writeMethod("receiveTransportFailureReport", reportTransportFailureIds);
-	}
+ 		for(Record record : records){
+ 			record.setTransportStartingDate(transportStartingDate);
+ 			record.setState(State.ON_DELIVERY);
+ 		}
+ 		commToHeadquarter.writeMethodWithIds("receiveTransportFailureReport", requestIds);
+ 	}
 
 	/**
 	 * ユースケース「中継所引き渡し失敗を報告する」を包含しているメソッド
@@ -192,8 +214,7 @@ public class Reception {
 	private void reportTransportFailure(List<Parcel> failureParcels) {
 		List<Integer> reportTransportFailureIds = newRequestIdList(failureParcels);
 
-		// 本部との通信
-		// commToHeadquarter.writeMethod("receiveTransportFailureReport", reportTransportFailureIds);
+		commToHeadquarter.writeMethodWithIds("receiveTransportFailureReport", reportTransportFailureIds);
 	}
 
 	/**
@@ -220,6 +241,10 @@ public class Reception {
 			}
 		}
 		return null;
+	}
+
+	public boolean isEmpty() {
+		return undeliveredParcels.isEmpty() && redeliveryParcels.isEmpty();
 	}
 
 }

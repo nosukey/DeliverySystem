@@ -1,19 +1,19 @@
 package comm;
 
-import entity.inEV3.Deliverer;
+import entity.inEV3.Collector;
 import java.io.IOException;
 import lejos.remote.nxt.BTConnection;
 import lejos.remote.nxt.BTConnector;
 import lejos.utility.Delay;
 
-public class DelivererCommunication extends Communication implements Runnable {
+public class CollectorCommunication extends Communication implements Runnable {
 
-	private Deliverer deliverer;
+	private Collector collector;
 	private BTConnector connector;
 	private BTConnection connection;
 
-	public DelivererCommunication(Deliverer parent) {
-		this.deliverer  = parent;
+	public CollectorCommunication(Collector parent) {
+		this.collector  = parent;
 		this.connector  = new BTConnector();
 		this.connection = null;
 	}
@@ -25,7 +25,7 @@ public class DelivererCommunication extends Communication implements Runnable {
 	public void run() {
 		try {
 			waitForConnection();
-			this.deliverer.connected();
+			this.collector.connected();
 		} catch(IOException e) {
 			System.out.println("Exception: Connection failed.");
 			Delay.msDelay(DELAY_TIME);
@@ -37,21 +37,27 @@ public class DelivererCommunication extends Communication implements Runnable {
 
 	/**
 	 * 第1引数
-	 * 操作名には配達担当ロボットのpublicメソッド名
+	 * 操作名には収集担当ロボットのpublicメソッド名
 	 * 第2引数
 	 * データにはそのメソッドの引数の文字列データ
 	 *
-	 * から配達担当ロボットのpublicメソッドを呼び出す
+	 * から収集担当ロボットのpublicメソッドを呼び出す
 	 *
 	 * TODO あとで
 	 */
 	protected void selectMethod(String methodName, String data) {
 		switch(methodName) {
-			case "waitInStandbyStation":
-				deliverer.waitInStandbyStation();
+			case "transportParcels":
+				collector.transportParcels(decodeParcels(data));
 				break;
-			case "deliverParcels":
-				deliverer.deliverParcels(decodeParcels(data));
+			case "notifySuccess":
+				collector.notifySuccess();
+				break;
+			case "notifyFailure":
+				collector.notifyFailure();
+				break;
+			case "sendParcels":
+				collector.sendParcels();
 				break;
 			default:
 				break;
@@ -59,7 +65,7 @@ public class DelivererCommunication extends Communication implements Runnable {
 	}
 
 	/**
-	 * 配達担当ロボットからは接続しにいかないので未実装
+	 * 収集担当ロボットからは接続しにいかないので未実装
 	 */
 	protected void connect() throws IOException {
 
@@ -76,7 +82,7 @@ public class DelivererCommunication extends Communication implements Runnable {
 
 	// TODO 削除
 	protected void dummy(String str) {
-		this.deliverer.dummy(this, str);
+		this.collector.dummy(this, str);
 	}
 
 }

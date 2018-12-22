@@ -1,41 +1,102 @@
 package comm;
 
-import entity.common.*;
+import entity.common.Date;
+import entity.common.Parcel;
+import entity.common.PersonInfo;
+import entity.common.Record;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+// import lejos.remote.nxt.BTConnection;
+import lejos.utility.Delay;
 
 public abstract class Communication {
 
+	protected DataInputStream dis;
+	protected DataOutputStream dos;
+
+	protected static final int TIMEOUT = 0;
+	protected static final int DELAY_TIME = 5000;
+
 	protected abstract void selectMethod(String methodName, String data);
 
-	protected abstract void connect(String connectionName);
+ 	protected abstract void connect() throws IOException;
+
+	protected abstract void waitForConnection() throws IOException;
+
+	// TODO 削除
+	protected abstract void dummy(String str);
+
+	protected void waitForInvoke() {
+		while(true) {
+			String buffer = readString();
+
+			// // TODO 削除
+			// dummy(buffer);
+
+			selectMethod(extractMethodName(buffer), extractData(buffer));
+		}
+	}
 
 	/**
 	 * ストリームから真偽値を読み込む
 	 */
 	public boolean readBoolean() {
-		return false;
+		try {
+			return dis.readBoolean();
+		} catch(IOException e) {
+			System.out.println("Exception: Stream is closed.");
+			Delay.msDelay(DELAY_TIME);
+			return readBoolean();
+		}
 	}
 
 	/**
 	 * ストリームに真偽値を書き込む
 	 */
 	public void writeBoolean(boolean bool) {
-
+		try {
+			dos.writeBoolean(bool);
+			dos.flush();
+		} catch(IOException e) {
+    		System.out.println("Exception: I/O error.");
+        	Delay.msDelay(DELAY_TIME);
+			// System.exit(1);
+			writeBoolean(bool);
+		}
 	}
 
 	/**
 	 * ストリームから文字列を読み込む
 	 */
 	public String readString() {
-		return null;
+		try {
+			return dis.readUTF();
+		} catch(IOException e) {
+			System.out.println("Exception: Stream is closed.");
+			Delay.msDelay(DELAY_TIME);
+			// System.exit(1);
+			return readString();
+		}
 	}
 
 	/**
 	 * ストリームに文字列を書き込む
 	 */
 	public void writeString(String str) {
-
+		try {
+			dos.writeUTF(str);
+			dos.flush();
+		} catch(IOException e) {
+    		System.out.println("Exception: I/O error.");
+        	Delay.msDelay(DELAY_TIME);
+			// System.exit(1);
+			writeString(str);
+		}
 	}
 
 	/**
@@ -45,7 +106,7 @@ public abstract class Communication {
 	 * 通信パケットを表示し, フォーマットを確認する
 	 */
 	public void writeMethod(String methodName) {
-
+		writeString(methodName + "%");
 	}
 
 	/**
@@ -55,7 +116,7 @@ public abstract class Communication {
 	 * 通信パケットを表示し, フォーマットを確認する
 	 */
 	public void writeMethod(String methodName, int value) {
-
+		writeString(methodName + "%" + value);
 	}
 
 	/**
@@ -65,7 +126,7 @@ public abstract class Communication {
 	 * 通信パケットを表示し, フォーマットを確認する
 	 */
 	public void writeMethod(String methodName, String str) {
-
+		writeString(methodName + "%" + str);
 	}
 
 	/**
@@ -75,7 +136,7 @@ public abstract class Communication {
 	 * 通信パケットを表示し, フォーマットを確認する
 	 */
 	public void writeMethod(String methodName, int requestId, PersonInfo personInfo) {
-
+		writeString(methodName + "%" + requestId + "&" + PersonInfo.encode(personInfo));
 	}
 
 	/**
@@ -85,7 +146,7 @@ public abstract class Communication {
 	 * 通信パケットを表示し, フォーマットを確認する
 	 */
 	public void writeMethod(String methodName, Parcel parcel) {
-
+		writeString(methodName + "%" + Parcel.encode(parcel));
 	}
 
 	/**
@@ -95,7 +156,7 @@ public abstract class Communication {
 	 * 通信パケットを表示し, フォーマットを確認する
 	 */
 	public void writeMethodWithParcels(String methodName, List<Parcel> parcels) {
-
+		writeString(methodName + "%" + encodeParcels(parcels));
 	}
 
 	/**
@@ -105,7 +166,7 @@ public abstract class Communication {
 	 * 通信パケットを表示し, フォーマットを確認する
 	 */
 	public void writeMethodWithIds(String methodName, List<Integer> requestIds) {
-
+		writeString(methodName + "%" + encodeRequestIds(requestIds));
 	}
 
 	/**
@@ -115,7 +176,7 @@ public abstract class Communication {
 	 * 通信パケットを表示し, フォーマットを確認する
 	 */
 	public void writeMethod(String methodName, List<Record> records, List<Integer> requestIds) {
-
+		writeString(methodName + "%" + encodeRecords(records) + "&" + encodeRequestIds(requestIds));
 	}
 
 	/**
@@ -125,53 +186,104 @@ public abstract class Communication {
 	 * 通信パケットを表示し, フォーマットを確認する
 	 */
 	public void writeMethod(String methodName, Map<Integer, Date> receivingDateMap, List<Parcel> withoutRecipientParcels, List<Parcel> wrongRecipientParcels) {
-
+		writeString(methodName + "%" + encodeDateMap(receivingDateMap) + "&" + encodeParcels(withoutRecipientParcels) + "&" + encodeParcels(wrongRecipientParcels));
 	}
 
 	/**
 	 * 引数として代入された文字列から操作名を抽出する
 	 */
 	private String extractMethodName(String packet) {
-		return null;
+		String[] packs = packet.split("%");
+		return packs[0];
 	}
 
 	/**
 	 * 引数として代入された文字列からデータを抽出する
 	 */
 	private String extractData(String packet) {
-		return null;
+		String[] packs = packet.split("%");
+		return packs[1];
 	}
 
-	private List<Integer> decodeToRequestIds(String str) {
-		return null;
+	protected List<Integer> decodeRequestIds(String str) {
+		List<Integer> requestIds = new LinkedList<Integer>();
+
+		for(String element : str.split("#")) {
+			requestIds.add(Integer.valueOf(element));
+		}
+
+		return requestIds;
 	}
 
-	private String encodeFromRequestIds(List<Integer> str) {
-		return null;
+	private String encodeRequestIds(List<Integer> requestIds) {
+		String result = "";
+
+		for(Integer id : requestIds) {
+			result += (id.toString() + "#");
+		}
+
+		return result.substring(0, result.length()-1);
 	}
 
-	private List<Parcel> decodeToParcels(String str) {
-		return null;
+	protected List<Parcel> decodeParcels(String str) {
+		List<Parcel> parcels = new LinkedList<Parcel>();
+
+		for(String element : str.split("#")) {
+			parcels.add(Parcel.decode(element));
+		}
+
+		return parcels;
 	}
 
-	private String encodeFromParcels(List<Parcel> parcels) {
-		return null;
+	private String encodeParcels(List<Parcel> parcels) {
+		String result = "";
+
+		for(Parcel parcel : parcels) {
+			result += (Parcel.encode(parcel) + "#");
+		}
+
+		return result.substring(0, result.length()-1);
 	}
 
-	private List<Record> decodeToRecords(String str) {
-		return null;
+	protected List<Record> decodeRecords(String str) {
+		List<Record> records = new LinkedList<Record>();
+
+		for(String element : str.split("#")) {
+			records.add(Record.decode(element));
+		}
+
+		return records;
 	}
 
-	private String encodeFromRecords(List<Record> records) {
-		return null;
+	private String encodeRecords(List<Record> records) {
+		String result = "";
+
+		for(Record record : records) {
+			result += (Record.encode(record) + "#");
+		}
+
+		return result.substring(0, result.length()-1);
 	}
 
-	private Map<Integer, Date> decodeToDateMap(String str) {
-		return null;
+	protected Map<Integer, Date> decodeDateMap(String str) {
+		Map<Integer, Date> map = new HashMap<Integer, Date>();
+
+		for(String strMap : str.split("#")) {
+			String[] elements = strMap.split("!");
+			map.put(Integer.valueOf(elements[0]), Date.decode(elements[1]));
+		}
+
+		return map;
 	}
 
-	private String encodeFromDateMap(Map<Integer, Date> dateMap) {
-		return null;
+	private String encodeDateMap(Map<Integer, Date> dateMap) {
+		String result = "";
+
+		for(Map.Entry<Integer, Date> entry : dateMap.entrySet()) {
+			result += (entry.getKey().toString() + "!" + Date.encode(entry.getValue()) + "#");
+		}
+
+		return result.substring(0, result.length()-1);
 	}
 
 }
