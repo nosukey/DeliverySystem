@@ -102,8 +102,8 @@ public class Recipient {
 	 */
 	public void verifyRecipientInfo(int address, PersonInfo personalInfo) {
 		if(isHome[address-1]){
-		commToDeliverer.writeBoolean(recipientsInfo[address-1].equals(personalInfo));
-		System.out.println(recipientsInfo[address-1].equals(personalInfo));
+			commToDeliverer.writeBoolean(recipientsInfo[address-1].equals(personalInfo));
+			System.out.println(recipientsInfo[address-1].equals(personalInfo));
 		}
 	}
 

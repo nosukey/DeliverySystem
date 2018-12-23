@@ -14,6 +14,7 @@ import lejos.hardware.Key;
 import lejos.hardware.KeyListener;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import sun.awt.windows.ThemeReader;
 
 public class Deliverer extends Robot {
 
@@ -154,11 +155,32 @@ public class Deliverer extends Robot {
             //TODO 受取人宅に取得した受取人個人情報をを送る
             this.commToRecipient.writeMethod("verifyRecipientInfo", currentAddress, parcel.getRecipientInfo());
 
+            // commToRecipint.readBooleanOrNull()　仕様詳細について
+            // 現在はbooleanなのでintの返り血（State?）になる予定
+            // int 0: :normal, 1: :missed, 2: :absence
+            // 上記の保管の上で下記記します。
+            // int returnValue = commToRecipient.readBooleanOrNull();
+//            switch (returnValue) {
+//                case 0:
+//                    //TODO 受取人宅に取り出した荷物を送る
+//                    this.commToRecipient.writeMethod("receiveParcel", parcel);
+//
+//                    //TODO 受取人宅から受取時間を受け取る
+//                    this.receivingDateMap.put(parcel.getRequestId(), Date.decode(this.commToRecipient.readString()));
+//                    break;
+//                case 1:
+//                    this.wrongRecipientParcels.add(parcel);
+//                    break;
+//                case 2:
+//                    this.withoutRecipientParcels.add(parcel);
+//                    break;
+//            }
+
+
+
             //TODO 10秒経過した場合
 
-
             //TODO 10秒経過しなかった場合
-
 
             //TODO 受取人宅から荷物の個人情報確認結果を受け取る
             if (commToRecipient.readBoolean() == true) {

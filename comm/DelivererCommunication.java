@@ -1,6 +1,8 @@
 package comm;
 
 import entity.inEV3.Deliverer;
+
+import java.io.DataInputStream;
 import java.io.IOException;
 import lejos.remote.nxt.BTConnection;
 import lejos.remote.nxt.BTConnector;
@@ -77,6 +79,48 @@ public class DelivererCommunication extends Communication implements Runnable {
 	// TODO 削除
 	protected void dummy(String str) {
 		this.deliverer.dummy(this, str);
+	}
+
+	/**
+	 * ストリームから真偽値を読み込む
+	 */
+	public boolean readBooleanOrNull() {
+		Inner in = new Inner(dis);
+		in.start();
+
+		long start = System.currentTimeMillis();
+		long now;
+		while(true){
+			now = System.currentTimeMillis();
+			if(now - start > 10000 || in.getState().equals(Thread.State.TERMINATED)) {
+				 in.stop();
+				 break;
+			}
+		}
+		return in.getReadValue();
+	}
+
+	class Inner extends Thread {
+		private DataInputStream dis;
+		private boolean readValue; // intで0,1,2が好ましい
+
+		public Inner (DataInputStream dis){
+			this.dis = dis;
+		}
+
+		public boolean getReadValue(){
+			return this.readValue;
+		}
+
+		public void run() {
+			try{
+				this.readValue = dis.readBoolean();
+			}catch (IOException e){
+				System.out.println("Exception: Stream is closed.");
+				Delay.msDelay(DELAY_TIME);
+				this.start();
+			}
+		}
 	}
 
 }
