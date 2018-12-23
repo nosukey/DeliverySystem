@@ -77,9 +77,8 @@ public class RelayStationCommunication extends Communication implements Runnable
 					decodeParcels(params[2])
 				);
 				break;
-			case "checkCanEntry":
-				// TODO 確認後コメントアウト解除
-				// writeBoolean(relayStation.checkCanEntry());
+			case "canEntry":
+				writeBoolean(relayStation.canEntry());
 				break;
 			case "fixWrongRecipient":
 				params = data.split("&");
@@ -109,7 +108,7 @@ public class RelayStationCommunication extends Communication implements Runnable
 	}
 
 	protected void waitForConnection() throws IOException {
-		LCD.drawString("wait.", 0, 1);
+		LCD.drawString("Ready", 0, 1);
 		connection = connector.waitForConnection(TIMEOUT, BTConnection.RAW);
 
 		dis = connection.openDataInputStream();

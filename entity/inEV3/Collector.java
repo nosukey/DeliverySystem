@@ -106,7 +106,7 @@ public class Collector extends Robot {
 		this.transportedParcels.clear();
 
 		//TODO 消す
-		System.out.println("elementsCount(0)　=　"+this.transportedParcels.size());
+		System.out.println("elementsCount(0) = "+this.transportedParcels.size());
 
 		//TODO EV3確かめ用　消すこと
 		//writer.write("elementsCount(0)　=　"+this.transportedParcels.size());
@@ -137,7 +137,7 @@ public class Collector extends Robot {
 		this.transportedParcels.clear();
 
 		//TODO 消す
-		System.out.println("elementsCount(0)　=　"+this.transportedParcels.size());
+		System.out.println("elementsCount(0) = "+this.transportedParcels.size());
 
 		//TODO EV3確かめ用　消すこと
 		//writer.write("elementsCount(0)　=　"+this.transportedParcels.size());
@@ -245,7 +245,7 @@ public class Collector extends Robot {
 	}
 
 	private boolean checkCanEntry(){
-		commToRelayStation.writeMethod("checkCanEntry");		// TODO checkCanEntryって名前を変更するかも
+		commToRelayStation.writeMethod("canEntry");		// TODO checkCanEntryって名前を変更するかも
 		return commToRelayStation.readBoolean();
 	}
 

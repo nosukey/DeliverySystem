@@ -48,7 +48,7 @@ public class Robot {
 	private float[] irSamples;
 
 	Robot() {
-		sensorOpen();
+		// sensorOpen();
 	}
 
 	protected void sensorOpen() {

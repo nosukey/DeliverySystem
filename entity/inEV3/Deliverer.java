@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import lejos.hardware.Button;
+import lejos.hardware.Key;
+import lejos.hardware.KeyListener;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
@@ -25,6 +28,27 @@ public class Deliverer extends Robot {
     private DelivererCommunication commToRelayStation;
 
     private DelivererCommunication commToRecipient;
+
+    private class ButtonEvent implements KeyListener {
+        private Deliverer deliverer;
+
+        ButtonEvent(Deliverer parent) {
+            this.deliverer = parent;
+        }
+
+        public void keyPressed(Key key) {
+            switch (key.getId()) {
+                case Button.ID_UP:
+                    deliverer.goCheck();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void keyReleased(Key key) {
+        }
+    }
 
     private Deliverer() {
         this.deliveredParcels = new LinkedList<Parcel>();
@@ -47,6 +71,8 @@ public class Deliverer extends Robot {
 
         Delay.msDelay(60000);
         new Thread(myself.commToRecipient).start();
+
+        Button.UP.addKeyListener(myself.new ButtonEvent(myself));
     }
 
     public void connected() {
@@ -143,7 +169,7 @@ public class Deliverer extends Robot {
                 //TODO 受取人宅から受取時間を受け取る
                 this.receivingDateMap.put(parcel.getRequestId(), Date.decode(this.commToRecipient.readString()));
             } else {
-                this.withoutRecipientParcels.add(parcel);
+                this.wrongRecipientParcels.add(parcel);
             }
         }
         moveNextRecipient(currentAddress, 1);
@@ -155,7 +181,7 @@ public class Deliverer extends Robot {
     /**
      * ユースケース「配達の有無を確認する」を包含するメソッド
      */
-    private void goCheck() {
+    public void goCheck() {
         isRightSide = true;
         /*
          *待機所から中継所進入点へ移動する
@@ -381,9 +407,8 @@ public class Deliverer extends Robot {
      * 中継所へ侵入確認を行う
      */
     private boolean checkCanEntry() {
-        commToRelayStation.writeMethod("checkCanEntry");
+        commToRelayStation.writeMethod("canEntry");
         return commToRelayStation.readBoolean();
     }
-
 
 }

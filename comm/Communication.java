@@ -22,6 +22,8 @@ public abstract class Communication {
 	protected static final int TIMEOUT = 0;
 	protected static final int DELAY_TIME = 5000;
 
+	private final String DUMMY = "dummy";
+
 	protected abstract void selectMethod(String methodName, String data);
 
  	protected abstract void connect() throws IOException;
@@ -34,9 +36,6 @@ public abstract class Communication {
 	protected void waitForInvoke() {
 		while(true) {
 			String buffer = readString();
-
-			// // TODO 削除
-			// dummy(buffer);
 
 			selectMethod(extractMethodName(buffer), extractData(buffer));
 		}
@@ -60,6 +59,7 @@ public abstract class Communication {
 	 */
 	public void writeBoolean(boolean bool) {
 		try {
+			Delay.msDelay(DELAY_TIME);
 			dos.writeBoolean(bool);
 			dos.flush();
 		} catch(IOException e) {
@@ -89,6 +89,7 @@ public abstract class Communication {
 	 */
 	public void writeString(String str) {
 		try {
+			Delay.msDelay(DELAY_TIME);
 			dos.writeUTF(str);
 			dos.flush();
 		} catch(IOException e) {
@@ -202,14 +203,19 @@ public abstract class Communication {
 	 */
 	private String extractData(String packet) {
 		String[] packs = packet.split("%");
-		return packs[1];
+		if(packs.length < 2)
+			return DUMMY;
+		else
+			return packs[1];
 	}
 
 	protected List<Integer> decodeRequestIds(String str) {
 		List<Integer> requestIds = new LinkedList<Integer>();
 
-		for(String element : str.split("#")) {
-			requestIds.add(Integer.valueOf(element));
+		if(!str.equals(DUMMY)) {
+			for(String element : str.split("#")) {
+				requestIds.add(Integer.valueOf(element));
+			}
 		}
 
 		return requestIds;
@@ -222,14 +228,19 @@ public abstract class Communication {
 			result += (id.toString() + "#");
 		}
 
-		return result.substring(0, result.length()-1);
+		if(result.isEmpty())
+			return DUMMY;
+		else
+			return result.substring(0, result.length()-1);
 	}
 
 	protected List<Parcel> decodeParcels(String str) {
 		List<Parcel> parcels = new LinkedList<Parcel>();
 
-		for(String element : str.split("#")) {
-			parcels.add(Parcel.decode(element));
+		if(!str.equals(DUMMY)) {
+			for(String element : str.split("#")) {
+				parcels.add(Parcel.decode(element));
+			}
 		}
 
 		return parcels;
@@ -242,14 +253,19 @@ public abstract class Communication {
 			result += (Parcel.encode(parcel) + "#");
 		}
 
-		return result.substring(0, result.length()-1);
+		if(result.isEmpty())
+			return DUMMY;
+		else
+			return result.substring(0, result.length()-1);
 	}
 
 	protected List<Record> decodeRecords(String str) {
 		List<Record> records = new LinkedList<Record>();
 
-		for(String element : str.split("#")) {
-			records.add(Record.decode(element));
+		if(!str.equals(DUMMY)) {
+			for(String element : str.split("#")) {
+				records.add(Record.decode(element));
+			}
 		}
 
 		return records;
@@ -262,15 +278,20 @@ public abstract class Communication {
 			result += (Record.encode(record) + "#");
 		}
 
-		return result.substring(0, result.length()-1);
+		if(result.isEmpty())
+			return DUMMY;
+		else
+			return result.substring(0, result.length()-1);
 	}
 
 	protected Map<Integer, Date> decodeDateMap(String str) {
 		Map<Integer, Date> map = new HashMap<Integer, Date>();
 
-		for(String strMap : str.split("#")) {
-			String[] elements = strMap.split("!");
-			map.put(Integer.valueOf(elements[0]), Date.decode(elements[1]));
+		if(!str.equals(DUMMY)) {
+			for(String strMap : str.split("#")) {
+				String[] elements = strMap.split("!");
+				map.put(Integer.valueOf(elements[0]), Date.decode(elements[1]));
+			}
 		}
 
 		return map;
@@ -283,7 +304,10 @@ public abstract class Communication {
 			result += (entry.getKey().toString() + "!" + Date.encode(entry.getValue()) + "#");
 		}
 
-		return result.substring(0, result.length()-1);
+		if(result.isEmpty())
+			return DUMMY;
+		else
+			return result.substring(0, result.length()-1);
 	}
 
 }
