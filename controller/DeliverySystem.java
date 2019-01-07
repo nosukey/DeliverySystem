@@ -40,10 +40,13 @@ public class DeliverySystem {
 			System.exit(1);
 		}
 
-		if(io.select("配達を依頼する", "配達記録を参照する"))
-			system.reception.receiveRequest();
-		else
-			system.headquarter.referRecord();
+		// if(io.select("配達を依頼する", "配達記録を参照する"))
+		// 	system.reception.receiveRequest();
+		// else
+		// 	system.headquarter.referRecord();
+
+		if(io.select("本部を確認する", "本部を確認しない"))
+			system.headquarter.printAfter();
 	}
 
 }

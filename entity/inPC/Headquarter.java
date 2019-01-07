@@ -25,6 +25,60 @@ public class Headquarter {
 
 	public Headquarter() {
 		this.records = new ArrayList<Record>();
+
+		autoSetRecords();
+		printBefore();
+	}
+
+	private synchronized void printBefore() {
+		System.out.println("Head before:");
+		System.out.println("records: " + records.size());
+		for(Record record : records) {
+			System.out.println(record.toString());
+		}
+	}
+
+	public synchronized void printAfter() {
+		System.out.println("Head after:");
+		System.out.println("records: " + records.size());
+		for(Record record : records) {
+			System.out.println(record.toString());
+		}
+	}
+
+	private void autoSetRecords() {
+		this.records.add(
+			new Record(
+				0,
+				new PersonInfo("j", 10, "09010101010"),
+				new PersonInfo("a", 1, "09001010101"),
+				Date.getCurrentDate()
+			)
+		);
+		// this.records.add(
+		// 	new Record(
+		// 		1,
+		// 		new PersonInfo("j", 10, "09010101010"),
+		// 		new PersonInfo("c", 3, "09003030303"),
+		// 		Date.getCurrentDate()
+		// 	)
+		// );
+		// this.records.add(
+		// 	new Record(
+		// 		2,
+		// 		new PersonInfo("j", 10, "09010101010"),
+		// 		new PersonInfo("e", 5, "09005050605"),
+		// 		Date.getCurrentDate()
+		// 	)
+		// );
+		// this.records.add(
+		// 	new Record(
+		// 		3,
+		// 		new PersonInfo("j", 10, "09010101010"),
+		// 		new PersonInfo("wrong", 15, "09015151515"),
+		// 		Date.getCurrentDate()
+		// 	)
+		// );
 	}
 
 	/**
@@ -62,6 +116,9 @@ public class Headquarter {
 	 *
 	 */
 	public void receiveTransportStartingReport(List<Record> records, List<Integer> requestIds) {
+
+		System.out.println("receiveTransportStartingReport()");
+
         this.records.addAll(records);
         for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setState(State.ON_DELIVERY);
@@ -74,6 +131,9 @@ public class Headquarter {
 	 *
 	 */
 	public void receiveTransportFailureReport(List<Integer> requestIds) {
+
+		System.out.println("receiveTransportFailureReport()");
+
         for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setState(State.TRANSPORT_FAILURE);
         }
@@ -85,6 +145,9 @@ public class Headquarter {
 	 *
 	 */
 	public void receiveTransportSuccessReport(List<Integer> requestIds) {
+
+		System.out.println("receiveTransportSuccessReport()");
+
         for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setTransportSuccessDate(Date.getCurrentDate());
         }
@@ -96,7 +159,10 @@ public class Headquarter {
 	 *
 	 */
 	public void receiveDeliveryStartingReport(List<Integer> requestIds) {
-        for(Integer requestId : requestIds){
+
+		System.out.println("receiveDeliveryStartingReport()");
+
+		for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setDeliveryStartingDate(Date.getCurrentDate());
         }
 	}
@@ -107,6 +173,9 @@ public class Headquarter {
 	 *
 	 */
 	public void receiveDeliverySuccessReport(Map<Integer, Date> receivingDateMap) {
+
+		System.out.println("receiveDeliverySuccessReport()");
+
         for(Map.Entry<Integer , Date > entry : receivingDateMap.entrySet()){
             Record record = this.records.get(entry.getKey().intValue());
             record.setReceivingDate(entry.getValue());
@@ -121,7 +190,10 @@ public class Headquarter {
 	 *
 	 */
 	public void receiveWithoutRecipientReport(List<Integer> requestIds) {
-        for(Integer requestId : requestIds){
+
+		System.out.println("receiveWithoutRecipientReport()");
+
+	    for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setState(State.RE_DELIVERY);
         }
 	}
@@ -132,7 +204,10 @@ public class Headquarter {
 	 *
 	 */
 	public void receiveWrongRecipientReport(List<Integer> requestIds) {
-         for(Integer requestId : requestIds){
+
+		System.out.println("receiveWrongRecipientReport()");
+
+		 for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setState(State.WRONG_RECIPIENT);
         }
 	}

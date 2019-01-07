@@ -34,6 +34,9 @@ public class Collector extends Robot {
 
 		Delay.msDelay(60000);
 		new Thread(myself.commToReception).start();
+
+		myself.openSensor();
+		LCD.drawString("Ready.", 0, 2);
 	}
 
 	public void connected() {
@@ -245,7 +248,7 @@ public class Collector extends Robot {
 	}
 
 	private boolean checkCanEntry(){
-		commToRelayStation.writeMethod("canEntry");		// TODO checkCanEntryって名前を変更するかも
+		commToRelayStation.writeMethod("canEntry");
 		return commToRelayStation.readBoolean();
 	}
 

@@ -53,6 +53,63 @@ public class RelayStation {
 		this.wrongRecipientParcels = new ArrayList<Parcel>();
 		this.canEntry              = true;
 		this.numOfDeliveredParcels = 0;
+
+		autoSetParcels();
+		printBefore();
+	}
+
+	private synchronized void printBefore() {
+		System.out.println("Relay before:");
+		System.out.println("stored: " + storedParcels.size());
+		for(Parcel parcel : storedParcels) {
+			System.out.println(Parcel.encode(parcel));
+		}
+		System.out.println("wrong: " + wrongRecipientParcels.size());
+		for(Parcel parcel : wrongRecipientParcels) {
+			System.out.println(Parcel.encode(parcel));
+		}
+	}
+
+	private synchronized void printAfter() {
+		System.out.println("Relay after:");
+		for(Parcel parcel : storedParcels) {
+			System.out.println(Parcel.encode(parcel));
+		}
+		System.out.println("wrong: " + wrongRecipientParcels.size());
+		for(Parcel parcel : wrongRecipientParcels) {
+			System.out.println(Parcel.encode(parcel));
+		}
+	}
+
+	private void autoSetParcels() {
+		this.storedParcels.add(
+			new Parcel(
+				0,
+				new PersonInfo("j", 10, "09010101010"),
+				new PersonInfo("a", 1, "09001010101")
+			)
+		);
+		// this.storedParcels.add(
+		// 	new Parcel(
+		// 		1,
+		// 		new PersonInfo("j", 10, "09010101010"),
+		// 		new PersonInfo("c", 3, "09003030303")
+		// 	)
+		// );
+		// this.storedParcels.add(
+		// 	new Parcel(
+		// 		2,
+		// 		new PersonInfo("j", 10, "09010101010"),
+		// 		new PersonInfo("e", 5, "09005050605")
+		// 	)
+		// );
+		// this.storedParcels.add(
+		// 	new Parcel(
+		// 		3,
+		// 		new PersonInfo("j", 10, "09010101010"),
+		// 		new PersonInfo("wrong", 15, "09015151515")
+		// 	)
+		// );
 	}
 
 	public void connected() {
@@ -90,6 +147,9 @@ public class RelayStation {
 	*
 	*/
 	public void receiveParcels(List<Parcel> parcels) {
+
+		System.out.println("receiveParcels()");
+
 		commToCollector.writeMethod("notifySuccess");
 
 		storedParcels.addAll(parcels);
@@ -104,6 +164,9 @@ public class RelayStation {
 	 *
 	 */
 	public void sendParcels() {
+
+		System.out.println("sendParcels()");
+
 		if(!canStartDelivery()){
 			commToDeliverer.writeMethod("waitInStandbyStation");
 
@@ -139,10 +202,15 @@ public class RelayStation {
 	 */
 	public void receiveFinishDeliveryNotification(String strOfReceivingDateMap, List<Parcel> withoutRecipientParcels, List<Parcel> wrongRecipientParcels) {
 		reportDeliveryResults(strOfReceivingDateMap, withoutRecipientParcels, wrongRecipientParcels);
+
+		System.out.println("receiveFinishDeliveryNotification()");
+
 		this.storedParcels.addAll(withoutRecipientParcels);
 		this.wrongRecipientParcels.addAll(wrongRecipientParcels);
 		this.numOfDeliveredParcels = 0;
 		sendParcels();
+
+		printAfter();
 	}
 
 	/**
@@ -152,7 +220,7 @@ public class RelayStation {
 	 *
 	 */
 	public boolean canEntry() {
- 		//System.out.println("checkCanEntry");
+ 		System.out.println("canEntry(): " + canEntry);
  		boolean returnValue = canEntry;
  		canEntry = false;
  		return returnValue;
@@ -182,6 +250,9 @@ public class RelayStation {
 	 *
 	 */
 	public void canSendParcels(int numOfParcelsToSend) {
+
+		System.out.println("canSendParcels()");
+
 		if(numOfParcelsToSend <= (MAX_STORAGE - numOfDeliveredParcels - storedParcels.size() - wrongRecipientParcels.size())){
 			commToCollector.writeMethod("sendParcels");
 		}else{
@@ -251,6 +322,9 @@ public class RelayStation {
 	 */
 	private boolean canStartDelivery() {
 		timesCameDeliveryRobot++;
+
+		System.out.println("times: "+timesCameDeliveryRobot);
+
 		// 前半：3つ以上の荷物があるときGo　　　　　　　　　　　　　　　　　　　　　　後半３回以上の仕事確認 && 荷物が１こ以上ある。
 		if((storedParcels.size() + wrongRecipientParcels.size() >= 3) || (timesCameDeliveryRobot >= 3 && (!storedParcels.isEmpty()))){
 			timesCameDeliveryRobot = 0;

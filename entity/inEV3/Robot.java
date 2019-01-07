@@ -1,5 +1,6 @@
 package entity.inEV3;
 
+import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
@@ -13,9 +14,9 @@ public class Robot {
 
 	protected final float P_GAIN = 0.84f;
 
-	protected final float I_GAIN = 0.65f;
+	protected final float I_GAIN = 0.13f;
 
-	protected final float D_GAIN = 0.13f;
+	protected final float D_GAIN = 0.65f;
 
 	protected boolean isRightSide;
 
@@ -47,11 +48,7 @@ public class Robot {
 
 	private float[] irSamples;
 
-	Robot() {
-		// sensorOpen();
-	}
-
-	protected void sensorOpen() {
+	protected void openSensor() {
 		try {
 			colorSensor  = new EV3ColorSensor(SensorPort.S4);
 			colorMode    = colorSensor.getRedMode();
@@ -66,7 +63,7 @@ public class Robot {
 			irSamples   = new float[irMode.sampleSize()];
 		} catch(Exception e) {
 			Delay.msDelay(100);			// TODO マジックナンバー
-			sensorOpen();
+			openSensor();
 		}
 	}
 
@@ -92,13 +89,14 @@ public class Robot {
 			float turn = 0.0f;
 			float eval = 0.0f;
 
-			eval = colorSamples[0];
 			while(mileage <= distance) {
 				colorMode.fetchSample(colorSamples, 0);
+	            if(turn==0) Sound.beep();
+
 				// TODO ここ処理時間削減できるよ
 				p = P_GAIN * (float)(colorSamples[0] - GRAY_THRESHOLD) * 100 / (float)(BLACK_THRESHOLD - WHITE_THRESHOLD);
 				d = D_GAIN * (colorSamples[0] - eval) * 100 / (float)(BLACK_THRESHOLD - WHITE_THRESHOLD);
-				//i += I_GAIN * ((colorSamples[0] - GRAY_THRESHOLD) * 100 / (BLACK_THRESHOLD - WHITE_THRESHOLD)) * DELTA_TIME;
+				i += I_GAIN * ((colorSamples[0] - GRAY_THRESHOLD) * 100 / (BLACK_THRESHOLD - WHITE_THRESHOLD)) * DELTA_TIME;
 				turn = p + d + i;
 
 				motorA.setSpeed(speed - turn);
@@ -108,10 +106,9 @@ public class Robot {
 				eval = colorSamples[0];
 				mileage = motorA.getPosition() / 360 * 5.6f * 3.141592f;			// TODO マジックナンバー
 			}
-
 			stopMotor(motorA, motorB);
 		} catch(Exception e) {
-			Delay.msDelay(100);			// TODO マジックナンバー
+			Delay.msDelay(10);			// TODO マジックナンバー
 			lineTrace(distance, speed);
 		}
 	}
@@ -120,20 +117,24 @@ public class Robot {
 	 * 機体の軸を固定したまま, 指定された角度分回転する
 	 */
 	protected void rotate(int angle) {
+
+		System.out.println("rotate("+angle+")");
+
+		EV3LargeRegulatedMotor motorA = null;
+		EV3LargeRegulatedMotor motorB = null;
+
+		if(angle > 0) {
+	        motorA = new EV3LargeRegulatedMotor(MotorPort.A);
+	    	motorB = new EV3LargeRegulatedMotor(MotorPort.D);
+    	}else {
+    		motorA = new EV3LargeRegulatedMotor(MotorPort.D);
+	    	motorB = new EV3LargeRegulatedMotor(MotorPort.A);
+    	}
+
+		motorA.setSpeed(100);		// TODO マジックナンバー
+		motorB.setSpeed(100);		// TODO マジックナンバー
+
 		try {
-			EV3LargeRegulatedMotor motorA;
-			EV3LargeRegulatedMotor motorB;
-			if(angle > 0) {
-		        motorA = new EV3LargeRegulatedMotor(MotorPort.A);
-		    	motorB = new EV3LargeRegulatedMotor(MotorPort.D);
-	    	}else {
-	    		motorA = new EV3LargeRegulatedMotor(MotorPort.D);
-		    	motorB = new EV3LargeRegulatedMotor(MotorPort.A);
-	    	}
-
-			motorA.setSpeed(100);		// TODO マジックナンバー
-			motorB.setSpeed(100);		// TODO マジックナンバー
-
 			gyroMode.fetchSample(gyroSamples, 0);
 			float currentAngle = gyroSamples[0];
 			while(Math.abs(angle) >= Math.abs(gyroSamples[0] - currentAngle)) {
@@ -141,10 +142,9 @@ public class Robot {
 				motorB.backward();
 				gyroMode.fetchSample(gyroSamples, 0);
 			}
-
 			stopMotor(motorA, motorB);
 		} catch(Exception e) {
-			Delay.msDelay(100);			// TODO マジックナンバー
+			Delay.msDelay(10);			// TODO マジックナンバー
 			rotate(angle);
 		}
 	}
@@ -154,6 +154,9 @@ public class Robot {
 	 * 現段階では宅配受付所で次の出発に向けて方向転換するための処理を記述する予定である
 	 */
 	protected void turn() {
+
+		System.out.println("turn()");
+
 		try {
 			EV3LargeRegulatedMotor motorA;
 			EV3LargeRegulatedMotor motorB;
