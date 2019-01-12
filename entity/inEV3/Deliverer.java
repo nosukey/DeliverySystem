@@ -1,12 +1,13 @@
 package entity.inEV3;
 
-import comm.DelivererCommunication;
-import entity.common.Date;
-import entity.common.Parcel;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import comm.DelivererCommunication;
+import entity.common.Date;
+import entity.common.Parcel;
 import lejos.hardware.Button;
 import lejos.hardware.Key;
 import lejos.hardware.KeyListener;
@@ -27,17 +28,16 @@ public class Deliverer extends Robot {
 
 	private DelivererCommunication commToRecipient;
 
-	private class ButtonEvent implements KeyListener {
-		private Deliverer deliverer;
-
-		ButtonEvent(Deliverer parent) {
-			this.deliverer = parent;
-		}
-
+	private class ButtonEventListener implements KeyListener {
 		public void keyPressed(Key key) {
 			switch(key.getId()) {
 				case Button.ID_UP:
-					deliverer.goCheck();
+					openSensor();
+					setParkingDistance();
+					goCheck();
+					break;
+				case Button.ID_DOWN:
+					LCD.drawString("checkCanEntry(): " + checkCanEntry(), 0, 5);
 					break;
 				default:
 					break;
@@ -58,6 +58,7 @@ public class Deliverer extends Robot {
 
 	public static void main(String[] args) {
 		Deliverer myself = new Deliverer();
+
 		myself.commToRelayStation = new DelivererCommunication(myself);
 		myself.commToRecipient    = new DelivererCommunication(myself);
 
@@ -69,10 +70,11 @@ public class Deliverer extends Robot {
 		Delay.msDelay(60000);
 		new Thread(myself.commToRecipient).start();
 
-		myself.openSensor();
-		LCD.drawString("Ready.", 0, 2);
+		ButtonEventListener listener = myself.new ButtonEventListener();
+		Button.UP.addKeyListener(listener);
+		Button.DOWN.addKeyListener(listener);
 
-		Button.UP.addKeyListener(myself.new ButtonEvent(myself));
+		LCD.drawString("Ready.", 0, 2);
 	}
 
 	public void connected() {
@@ -88,14 +90,6 @@ public class Deliverer extends Robot {
 		System.out.println("");
 	}
 
-	// TODO 削除
-	public void dummy(DelivererCommunication comm, String str) {
-		if(comm == commToRecipient)
-			commToRelayStation.writeString(str + " -> Deliverer");
-		else
-			commToRecipient.writeString(str + " -> Deliverer");
-	}
-
 	/**
 	 * ユースケース「待機所で待機する」を包含するメソッド
 	 *
@@ -107,20 +101,24 @@ public class Deliverer extends Robot {
 	 */
 	public void waitInStandbyStation() {
 		System.out.println("waitInStandbyStation()");
+		isRightSide = false;
+
 
 		//中継所から合流点
         moveFromRelayStaToIntersection();
         rotate(90);
 
-		isRightSide = false;
-
         //合流点から待機所
         moveFromIntersectionToStandbySta();
-        rotate(180);
+        rotate(177);
+
+        parking();
 
         //sleep20秒待つ
         Delay.msDelay(20000);
-
+        
+        closeSensor();
+        openSensor();
 		goCheck();
 	}
 
@@ -158,33 +156,26 @@ public class Deliverer extends Robot {
 
 			rotate(45);
 
+
              //TODO 受取人宅に取得した受取人個人情報をを送る
             this.commToRecipient.writeMethod("verifyRecipientInfo", currentAddress, parcel.getRecipientInfo());
 
-             //TODO 10秒経過した場合
-
-
-             //TODO 10秒経過しなかった場合
-
-
-             //TODO 受取人宅から荷物の個人情報確認結果を受け取る
-            if(commToRecipient.readBoolean() == true){
-
-                 //TODO 受取人宅に取り出した荷物を送る
-                 this.commToRecipient.writeMethod("receiveParcel", parcel);
-
-                 //TODO 受取人宅から受取時間を受け取る
-                 this.receivingDateMap.put(parcel.getRequestId(), Date.decode(this.commToRecipient.readString()));
-            }
-            else{
-                this.wrongRecipientParcels.add(parcel);
-            }
+			String result = commToRecipient.readString(10000);
+			if(result.isEmpty()) {
+				this.withoutRecipientParcels.add(parcel);
+			} else {
+				if(Boolean.parseBoolean(result)) {
+					this.commToRecipient.writeMethod("receiveParcel", parcel);
+					this.receivingDateMap.put(parcel.getRequestId(), Date.decode(this.commToRecipient.readString()));
+				} else {
+					this.wrongRecipientParcels.add(parcel);
+				}
+			}
 
 			// TODO ピープ音いれるかも
 			rotate(-45);
         }
 
-		isRightSide = true;
         moveNextRecipient(currentAddress,1);
 
         notifyDeliveryResults();
@@ -249,7 +240,7 @@ public class Deliverer extends Robot {
 	 */
 	private void moveFromIntersectionToStandbySta() {
 		System.out.println("moveFromIntersectionToStandbySta()");
-        lineTrace(130f,315);
+        lineTrace(118.5f,315);
 	}
 
 	/**
@@ -282,7 +273,7 @@ public class Deliverer extends Robot {
 	 */
 	private void moveFromEntryPointToIntersection() {
 		System.out.println("moveFromEntryPointToIntersection()");
-        lineTrace(37.5f,175);
+        lineTrace(39.5f,175);
 	}
 
 	/**
@@ -293,7 +284,7 @@ public class Deliverer extends Robot {
 	 */
 	private void moveFromIntersectionToEntryPoint() {
 		System.out.println("moveFromIntersectionToEntryPoint()");
-        lineTrace(39f,175);
+        lineTrace(38.0f,175);
 	}
 
 	/**
@@ -315,7 +306,7 @@ public class Deliverer extends Robot {
 	 */
 	private void moveFromRelayStaToIntersection() {
 		System.out.println("moveFromRelayStaToIntersection()");
-        lineTrace(59f,175);
+        lineTrace(58.5f,175);
 	}
 
 	/**
@@ -327,7 +318,7 @@ public class Deliverer extends Robot {
 	private void moveFromEntryPointToStartingPoint() {
         System.out.println("moveFromEntryPointToStartingPoint()");
 		lineTrace(50f, 175);
-		lineTrace(124.5f, 315);
+		lineTrace(124.0f, 315);
 	}
 
 	/**
@@ -339,7 +330,7 @@ public class Deliverer extends Robot {
 	private void moveFromStartingPointToEntryPoint() {
 		System.out.println("moveFromStartingPointToEntryPoint()");
 		lineTrace(121f, 315);
-		lineTrace(52f, 175);
+		lineTrace(53f, 175);
 	}
 
 	/**
@@ -359,7 +350,11 @@ public class Deliverer extends Robot {
         //基準点に戻る場合
 		if(from>to) {
 			goBackToStartingPoint(from);
-		}else {
+		} else if(from == to) {
+			rotate(174);
+			initRotate();
+			isRightSide = true;
+		} else {
 			//同じ行移動？
 			if((from-1)/4 != (to-1)/4) {
 
@@ -368,43 +363,55 @@ public class Deliverer extends Robot {
 
 					//列基準まで戻る
 					rotate(174);
+					initRotate();
 					isRightSide = true;
 
 					for(int i=0;i<(from-1)%4;i++) {
-						lineTrace(43.5f,315);
+						lineTrace(44.8f,315);
+						initRotate();
 					}
 					rotate(-92);
+					initRotate();
 				}else {
 					rotate(90);
+					initRotate();
 				}
 
 				isRightSide = false;
 				for(int i=(from-1)/4;i<(to-1)/4;i++) {
-					lineTrace(44.2f,315);
+					lineTrace(44.5f,315);
+					initRotate();
 				}
 				rotate(-90);
+				initRotate();
 
 				for(int i=0;i<(to-1)%4;i++) {
-					lineTrace(43.5f,315);
+					lineTrace(44.5f,315);
+					initRotate();
 				}
 			}
 			//同じ行の場合
 			else {
 				//列移動
 				for(int i=(from-1)%4;i<(to-1)%4;i++) {
-					lineTrace(43.5f,315);
+					lineTrace(44.5f,315);
+					//initRotate(0);
+					initRotate();
 				}
+
 			}
 		}
 	}
 
     private void goBackToStartingPoint(int from) {
 		  rotate(174);
+		  initRotate();
 		  isRightSide = true;
 		  //列が違ったら
 		  if((from-1)%4 != 0) {
               for(int i=0;i<(from-1)%4;i++) {
-                  lineTrace(43.5f,315);
+                  lineTrace(44.8f,315);
+                  initRotate();
 			 }
 		  }
 		  if((from-1)/4 != 0){
@@ -413,6 +420,7 @@ public class Deliverer extends Robot {
                   lineTrace(44.5f,315);
 			 }
 			 rotate(-90);
+			 initRotate();
 		  }
 	   }
 

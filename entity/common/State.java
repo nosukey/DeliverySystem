@@ -1,16 +1,40 @@
 package entity.common;
 
+/**
+ * 配達状況を持つ列挙型クラスです。
+ * @author 澤田悠暉
+ * @version 1.0(2019/01/12)
+*/
 public enum State {
+
+	/**
+	 * 「配達状況」未配達のシングルトン・インスタンスです。
+	*/
 	READY("未配達"),
 
+	/**
+	 * 「配達状況」配達中のシングルトン・インスタンスです。
+	*/
 	ON_DELIVERY("配達中"),
 
+	/**
+	 * 「配達状況」配達済みのシングルトン・インスタンスです。
+	*/
 	DELIVERY_SUCCESS("配達済み"),
 
+	/**
+	 * 「配達状況」中継所引き渡し失敗のシングルトン・インスタンスです。
+	*/
 	TRANSPORT_FAILURE("中継所引き渡し失敗"),
 
+	/**
+	 * 「配達状況」再配達のシングルトン・インスタンスです。
+	*/
 	RE_DELIVERY("再配達"),
 
+	/**
+	 * 「配達状況」宛先間違いのシングルトン・インスタンスです。
+	*/
 	WRONG_RECIPIENT("宛先間違い");
 
 	private final String text;
@@ -19,10 +43,21 @@ public enum State {
 		this.text = str;
 	}
 
+	/**
+	 * StateオブジェクトをStringに変換します。
+	 * {@inheritDoc}
+	 * @return 配達状況の文字列表現。
+	*/
+	@Override
 	public String toString() {
 		return this.text;
 	}
 
+	/**
+	 * 通信フォーマットをStateオブジェクトに変換します。通信のフォーマットに合わない文字列が与えられた場合にはnullを返します。
+	 * @param str 通信フォーマットに従った文字列。
+	 * @return Stateオブジェクト。
+	*/
 	public static State decode(String str) {
 		for(State state : State.values()) {
 			if(state.ordinal() == Integer.parseInt(str))
@@ -32,6 +67,11 @@ public enum State {
 		return null;
 	}
 
+	/**
+	 * Stateオブジェクトを通信フォーマットに従った文字列に変換します。
+	 * @param state Stateオブジェクト。
+	 * @return 通信フォーマットに従った文字列。
+	*/
 	public static String encode(State state) {
 		return "" + state.ordinal();
 	}

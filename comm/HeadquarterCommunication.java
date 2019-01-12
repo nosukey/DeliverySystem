@@ -131,9 +131,4 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 		System.out.println("Head-Recep connecting is finished.");
 	}
 
-	// TODO 削除
-	protected void dummy(String str) {
-		headquarter.dummy(this, str);
-	}
-
 }

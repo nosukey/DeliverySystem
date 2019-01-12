@@ -1,17 +1,24 @@
 package entity.inPC;
 
 // TODO 削除
-import boundary.Boundary;
+import boundary.cui.Boundary;
 
 import comm.HeadquarterCommunication;
 import entity.common.Date;
 import entity.common.Record;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import entity.common.State;
 import entity.common.PersonInfo;
 
+/**
+ * 本部の役割を担うクラスです。
+ * 他のサブシステムを担うクラスと通信を行います。
+ * @author 大場 貴斗
+ * @version 1.0(2019/01/12)
+ */
 public class Headquarter {
 
 	private List<Record> records;
@@ -21,8 +28,12 @@ public class Headquarter {
 	private HeadquarterCommunication commToRelayStation;
 
 	private static final int RECEPTION_PORT = 10000;
+
 	private static final String RELAY_STA_ADDRESS = "btspp://0016535DEB1C:1";
 
+	/**
+     * 配達記録を保管するための配達記録リストを初期化します。
+     */
 	public Headquarter() {
 		this.records = new ArrayList<Record>();
 
@@ -31,11 +42,11 @@ public class Headquarter {
 	}
 
 	private synchronized void printBefore() {
-		System.out.println("Head before:");
-		System.out.println("records: " + records.size());
-		for(Record record : records) {
-			System.out.println(record.toString());
-		}
+		// System.out.println("Head before:");
+		// System.out.println("records: " + records.size());
+		// for(Record record : records) {
+		// 	System.out.println(record.toString());
+		// }
 	}
 
 	public synchronized void printAfter() {
@@ -47,14 +58,14 @@ public class Headquarter {
 	}
 
 	private void autoSetRecords() {
-		this.records.add(
-			new Record(
-				0,
-				new PersonInfo("j", 10, "09010101010"),
-				new PersonInfo("a", 1, "09001010101"),
-				Date.getCurrentDate()
-			)
-		);
+		// this.records.add(
+		// 	new Record(
+		// 		0,
+		// 		new PersonInfo("j", 10, "09010101010"),
+		// 		new PersonInfo("a", 1, "09001010101"),
+		// 		Date.getCurrentDate()
+		// 	)
+		// );
 		// this.records.add(
 		// 	new Record(
 		// 		1,
@@ -82,7 +93,7 @@ public class Headquarter {
 	}
 
 	/**
-	 * 中継所との通信を確立する
+	 * 中継所と宅配受付所の通信を確立します。
 	 */
 	public void execute() {
 		this.commToReception = new HeadquarterCommunication(this, RECEPTION_PORT);
@@ -102,20 +113,13 @@ public class Headquarter {
 		io.printMessage("Headquarter is connected.");
 	}
 
-	// TODO 削除
-	public void dummy(HeadquarterCommunication comm, String str) {
-		if(comm == commToReception)
-			commToRelayStation.writeString(str + " -> Headquarter");
-		else
-			commToReception.writeString(str + " -> Headquarter");
-	}
-
 	/**
-	 * ユースケース「発送報告を受け取る」を包含するメソッド
-	 * 統合テストで確認してください
+	 * 発送報告を受け取るを包含するメソッドです。
+	 * @param records 発送報告です。
+     * @param requestIds 依頼IDの入っているリストです。
 	 *
 	 */
-	public void receiveTransportStartingReport(List<Record> records, List<Integer> requestIds) {
+	public synchronized void receiveTransportStartingReport(List<Record> records, List<Integer> requestIds) {
 
 		System.out.println("receiveTransportStartingReport()");
 
@@ -126,11 +130,11 @@ public class Headquarter {
 	}
 
 	/**
-	 * ユースケース「中継所引き渡し失敗報告を受け取る」を包含するメソッド
-	 * 統合テストで確認してください
+	 * 中継所引き渡し失敗報告を受け取るを包含するメソッドです。
+	 * @param requestIds 依頼IDの入っているリストです。
 	 *
 	 */
-	public void receiveTransportFailureReport(List<Integer> requestIds) {
+	public synchronized void receiveTransportFailureReport(List<Integer> requestIds) {
 
 		System.out.println("receiveTransportFailureReport()");
 
@@ -140,11 +144,11 @@ public class Headquarter {
 	}
 
 	/**
-	 * ユースケース「中継所到着報告を受け取る」を包含するメソッド
-	 * 統合テストで確認してください
+	 * 中継所到着報告を受け取るを包含するメソッドです。
+	 * @param requestIds 依頼IDの入っているリストです。
 	 *
 	 */
-	public void receiveTransportSuccessReport(List<Integer> requestIds) {
+	public synchronized void receiveTransportSuccessReport(List<Integer> requestIds) {
 
 		System.out.println("receiveTransportSuccessReport()");
 
@@ -154,11 +158,11 @@ public class Headquarter {
 	}
 
 	/**
-	 * ユースケース「配達開始報告を受け取る」を包含するメソッド
-	 * 統合テストで確認してください
+	 * 配達開始報告を受け取るを包含するメソッドです。
+	 * @param requestIds 依頼IDの入っているリストです。
 	 *
 	 */
-	public void receiveDeliveryStartingReport(List<Integer> requestIds) {
+	public synchronized void receiveDeliveryStartingReport(List<Integer> requestIds) {
 
 		System.out.println("receiveDeliveryStartingReport()");
 
@@ -168,11 +172,11 @@ public class Headquarter {
 	}
 
 	/**
-	 * ユースケース「配達完了報告を受け取る」を包含するメソッド
-	 * 統合テストで確認してください
+	 * 配達完了報告を受け取るを包含するメソッドです。
+	 * @param receivingDateMap 依頼IDと配達完了時間が入っているMapです。
 	 *
 	 */
-	public void receiveDeliverySuccessReport(Map<Integer, Date> receivingDateMap) {
+	public synchronized void receiveDeliverySuccessReport(Map<Integer, Date> receivingDateMap) {
 
 		System.out.println("receiveDeliverySuccessReport()");
 
@@ -185,11 +189,11 @@ public class Headquarter {
 	}
 
 	/**
-	 * ユースケース「受取人不在報告を受け取る」を包含するメソッド
-	 * 統合テストで確認してください
+	 * 受取人不在報告を受け取るを包含するメソッドです。
+	 * @param requestIds 依頼IDの入っているリストです。
 	 *
 	 */
-	public void receiveWithoutRecipientReport(List<Integer> requestIds) {
+	public synchronized void receiveWithoutRecipientReport(List<Integer> requestIds) {
 
 		System.out.println("receiveWithoutRecipientReport()");
 
@@ -199,11 +203,11 @@ public class Headquarter {
 	}
 
 	/**
-	 * ユースケース「宛先間違い報告を受け取る」を包含するメソッド
-	 * 統合テストで確認してください
+	 * 宛先間違い報告を受け取るを包含するメソッドです。
+	 * @param requestIds 依頼IDの入っているリストです。
 	 *
 	 */
-	public void receiveWrongRecipientReport(List<Integer> requestIds) {
+	public synchronized void receiveWrongRecipientReport(List<Integer> requestIds) {
 
 		System.out.println("receiveWrongRecipientReport()");
 
@@ -213,102 +217,54 @@ public class Headquarter {
 	}
 
 	/**
-	 * ユースケース「配達記録を参照する」を包含するメソッド
+	 * 配達記録を参照するを包含するメソッドです。
+     * @param id 参照したい配達記録のIDです。
 	 */
-	public void referRecord() {
-        int id;
-        Boundary boundary = new Boundary();
-        /*
-         *依頼IDの入力を要求する
-         *入力情報を修正するかの選択を要求する
-         */
-        do{
-            id = boundary.inputRequestId();
-        }while(boundary.select("修正する","修正しない"));
-        /*
-         *修正する場合は最初に戻る
-         *修正しない場合は入力されたidが配達記録にあるか確認する
-         */
-        if(contains(id)){
-            Record record;
-            String name;
-            int address;
-            String phoneNumber;
-
-            record= this.records.get(id);
-
-            do{
-                do{
-                    name = boundary.inputName("依頼人名前: ");
-                    address = boundary.inputAddress("依頼人番地: ");
-                    phoneNumber = boundary.inputPhoneNumber("依頼人電話番号: ");
-                }while(boundary.select("修正する","修正しない"));
-
-                if(record.getClientInfo().equals(new PersonInfo(name, address, phoneNumber))){
-                    boundary.printRecord(record);
-                    if(record.isWrongRecipient()){
-                        boundary.printMessage("参照した配達記録は宛先間違いでした\n");
-                        if(boundary.select("修正する","修正しない")){
-                            fixWrongRecipient(record);
-                        }
-                        break;
-                    }
-                }
-                else{
-                    boundary.printMessage("入力されたIDの配達記録を参照する権限がありません\n");
-
-                }
-
-            }while(boundary.select("修正する","修正しない"));
-
-
-        }
-        else{
-            boundary.printMessage("該当の依頼IDは存在しませんでした\n");
-            if(boundary.select("再入力する","再入力しない"))
-                referRecord();
-        }
+	public synchronized Record referRecord(int id) {
+		Record record = null;
+		if(contains(id)) {
+			record = records.get(id);
+		}
+		return record;
 	}
+    /**
+     * 配達記録の中から引数で受け取ったpersonInfoと一致する依頼ID全てを配列として渡すメソッドです。
+     * @param info 依頼人の個人情報です。
+     * @return 依頼IDのint型配列です。
+     */
+	public synchronized Integer[] getIds(PersonInfo info) {
+		List<Integer> ids = new LinkedList<Integer>();
+		for(Record record : records) {
+			if(record.getClientInfo().equals(info)) {
+				ids.add(record.getRequestId());
+			}
+		}
 
-	/**
-	 * ユースケース「宛先間違いを修正する」を包含するメソッド
-	 * 統合テストで確認してください
-	 *
-	 */
-	public void fixWrongRecipient(Record record) {
-        Boundary boundary = new Boundary();
-        String name;
-        int address;
-        String phoneNumber;
-        PersonInfo recipientInfo;
-
-        do{
-            name = boundary.inputName("受取人名前: ");
-            address = boundary.inputAddress("受取人番地: ");
-            phoneNumber = boundary.inputPhoneNumber("受取人電話番号: ");
-        }while(boundary.select("修正する","修正しない"));
-
-
-        if(boundary.isCorrectPersonInfo(name,address,phoneNumber)){
-            recipientInfo = new PersonInfo(name,address,phoneNumber);
-            record.setRecipientInfo(recipientInfo);
-            record.setState(State.RE_DELIVERY);
-            boundary.printRecord(record);
-			commToRelayStation.writeMethod("fixWrongRecipient", record.getRequestId(), recipientInfo);
-        }
-        else{
-            boundary.printMessage("入力された個人情報は不正です\n");
-            if(boundary.select("修正する","修正しない")){
-                fixWrongRecipient(record);
-            }
-        }
+		if(ids.size()>0)
+			return ids.toArray(new Integer[ids.size()]);
+		else
+			return null;
+	}
+    /**
+     * 宛先間違いだった場合の受取人個人情報を書き換えるメソッドです。
+     * @param record 宛先間違いが含まれているあ配達記録です。
+     * @param recipientInfo 新しい受取人情報です。
+     * @return record 新しい配達記録です。
+     */
+	public synchronized Record fixWrongRecipient(Record record, PersonInfo recipientInfo) {
+        record.setRecipientInfo(recipientInfo);
+        record.setState(State.RE_DELIVERY);
+		commToRelayStation.writeMethod("fixWrongRecipient", record.getRequestId(), recipientInfo);
+		return record;
 	}
 
 	/**
 	 * 引数の依頼IDと配達記録リストの要素数を比較し
 	 * 依頼ID <= 要素数 ならばtrue
 	 * 依頼ID > 要素数 ならばfalse
-	 * を返す
+	 * を返すメソッドです。
+     * @param requestId 依頼ID
+     * @return 比較した結果をboolean型で返します。
 	 */
 	private boolean contains(int requestId) {
 		if(requestId <= this.records.size())

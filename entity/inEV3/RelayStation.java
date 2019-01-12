@@ -1,13 +1,12 @@
 package entity.inEV3;
 
-import comm.RelayStationCommunication;
-import entity.common.PersonInfo;
-import entity.common.Parcel;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
+import comm.RelayStationCommunication;
+import entity.common.Parcel;
+import entity.common.PersonInfo;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
@@ -59,36 +58,38 @@ public class RelayStation {
 	}
 
 	private synchronized void printBefore() {
-		System.out.println("Relay before:");
-		System.out.println("stored: " + storedParcels.size());
-		for(Parcel parcel : storedParcels) {
-			System.out.println(Parcel.encode(parcel));
-		}
-		System.out.println("wrong: " + wrongRecipientParcels.size());
-		for(Parcel parcel : wrongRecipientParcels) {
-			System.out.println(Parcel.encode(parcel));
-		}
+		// System.out.println("Relay before:");
+		// System.out.println("stored: " + storedParcels.size());
+		// for(Parcel parcel : storedParcels) {
+		// 	System.out.println(Parcel.encode(parcel));
+		// }
+		// System.out.println("wrong: " + wrongRecipientParcels.size());
+		// for(Parcel parcel : wrongRecipientParcels) {
+		// 	System.out.println(Parcel.encode(parcel));
+		// }
 	}
 
 	private synchronized void printAfter() {
-		System.out.println("Relay after:");
-		for(Parcel parcel : storedParcels) {
-			System.out.println(Parcel.encode(parcel));
-		}
-		System.out.println("wrong: " + wrongRecipientParcels.size());
-		for(Parcel parcel : wrongRecipientParcels) {
-			System.out.println(Parcel.encode(parcel));
-		}
+		// System.out.println("Relay after:");
+		// for(Parcel parcel : storedParcels) {
+		// 	System.out.println(Parcel.encode(parcel));
+		// }
+		// System.out.println("wrong: " + wrongRecipientParcels.size());
+		// for(Parcel parcel : wrongRecipientParcels) {
+		// 	System.out.println(Parcel.encode(parcel));
+		// }
 	}
 
 	private void autoSetParcels() {
-		this.storedParcels.add(
-			new Parcel(
-				0,
-				new PersonInfo("j", 10, "09010101010"),
-				new PersonInfo("a", 1, "09001010101")
-			)
-		);
+		// this.storedParcels.add(
+		// 	new Parcel(
+		// 		0,
+		// 		new PersonInfo("j", 10, "09010101010"),
+		// 		new PersonInfo("a", 1, "09001010101")
+		// 	)
+		// );
+		//
+		// // 不在
 		// this.storedParcels.add(
 		// 	new Parcel(
 		// 		1,
@@ -96,18 +97,22 @@ public class RelayStation {
 		// 		new PersonInfo("c", 3, "09003030303")
 		// 	)
 		// );
+		//
+		// // 電話番号間違い
 		// this.storedParcels.add(
 		// 	new Parcel(
 		// 		2,
 		// 		new PersonInfo("j", 10, "09010101010"),
-		// 		new PersonInfo("e", 5, "09005050605")
+		// 		new PersonInfo("e", 10, "09005050605")
 		// 	)
 		// );
+		//
+		// // 名前間違い
 		// this.storedParcels.add(
 		// 	new Parcel(
 		// 		3,
 		// 		new PersonInfo("j", 10, "09010101010"),
-		// 		new PersonInfo("wrong", 15, "09015151515")
+		// 		new PersonInfo("wrong", 12, "09015151515")
 		// 	)
 		// );
 	}
@@ -125,21 +130,6 @@ public class RelayStation {
 		System.out.println("");
 	}
 
-	// TODO 削除
-	public void dummy(RelayStationCommunication comm, String str) {
-		if(comm == commToHeadquarter)
-			commToDeliverer.writeString(str + " -> RelayStation");
-		else if(comm == commToDeliverer)
-			commToCollector.writeString(str + " -> RelayStation");
-		else
-			commToHeadquarter.writeString(str + "-> RelayStation");
-	}
-
-	// TODO 削除
-	public void dummy2(String str) {
-
-	}
-
 	/**
 	* ユースケース「荷物を受け取る」を包含するメソッド
 	*
@@ -147,10 +137,10 @@ public class RelayStation {
 	*
 	*/
 	public void receiveParcels(List<Parcel> parcels) {
-
 		System.out.println("receiveParcels()");
 
-		commToCollector.writeMethod("notifySuccess");
+		// TODO これいらない
+		// commToCollector.writeMethod("notifySuccess");
 
 		storedParcels.addAll(parcels);
 		reportTransportSuccess(parcels);
@@ -174,10 +164,10 @@ public class RelayStation {
 		}else{
 			commToDeliverer.writeMethodWithParcels("deliverParcels", sortingParcels());
 
-	    numOfDeliveredParcels = storedParcels.size();
+	    	numOfDeliveredParcels = storedParcels.size();
 			reportDeliveryStarting();
 			enableEntry();
-	    storedParcels.clear();
+	    	storedParcels.clear();
 		}
 	}
 
@@ -219,7 +209,7 @@ public class RelayStation {
 	 * 統合テストで確認してください
 	 *
 	 */
-	public boolean canEntry() {
+	public synchronized boolean canEntry() {
  		System.out.println("canEntry(): " + canEntry);
  		boolean returnValue = canEntry;
  		canEntry = false;
@@ -237,7 +227,7 @@ public class RelayStation {
 		Parcel parcel = removeWrongRecipientParcel(requestId);
 		if(parcel != null) {
 			parcel.setRecipientInfo(recipientInfo);
-      storedParcels.add(parcel);
+      		storedParcels.add(parcel);
 		}
 	}
 
@@ -250,7 +240,6 @@ public class RelayStation {
 	 *
 	 */
 	public void canSendParcels(int numOfParcelsToSend) {
-
 		System.out.println("canSendParcels()");
 
 		if(numOfParcelsToSend <= (MAX_STORAGE - numOfDeliveredParcels - storedParcels.size() - wrongRecipientParcels.size())){
@@ -299,14 +288,11 @@ public class RelayStation {
 	 */
 	private void enableEntry() {
 		// 一定時間待機する処理（EV3で可能ならばなんでも良い）
-			try {
-				//System.out.println("enableEntry");
-				TimeUnit.SECONDS.sleep(1);
-			}catch (InterruptedException e){
-				System.out.println("error" + e);
-			}
-			// ここまで
-			canEntry = true;
+		Delay.msDelay(10000);
+		// ここまで
+		canEntry = true;
+
+		System.out.println("Finish enableEntry()");
 	}
 
 	/**
@@ -326,7 +312,7 @@ public class RelayStation {
 		System.out.println("times: "+timesCameDeliveryRobot);
 
 		// 前半：3つ以上の荷物があるときGo　　　　　　　　　　　　　　　　　　　　　　後半３回以上の仕事確認 && 荷物が１こ以上ある。
-		if((storedParcels.size() + wrongRecipientParcels.size() >= 3) || (timesCameDeliveryRobot >= 3 && (!storedParcels.isEmpty()))){
+		if((storedParcels.size() >= 3) || (timesCameDeliveryRobot >= 3 && (!storedParcels.isEmpty()))){
 			timesCameDeliveryRobot = 0;
 			return true;
 		}

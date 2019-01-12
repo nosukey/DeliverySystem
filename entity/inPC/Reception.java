@@ -1,7 +1,7 @@
 package entity.inPC;
 
 // TODO 削除
-import boundary.Boundary;
+import boundary.cui.Boundary;
 
 import comm.ReceptionCommunication;
 import controller.ReceptionObserver;
@@ -67,78 +67,21 @@ public class Reception {
 		io.printMessage("Reception is connected.");
 	}
 
-	// TODO 削除
-	public void dummyLoopStart(int count) {
-		System.out.println("Loop " + count + " Started.");
-		commToHeadquarter.writeString("Reception");
-	}
+	public synchronized void receiveRequest(PersonInfo clientInfo, PersonInfo recipientInfo) {
+		Parcel parcel = new Parcel(newId, clientInfo, recipientInfo);
+		undeliveredParcels.add(parcel);
 
-	// TODO 削除
-	public void dummy1(ReceptionCommunication comm, String str) {
-		if(comm == commToHeadquarter)
-			commToHeadquarter.writeString(str + " -> Reception");
-		else
-			commToCollector.writeString(str + " -> Reception");
-	}
+		Date receptionDate = Date.getCurrentDate();
 
-	// TODO 削除
-	public void dummy2(String str) {
-		System.out.println(str);
-	}
+		Record record = new Record(newId, clientInfo, recipientInfo, receptionDate);
+		recordsForReporting.add(record);
 
-	/**
-	 * ユースケース「依頼を受ける」を包含しているメソッド
-	 * 統合テストで確認してください
-	 *
-	 */
-	public void receiveRequest() {
- 		boolean isReenter = true;
-		Boundary io = new Boundary();
+		System.out.println("receiveRequest: " + PersonInfo.encode(clientInfo) + ", " + PersonInfo.encode(recipientInfo));
 
- 		while(isReenter){
- 			PersonInfo clientInfo = createPersonInfo("依頼人");
- 			if(!io.isCorrectPersonInfo(clientInfo.getName(), clientInfo.getAddress(), clientInfo.getPhoneNumber())){
- 				isReenter = checkReenter();
- 			}else{
- 				while(isReenter){
- 					PersonInfo recipientInfo = createPersonInfo("受取人");
- 					if(!io.isCorrectPersonInfo(recipientInfo.getName(), recipientInfo.getAddress(), recipientInfo.getPhoneNumber())){
- 						isReenter = checkReenter();
- 					}else{
- 						Parcel parcel = new Parcel(newId, clientInfo, recipientInfo);
- 						undeliveredParcels.add(parcel);
- 						Date receptionDate = Date.getCurrentDate();
- 						Record record = new Record(newId, clientInfo, recipientInfo, receptionDate);
- 						recordsForReporting.add(record);
- 						io.printRecord(record);
+		newId++;
 
-						newId++;
-
- 						// オブザーバー更新するを追加する箇所
- 						observer.update(undeliveredParcels.size() + redeliveryParcels.size());
- 						isReenter = false;
- 					}
- 				}
- 			}
- 		}
- 	}
-
-	private PersonInfo createPersonInfo(String person){
-		Boundary io = new Boundary();
-		String name     = io.inputName(person + "名前を入力してください-> ");
-		int address     = io.inputAddress(person + "番地を入力してください-> ");
-		String phoneNumber = io.inputPhoneNumber(person +"依頼人電話番号を入力してください-> ");
-		if(io.select("修正する", "修正しない"))
-			return createPersonInfo(person);
-		else {
-			return new PersonInfo(name, address, phoneNumber);
-		}
-	}
-
-	private boolean checkReenter(){
-		Boundary io = new Boundary();
-		io.printMessage("不正な入力があります");
-		return io.select("再入力する", "再入力しない");
+		// オブザーバー更新するを追加する箇所
+		observer.update(undeliveredParcels.size() + redeliveryParcels.size());
 	}
 
 	/**
@@ -146,7 +89,7 @@ public class Reception {
 	 * 統合テストで確認してください
 	 *
 	 */
-	public void promptToTransport() {
+	public synchronized void promptToTransport() {
  		List<Parcel>  deliveryParcels     = new LinkedList<Parcel>();
  		List<Record>  recordsForTransport = new LinkedList<Record>();
  		List<Integer> redeliveryIdList   = new LinkedList<Integer>();

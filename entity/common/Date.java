@@ -19,6 +19,10 @@ public class Date {
 
 	private int minute;
 
+	private static final String NOTHING = ",,,,";
+
+	private static final String COMMA = ",";
+
 	private Date(int year, int month, int day, int hour, int min) {
 		this.year   = year;
 		this.month  = month;
@@ -51,10 +55,10 @@ public class Date {
 	 *
 	 */
 	public static Date decode(String str) {
-		if(str.equals(",,,,")) {
+		if(str.equals(NOTHING)) {
 			return null;
 		} else {
-			String[] parameters = str.split(",");
+			String[] parameters = str.split(COMMA);
 			return new Date(
 			Integer.parseInt(parameters[0]),
 			Integer.parseInt(parameters[1]),
@@ -76,9 +80,9 @@ public class Date {
 	 */
 	public static String encode(Date date) {
 		if(date == null)
-			return ",,,,";
+			return NOTHING;
 		else
-			return date.year + "," + date.month + "," + date.day + "," + date.hour + "," + date.minute;
+			return date.year + COMMA + date.month + COMMA + date.day + COMMA + date.hour + COMMA + date.minute;
 	}
 
 	public String toString() {

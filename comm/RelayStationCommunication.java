@@ -116,9 +116,4 @@ public class RelayStationCommunication extends Communication implements Runnable
 
 	}
 
-	// TODO 削除
-	protected void dummy(String str) {
-		relayStation.dummy(this, str);
-	}
-
 }

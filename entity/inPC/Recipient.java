@@ -1,7 +1,7 @@
 package entity.inPC;
 
 // TODO 削除
-import boundary.Boundary;
+import boundary.cui.Boundary;
 
 import comm.RecipientCommunication;
 import entity.common.Date;
@@ -27,8 +27,7 @@ public class Recipient {
 		this.recipientsInfo = new PersonInfo[16];
 		this.isHome = new boolean[16];
 		autoSetInfos();
-		autoSetIsHome();
-
+		// autoSetIsHome();
 	}
 
 	/**
@@ -49,11 +48,6 @@ public class Recipient {
 		io.printMessage("Recipient is connected.");
 	}
 
-	public void dummy(String str) {
-		commToDeliverer.writeString(str + " -> Recipient");
-	}
-
-
 	private void autoSetInfos(){
 	 	this.recipientsInfo[0]  = new PersonInfo("a",1,"09001010101");
 		this.recipientsInfo[1]  = new PersonInfo("b",2,"09002020202");
@@ -73,25 +67,32 @@ public class Recipient {
 		this.recipientsInfo[15] = new PersonInfo("p",16,"09016161616");
 	}
 
-	private void autoSetIsHome(){
-		this.isHome[0]=true;
-		this.isHome[1]=true;
-		this.isHome[2]=true;
-		this.isHome[3]=true;
-		this.isHome[4]=true;
-		this.isHome[5]=true;
-		this.isHome[6]=true;
-		this.isHome[7]=true;
-		this.isHome[8]=true;
-		this.isHome[9]=true;
-		this.isHome[10]=true;
-		this.isHome[11]=true;
-		this.isHome[12]=true;
-		this.isHome[13]=true;
-		this.isHome[14]=true;
-		this.isHome[15]=true;
-	}
+	// private void autoSetIsHome(){
+	// 	this.isHome[0]=true;
+	// 	this.isHome[1]=true;
+	// 	this.isHome[2]=false;
+	// 	this.isHome[3]=true;
+	// 	this.isHome[4]=true;
+	// 	this.isHome[5]=true;
+	// 	this.isHome[6]=true;
+	// 	this.isHome[7]=true;
+	// 	this.isHome[8]=true;
+	// 	this.isHome[9]=true;
+	// 	this.isHome[10]=true;
+	// 	this.isHome[11]=true;
+	// 	this.isHome[12]=true;
+	// 	this.isHome[13]=true;
+	// 	this.isHome[14]=true;
+	// 	this.isHome[15]=true;
+	// }
 
+	public void setIsHome(boolean[] isHome) {
+		this.isHome = isHome;
+
+		for(boolean bool : isHome) {
+			System.out.println(bool);
+		}
+	}
 
 
 	/**
@@ -104,8 +105,8 @@ public class Recipient {
 		System.out.println("verifyRecipientInfo()");
 
 		if(isHome[address-1]){
-		commToDeliverer.writeBoolean(recipientsInfo[address-1].equals(personalInfo));
-		System.out.println(recipientsInfo[address-1].equals(personalInfo));
+			commToDeliverer.writeString(Boolean.toString(recipientsInfo[address-1].equals(personalInfo)));
+			System.out.println(recipientsInfo[address-1].equals(personalInfo));
 		}
 	}
 
@@ -130,4 +131,10 @@ public class Recipient {
 		commToDeliverer.writeString(receivingTimeData);
 	}
 
+	public boolean contains(PersonInfo info) {
+		for(PersonInfo recipientInfo : this.recipientsInfo) {
+			if(recipientInfo.equals(info)) return true;
+		}
+		return false;
+	}
 }

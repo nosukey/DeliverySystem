@@ -79,10 +79,4 @@ public class CollectorCommunication extends Communication implements Runnable {
 
 		connector.close();
 	}
-
-	// TODO 削除
-	protected void dummy(String str) {
-		this.collector.dummy(this, str);
-	}
-
 }

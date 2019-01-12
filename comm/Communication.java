@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-// import lejos.remote.nxt.BTConnection;
 import lejos.utility.Delay;
 
 public abstract class Communication {
@@ -21,8 +20,30 @@ public abstract class Communication {
 
 	protected static final int TIMEOUT = 0;
 	protected static final int DELAY_TIME = 5000;
-
 	private final String DUMMY = "dummy";
+
+	private static class InterruptSystem extends Thread {
+		private int bytes;
+		private DataInputStream dis;
+
+		public InterruptSystem(DataInputStream dis) {
+			this.bytes = 0;
+			this.dis   = dis;
+		}
+
+		public void run() {
+			try {
+				this.bytes = dis.available();
+			} catch(IOException e) {
+				System.out.println("error");
+				e.printStackTrace();
+			}
+		}
+
+		public int getBytes() {
+			return this.bytes;
+		}
+	}
 
 	protected abstract void selectMethod(String methodName, String data);
 
@@ -30,13 +51,9 @@ public abstract class Communication {
 
 	protected abstract void waitForConnection() throws IOException;
 
-	// TODO 削除
-	protected abstract void dummy(String str);
-
 	protected void waitForInvoke() {
 		while(true) {
 			String buffer = readString();
-
 			selectMethod(extractMethodName(buffer), extractData(buffer));
 		}
 	}
@@ -82,6 +99,23 @@ public abstract class Communication {
 			// System.exit(1);
 			return readString();
 		}
+	}
+
+	public String readString(int millis) {
+		final int MSEC_INTERVAL = 1000;
+
+		InterruptSystem system = new InterruptSystem(dis);
+		system.start();
+		for(int i=0; i<(millis/MSEC_INTERVAL); i++) {
+			if(system.getBytes() > 0) {
+				return readString();
+			} else {
+				system.interrupt();
+				Delay.msDelay(MSEC_INTERVAL);
+			}
+		}
+
+		return "";
 	}
 
 	/**

@@ -86,9 +86,4 @@ public class RecipientCommunication extends Communication implements Runnable {
 
 	}
 
-	// TODO 削除
-	protected void dummy(String str) {
-		recipient.dummy(str);
-	}
-
 }

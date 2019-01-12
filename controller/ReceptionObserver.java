@@ -47,7 +47,7 @@ public class ReceptionObserver {
 	 * 単体テスト
 	 * 在庫数に適当な数値を入れてみて
 	 */
-	public void init(int numOfStocks) {
+	public /*synchronized*/ void init(int numOfStocks) {
 		this.numOfStocks  = numOfStocks;
 		this.hasCollector = false;
 	}
@@ -76,7 +76,7 @@ public class ReceptionObserver {
 	 * -> 在庫数を出力し, 3であることを確認する
 	 * -> 発送開始条件の判定結果を出力し, falseであることを確認する
 	 */
-	public void update(int numOfStocks) {
+	public /*synchronized*/ void update(int numOfStocks) {
 		this.numOfStocks = numOfStocks;
 
 		if(canStartTransport()) {
@@ -103,7 +103,7 @@ public class ReceptionObserver {
 	 * 在庫数が2であり, 90秒以内に在庫数が変わらない場合
 	 * を判定結果を判定し, 確認する
 	 */
-	public void update(boolean hasCollector) {
+	public /*synchronized*/ void update(boolean hasCollector) {
 		this.hasCollector = hasCollector;
 
 		if(!canStartTransport()) {
@@ -113,11 +113,12 @@ public class ReceptionObserver {
 				System.out.println("Exception: Interrupted.");
 				System.exit(1);
 			}
-
-			if(reception.isEmpty()) return;
 		}
-		reception.promptToTransport();
-		System.out.println("Call reception.promptToTransport()");
+
+		if(!reception.isEmpty()) {
+			reception.promptToTransport();
+			System.out.println("Call reception.promptToTransport()");
+		}
 	}
 
 	/**
@@ -138,7 +139,7 @@ public class ReceptionObserver {
 	 * 在庫数が2であり, 90秒以内に在庫数が変わらない場合
 	 * を判定結果を判定し, 確認する
 	 */
-	public void update(int numOfStocks, boolean hasCollector) {
+	public /*synchronized*/ void update(int numOfStocks, boolean hasCollector) {
 		this.numOfStocks = numOfStocks;
 		update(hasCollector);
 	}

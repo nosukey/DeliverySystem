@@ -8,6 +8,8 @@ public class Parcel {
 
 	private PersonInfo recipientInfo;
 
+	private static final String COMMA = ",";
+
 	public Parcel(int requestId, PersonInfo clientInfo, PersonInfo recipientInfo) {
 		this.requestId     = requestId;
 		this.clientInfo    = clientInfo;
@@ -59,11 +61,11 @@ public class Parcel {
 	 *
 	 */
 	public static Parcel decode(String str) {
-		String[] parameters = str.split(",");
+		String[] parameters = str.split(COMMA);
 		return new Parcel(
 			Integer.parseInt(parameters[0]),
-			PersonInfo.decode(parameters[1] + "," + parameters[2] + "," + parameters[3]),
-			PersonInfo.decode(parameters[4] + "," + parameters[5] + "," + parameters[6])
+			PersonInfo.decode(parameters[1] + COMMA + parameters[2] + COMMA + parameters[3]),
+			PersonInfo.decode(parameters[4] + COMMA + parameters[5] + COMMA + parameters[6])
 		);
 	}
 
@@ -77,7 +79,7 @@ public class Parcel {
 	 *
 	 */
 	public static String encode(Parcel parcel) {
-		return parcel.requestId + "," + PersonInfo.encode(parcel.clientInfo) + "," + PersonInfo.encode(parcel.recipientInfo);
+		return parcel.requestId + COMMA + PersonInfo.encode(parcel.clientInfo) + COMMA + PersonInfo.encode(parcel.recipientInfo);
 	}
 
 }

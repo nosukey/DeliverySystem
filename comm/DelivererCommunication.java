@@ -74,9 +74,4 @@ public class DelivererCommunication extends Communication implements Runnable {
 		connector.close();
 	}
 
-	// TODO 削除
-	protected void dummy(String str) {
-		this.deliverer.dummy(this, str);
-	}
-
 }

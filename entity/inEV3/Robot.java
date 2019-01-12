@@ -1,6 +1,8 @@
 package entity.inEV3;
 
+import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
@@ -27,8 +29,8 @@ public class Robot {
 	protected final float GRAY_THRESHOLD = (BLACK_THRESHOLD + WHITE_THRESHOLD) * 0.5f;
 
 	private final float DELTA_TIME = 0.01f;
-
-	private float park;
+	
+	private float parkingDistance;
 
 	private EV3ColorSensor colorSensor;
 
@@ -48,6 +50,9 @@ public class Robot {
 
 	private float[] irSamples;
 
+	
+
+
 	protected void openSensor() {
 		try {
 			colorSensor  = new EV3ColorSensor(SensorPort.S4);
@@ -65,6 +70,12 @@ public class Robot {
 			Delay.msDelay(100);			// TODO マジックナンバー
 			openSensor();
 		}
+	}
+	
+	protected void closeSensor(){		
+		colorSensor.close();
+		gyroSensor.close();
+		ev3IRSensor.close();
 	}
 
 	/**
@@ -108,7 +119,7 @@ public class Robot {
 			}
 			stopMotor(motorA, motorB);
 		} catch(Exception e) {
-			Delay.msDelay(10);			// TODO マジックナンバー
+			Delay.msDelay(100);			// TODO マジックナンバー
 			lineTrace(distance, speed);
 		}
 	}
@@ -137,7 +148,7 @@ public class Robot {
 		try {
 			gyroMode.fetchSample(gyroSamples, 0);
 			float currentAngle = gyroSamples[0];
-			while(Math.abs(angle) >= Math.abs(gyroSamples[0] - currentAngle)) {
+			while(Math.abs(angle) >= Math.abs(currentAngle - gyroSamples[0])) {
 				motorA.forward();
 				motorB.backward();
 				gyroMode.fetchSample(gyroSamples, 0);
@@ -148,8 +159,17 @@ public class Robot {
 			rotate(angle);
 		}
 	}
-
-
+    
+  //引数なしver
+    protected void initRotate(){
+    	Button.LEDPattern(1);
+    	gyroMode.fetchSample(gyroSamples,0);
+    	System.out.println(gyroSamples[0]);
+	    int modAngle = ((((int)(gyroSamples[0]+0.5) % 360) + 360)% 360 + 45)/90 % 4;
+    	int ansAngle = (int)(90* Math.pow(modAngle, (Math.max(modAngle,2)+1)%2) * (int)Math.pow(-1, modAngle/3));
+	    rotate(ansAngle-(int)gyroSamples[0] % 360);
+	    Button.LEDPattern(0);
+    }
 	/**
 	 * 現段階では宅配受付所で次の出発に向けて方向転換するための処理を記述する予定である
 	 */
@@ -167,12 +187,13 @@ public class Robot {
 
 			motorA.setSpeed(100);		// TODO マジックナンバー
 			motorB.setSpeed(50);		// TODO マジックナンバー
-
+			gyroMode.fetchSample(gyroSamples, 0);
+			float currentAngle = gyroSamples[0];
 			while(true){
 				gyroMode.fetchSample(gyroSamples, 0);
-				if(Math.abs(gyroSamples[0])>=Math.abs(180)) break;
-				motorA.setSpeed(0);
-				motorB.setSpeed(0);
+				if(Math.abs(180) <= Math.abs(gyroSamples[0]-currentAngle)) break;
+				motorA.forward();
+				motorB.backward();
 			}
 
 			stopMotor(motorA,motorB);
@@ -184,9 +205,53 @@ public class Robot {
 		//TODO 消す
 		System.out.println("Did turn");
 
-		//TODO EV3確かめ用　消すこと
+		//TODO EV3確かめ用 消すこと
 		//writer.write("Did turn");
 
+	}
+
+	protected void setParkingDistance() {
+		parkingDistance = 0;
+		while(Button.ENTER.isUp()) {
+			irMode.fetchSample(irSamples,0);
+			parkingDistance = irSamples[0];
+			LCD.clear();
+			LCD.drawString("parking dist:"+irSamples[0], 0, 2);
+			Delay.msDelay(100);
+			LCD.clear();
+		}
+	}
+
+	protected void parking() {
+		try {
+			EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(MotorPort.A);
+			EV3LargeRegulatedMotor motorB = new EV3LargeRegulatedMotor(MotorPort.D);
+
+			motorA.setSpeed(50);
+			motorB.setSpeed(50);
+			irMode.fetchSample(irSamples, 0);
+			while(irSamples[0] != parkingDistance) {
+				irMode.fetchSample(irSamples, 0);
+				LCD.clear();
+				LCD.drawString("parking:"+parkingDistance, 0, 2);
+				LCD.drawString("distance:"+irSamples[0], 0, 3);
+				Delay.msDelay(100);
+				if(irSamples[0]>parkingDistance) {
+					motorA.backward();
+					motorB.backward();
+				}
+				else if(irSamples[0]<parkingDistance) {
+					motorA.forward();
+					motorB.forward();
+				}
+			}
+			stopMotor(motorA,motorB);
+		}catch(Exception e) {
+			LCD.drawString("park error", 0, 3);
+			Delay.msDelay(100);
+			LCD.clear();
+			parking();
+		}
 	}
 
 	private void stopMotor(EV3LargeRegulatedMotor motorA,EV3LargeRegulatedMotor motorB) {

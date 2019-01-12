@@ -107,13 +107,4 @@ public class ReceptionCommunication extends Communication implements Runnable {
 		System.out.println("Recep-Coll connecting is finished.");
 	}
 
-	// TODO 削除
-	protected void dummy(String str) {
-		String[] systems = str.split(" -> ");
-		if(systems.length <= 8)
-			reception.dummy1(this, str);
-		else
-			reception.dummy2(str);
-	}
-
 }

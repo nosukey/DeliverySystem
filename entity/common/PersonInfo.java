@@ -8,6 +8,8 @@ public class PersonInfo {
 
 	private String phoneNumber;
 
+	private static final String COMMA = ",";
+
 	public PersonInfo(String name, int address, String phoneNumber) {
 		this.name = name;
 		this.address = address;
@@ -27,7 +29,7 @@ public class PersonInfo {
 	 * ->一致していなければfalseを返すことを確認する
 	 */
 	public boolean equals(PersonInfo info) {
-		if(this.name.equals(info.name) && this.address == info.address && this.phoneNumber.equals(info.phoneNumber)) {
+		if(this.name.equals(info.name) && this.address == info.address && this.phoneNumber.replaceAll("[-()]","").equals(info.phoneNumber.replaceAll("[-()]",""))) {
 			return true;
 		} else {
 			return false;
@@ -61,7 +63,7 @@ public class PersonInfo {
 	 *
 	 */
 	public static PersonInfo decode(String str) {
-		String[] parameters = str.split(",");
+		String[] parameters = str.split(COMMA);
 		return new PersonInfo(
 			parameters[0],
 			Integer.parseInt(parameters[1]),
@@ -79,7 +81,7 @@ public class PersonInfo {
 	 *
 	 */
 	public static String encode(PersonInfo info) {
-		return info.name + "," + info.address + "," + info.phoneNumber;
+		return info.name + COMMA + info.address + COMMA + info.phoneNumber;
 	}
 
 }
