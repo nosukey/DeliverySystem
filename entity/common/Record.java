@@ -34,147 +34,160 @@ public class Record {
 		this.state = State.READY;
 	}
 
+	/**
+	 * requestIdを取得します。
+	 * @return {@link #requestId}
+	 */
 	public int getRequestId() {
 		return this.requestId;
 	}
 
 	/**
-	 * 単体テスト
-	 * 呼び出されたら依頼人個人情報を返すことを確認する
-	 *
+	 * clientInfoを取得します。
+	 * @return {@link #clientInfo}
 	 */
 	public PersonInfo getClientInfo() {
 		return this.clientInfo;
 	}
 
 	/**
-	 * 単体テスト
-	 * 引数に設定したい受取人個人情報を代入する
-	 * ->配達記録の受取人個人情報が引数で与えた受取人個人情報になっているか確認する
-	 *
+	 * recipientInfoに値を代入します。
+	 * @param info {@link #recipientInfo}
 	 */
 	public void setRecipientInfo(PersonInfo info) {
 		this.recipientInfo = info;
 	}
 
-	public PersonInfo getRecipientInfo() {
-		return this.recipientInfo;
-	}
+	/**
+	 * recipientInfoを取得します。
+	 * @return {@link #recipientInfo}
+	 */
+	public PersonInfo getRecipientInfo() { return this.recipientInfo; }
 
+	/**
+	 * receptionDateを取得します。
+	 * @return {@link #receptionDate}
+	 */
 	public Date getReceptionDate() {
 		return this.receptionDate;
 	}
 
 	/**
-	 * 単体テスト
-	 * 引数に設定したい発送時間を代入する
-	 * ->配達記録の発送時間が引数で与えた発送時間になっているか確認する
-	 *
+	 * transportStartingDateに値を代入します。
+	 * @param date {@link #transportStartingDate}
 	 */
 	public void setTransportStartingDate(Date date) {
 		this.transportStartingDate = date;
 	}
 
+	/**
+	 * transportStartingDateを取得します。
+	 * @return {@link #transportStartingDate}
+	 */
 	public Date getTransportStartingDate() {
 		return this.transportStartingDate;
 	}
 
 	/**
-	 * 単体テスト
-	 * 引数に設定したい中継所到着時間を代入する
-	 * ->配達記録の中継所到着時間が引数で与えた中継所到着時間になっているか確認する
-	 *
+	 * transportSuccessDateに値を代入します。
+	 * @param date {@link #transportSuccessDate}
 	 */
 	public void setTransportSuccessDate(Date date) {
 		this.transportSuccessDate = date;
 	}
 
+	/**
+	 * transportSuccessDateを取得します。
+	 * @return {@link #transportSuccessDate}
+	 */
 	public Date getTransportSuccessDate() {
 		return this.transportSuccessDate;
 	}
 
 	/**
-	 * 単体テスト
-	 * 引数に設定したい配達開始時間を代入する
-	 * -.>配達記録の配達開始時間が引数で与えた配達開始時間になっているか確認する
-	 *
+	 * deliveryStartingDateに値を代入します。
+	 * @param date {@link #deliveryStartingDate}
 	 */
 	public void setDeliveryStartingDate(Date date) {
 		this.deliveryStartingDate = date;
 	}
 
+	/**
+	 * deliveryStartingDateを取得します。
+	 * @return {@link #deliveryStartingDate}
+	 */
 	public Date getDeliveryStartingDate() {
 		return this.deliveryStartingDate;
 	}
 
 	/**
-	 * 単体テスト
-	 * 引数に設定したい受取時間を代入する
-	 * ->配達記録の受取時間が引数で与えた受取時間になっているか確認する
-	 *
+	 * receivingDateに値を代入します。
+	 * @param date {@link #receivingDate}
 	 */
 	public void setReceivingDate(Date date) {
 		this.receivingDate = date;
 	}
 
+	/**
+	 * receivingDateを取得します。
+	 * @return {@link #receivingDate}
+	 */
 	public Date getReceivingDate() {
 		return this.receivingDate;
 	}
-
 	/**
-	 * 単体テスト
-	 * 引数に設定したい配達完了時間を代入する
-	 * -.>配達記録の配達完了時間が引数で与えた配達完了時間になっているか確認する
-	 *
+	 * deliverySuccessDateに値を代入します。
+	 * @param date {@link #deliverySuccessDate}
 	 */
 	public void setDeliverySuccessDate(Date date) {
 		this.deliverySuccessDate = date;
 	}
 
+	/**
+	 * deliverySuccessDateを取得します。
+	 * @return {@link #deliverySuccessDate}
+	 */
 	public Date getDeliverySuccessDate() {
 		return this.deliverySuccessDate;
 	}
 
 	/**
-	 * 引数に設定したい配達状況を代入する
-	 * 配達記録の配達状況が引数で与えた配達状況になっているか確認する
-	 *
+	 * stateに値を代入します。
+	 * @param state {@link #state}
 	 */
 	public void setState(State state) {
 		this.state = state;
 	}
 
+	/**
+	 * stateを取得します。
+	 * @return {@link #state}
+	 */
 	public State getState() {
 		return this.state;
 	}
 
 	/**
-	 * メソッド内容
 	 * 配達状況 == 宛先間違い
-	 * を判定する
-	 *
-	 * 単体テスト
-	 * 配達記録の配達状況を判定する
-	 * ->「宛先間違い」であればtrueを返すことを確認する
-	 * ->「宛先間違い」でなけれfalseを返すことを確認する
-	 *
+	 * を判定する。
+	 * @return boolean
 	 */
 	public boolean isWrongRecipient() {
 		if(this.state == State.WRONG_RECIPIENT)
 			return true;
 		else
 			return false;
+		// refactコード記載
+		// return this.state == State.WRONG_RECIPIENT
+
 	}
 
 	/**
-	 * メソッド内容
-	 * 文字列できた情報から配達記録クラスのインスタンスを返す
-	 *
-	 * 単体テスト
-	 * 引数に配達記録に変換したい文字列を代入する
-	 * ->文字列の情報と同じ配達記録を返すことを確認する
+	 * 文字列できた情報から配達記録クラスのインスタンスを返します。
 	 *
 	 * TODO もっと良いアルゴリズムに変更したい
+	 * @params str 通信フォーマットに従った文字列。
+	 * @return Recordオブジェクト。
 	 */
 	public static Record decode(String str) {
 		String[] parameters = str.split(COMMA);
@@ -194,13 +207,9 @@ public class Record {
 	}
 
 	/**
-	 * メソッド内容
-	 * 配達記録を文字列に変換し、その文字列を返す
-	 *
-	 * 単体テスト
-	 * 引数に文字列に変換したい配達記録を代入する
-	 * ->配達記録の情報と同じ情報の文字列を返すことを確認する
-	 *
+	 * 配達記録を文字列に変換し、その文字列を返します。
+	 * @param record Recordオブジェクト。
+	 * @return String 通信フォーマットに従った文字列。
 	 */
 	public static String encode(Record record) {
 		String result = record.requestId + COMMA + PersonInfo.encode(record.clientInfo) + COMMA + PersonInfo.encode(record.recipientInfo) + COMMA;
@@ -209,6 +218,10 @@ public class Record {
 		return result + State.encode(record.state);
 	}
 
+	/**
+	 * RecordオブジェクトをStringに変換し、返します。。
+	 * @return String 配達記録の文字列表現。
+	 */
 	public String toString() {
 		final String NOTHING = "--/--/--/ --:--";
 

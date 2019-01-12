@@ -17,16 +17,12 @@ public class PersonInfo {
 	}
 
 	/**
-	 * メソッド内容
 	 * フィールドの名前, 引数の名前
 	 * フィールドの番地, 引数の番地
 	 * フィールドの電話番号, 引数の電話番号
-	 * をそれぞれ比較し, すべて一致すればtrue, それ以外はfalseを返す
-	 *
-	 * 単体テスト
-	 * 引数に比較したい個人情報を代入する
-	 * ->それぞれ比較して一致していればtrueを返すことを確認する
-	 * ->一致していなければfalseを返すことを確認する
+	 * をそれぞれ比較し, すべて一致すればtrue, それ以外はfalseを返します。
+	 * @params info PersonInfoオブジェクト
+	 * @return boolean
 	 */
 	public boolean equals(PersonInfo info) {
 		if(this.name.equals(info.name) && this.address == info.address && this.phoneNumber.replaceAll("[-()]","").equals(info.phoneNumber.replaceAll("[-()]",""))) {
@@ -34,33 +30,38 @@ public class PersonInfo {
 		} else {
 			return false;
 		}
+		// refact
+		// return (this.name.equals(info.name) && this.address == info.address && this.phoneNumber.replaceAll("[-()]","").equals(info.phoneNumber.replaceAll("[-()]","")))
 	}
 
+	/**
+	 * nameを取得します。
+	 * @return {@link #name}
+	 */
 	public String getName() {
 		return this.name;
 	}
 
 	/**
-	 * 単体テスト
-	 * 呼び出されたら個人情報フィールドの番地が返ることを確認する
-	 *
+	 * addressを取得します。
+	 * @return {@link #address}
 	 */
 	public int getAddress() {
 		return this.address;
 	}
 
+	/**
+	 * phoneNumberを取得します。
+	 * @return {@link #phoneNumber}
+	 */
 	public String getPhoneNumber() {
 		return this.phoneNumber;
 	}
 
 	/**
-	 * メソッド内容
-	 * 文字列できた情報から個人情報クラスのインスタンスを返す
-	 *
-	 * 単体テスト
-	 * 引数に個人情報に変換したい文字列を代入する
-	 * ->文字列の情報と同じ個人情報を返すことを確認する
-	 *
+	 * 文字列できた情報から個人情報クラスのインスタンスを返します。
+	 * @param str 通信フォーマットに従った文字列。
+	 * @return PersonInfoオブジェクト。
 	 */
 	public static PersonInfo decode(String str) {
 		String[] parameters = str.split(COMMA);
@@ -72,13 +73,9 @@ public class PersonInfo {
 	}
 
 	/**
-	 * メソッド内容
-	 * 個人情報を文字列に変換し、その文字列を返す
-	 *
-	 * 単体テスト
-	 * 引数に文字列に変換したい個人情報を代入する
-	 * ->個人情報と同じ情報の文字列を返すことを確認する
-	 *
+	 * 個人情報を文字列に変換し、その文字列を返します。
+	 * @param info PersonInfoオブジェクト。
+	 * @return String 通信フォーマットに従った文字列。
 	 */
 	public static String encode(PersonInfo info) {
 		return info.name + COMMA + info.address + COMMA + info.phoneNumber;

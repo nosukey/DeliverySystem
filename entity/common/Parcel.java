@@ -17,48 +17,41 @@ public class Parcel {
 	}
 
 	/**
-	 * 単体テスト
-	 * 呼び出されたらフィールドの依頼IDが返ることを確認する
-	 *
+	 * requestIdを取得します。
+	 * @return {@link #requestId}
 	 */
 	public int getRequestId() {
 		return this.requestId;
 	}
 
 	/**
-	 * 単体テスト
-	 * 呼び出されたらフィールドの受取人個人情報が返ることを確認する
-	 *
+	 * recipientInfoを取得します。
+	 * @return {@link #recipientInfo}
 	 */
 	public PersonInfo getRecipientInfo() {
 		return this.recipientInfo;
 	}
 
 	/**
-	 * 単体テスト
-	 * 引数に設定したい受取人個人情報を代入する
-	 * ->荷物の受取人個人情報が引数で与えた受取人情報になっているか確認する
-	 *
+	 * recipientInfoに値を代入します。
+	 * @param recipientInfo {@link #recipientInfo}
 	 */
 	public void setRecipientInfo(PersonInfo recipientInfo) {
 		this.recipientInfo = recipientInfo;
 	}
 
 	/**
-	 * フィールドの受取人個人情報の番地を取得し, それを返す
+	 * フィールドの受取人個人情報の番地を取得し, それを返します。
+	 * @return int
 	 */
 	public int getAddress() {
 		return this.recipientInfo.getAddress();
 	}
 
 	/**
-	 * メソッド内容
-	 * 文字列できた情報から荷物クラスのインスタンスを返す
-	 *
-	 * 単体テスト
-	 * 引数に荷物に変換したい文字列を代入する
-	 * ->文字列の情報と同じ荷物を返すことを確認する
-	 *
+	 * 文字列できた情報から荷物クラスのインスタンスを返します。
+	 * @params str 荷物クラスを表現した文字列。
+	 * @return Parcelオブジェクト。
 	 */
 	public static Parcel decode(String str) {
 		String[] parameters = str.split(COMMA);
@@ -70,13 +63,9 @@ public class Parcel {
 	}
 
 	/**
-	 * メソッド内容
-	 * 荷物を文字列に変換し、その文字列を返す
-	 *
-	 * 単体テスト
-	 * 引数に文字列に変換したい荷物を代入する
-	 * ->荷物と同じ情報の文字列を返すことを確認する
-	 *
+	 * 荷物を文字列に変換し、その文字列を返します。
+	 * @params parcel Parcelオブジェクト。
+	 * @return String 通信フォーマットに従った文字列。
 	 */
 	public static String encode(Parcel parcel) {
 		return parcel.requestId + COMMA + PersonInfo.encode(parcel.clientInfo) + COMMA + PersonInfo.encode(parcel.recipientInfo);

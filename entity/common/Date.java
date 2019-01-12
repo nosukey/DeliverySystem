@@ -32,7 +32,8 @@ public class Date {
 	}
 
 	/**
-	 * APIの日時クラスで現在時刻を取得し, 現在時刻の日時クラスのインスタンスを返す
+	 * APIの日時クラスで現在時刻を取得し, 現在時刻の日時クラスのインスタンスを返します。
+	 * @return Dateオブジェクト。
 	 */
 	public static Date getCurrentDate() {
 		Calendar calender = Calendar.getInstance();
@@ -46,13 +47,9 @@ public class Date {
 	}
 
 	/**
-	 * メソッド内容
-	 * 文字列できた情報から日時クラスのインスタンスを返す
-	 *
-	 * 単体テスト
-	 * 引数に日時に変換したい文字列を代入する
-	 * ->文字列の情報と同じ日時を返すことを確認する
-	 *
+	 * 文字列できた情報から日時クラスのインスタンスを返します。
+	 * @param str 通信フォーマットに従った文字列。
+	 * @return Dateオブジェクト。 Returns {@code null} if strが日付を表現する文字列でなかったとき。
 	 */
 	public static Date decode(String str) {
 		if(str.equals(NOTHING)) {
@@ -70,13 +67,9 @@ public class Date {
 	}
 
 	/**
-	 * メソッド内容
-	 * 日時を文字列に変換し、その文字列を返す
-	 *
-	 * 単体テスト
-	 * 引数に文字列に変換したい日時を代入する
-	 * ->日時の情報と同じ情報の文字列を返すことを確認する
-	 *
+	 * 日時を文字列に変換し、その文字列を返します。
+	 * @param date Dataオブジェクト。
+	 * @return String　通信フォーマットに従った文字列。 Returns {@code null} if dateがnullであるとき。
 	 */
 	public static String encode(Date date) {
 		if(date == null)
@@ -85,6 +78,10 @@ public class Date {
 			return date.year + COMMA + date.month + COMMA + date.day + COMMA + date.hour + COMMA + date.minute;
 	}
 
+	/**
+	 * DataオブジェクトをStringに変換し、返します。
+	 * @return String 日時の文字列表現。
+	 */
 	public String toString() {
 		return String.format("%d/%02d/%02d/ %02d:%02d", this.year, this.month, this.day, this.hour, this.minute);
 	}
