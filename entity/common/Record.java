@@ -68,9 +68,7 @@ public class Record {
 	 * receptionDateを取得します。
 	 * @return {@link #receptionDate}
 	 */
-	public Date getReceptionDate() {
-		return this.receptionDate;
-	}
+	public Date getReceptionDate() { return this.receptionDate; }
 
 	/**
 	 * transportStartingDateに値を代入します。
@@ -219,7 +217,7 @@ public class Record {
 	}
 
 	/**
-	 * RecordオブジェクトをStringに変換し、返します。。
+	 * RecordオブジェクトをStringに変換し、返します。
 	 * @return String 配達記録の文字列表現。
 	 */
 	public String toString() {
