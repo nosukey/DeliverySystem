@@ -480,7 +480,7 @@ public class Deliverer extends Robot {
 	 * 列方面に一区画分移動する。
 	 */
     private void moveRecipientHeight() {
-    	final float HEIGHT_BETWEEN_RECIPIENT = 44.5f;
+    	final float HEIGHT_BETWEEN_RECIPIENT = 44.2f;
 		lineTrace(HEIGHT_BETWEEN_RECIPIENT,THIRD_GEAR_SPEED);
     }
 
