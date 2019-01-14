@@ -45,7 +45,7 @@ enum PageName {
 
     private final String name;
 
-    private PageName(final String name) {
+    PageName(final String name) {
         this.name = name;
     }
 

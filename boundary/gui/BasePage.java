@@ -101,7 +101,7 @@ public abstract class BasePage extends JPanel {
 	}
 
 	private boolean isCorrectPhoneNumber(String phoneNumber) {
-        final String PHONE_REGEX = "^0(\\d[-(]\\d{4}|\\d{2}[-(]\\d{3}|\\d{3}[-(]\\d{2}|\\d{4}[-(]\\d{1})[-)]\\d{4}$|^0\\d{9}$|^(0[5789]0)[-(]\\d{4}[-)]\\d{4}$|^(0[5789]0)\\d{8}$";
+        final String PHONE_REGEX = "^0(\\d[-(]\\d{4}|\\d{2}[-(]\\d{3}|\\d{3}[-(]\\d{2}|\\d{4}[-(]\\d)[-)]\\d{4}$|^0\\d{9}$|^(0[5789]0)[-(]\\d{4}[-)]\\d{4}$|^(0[5789]0)\\d{8}$";
 		return phoneNumber.matches(PHONE_REGEX);
 	}
 

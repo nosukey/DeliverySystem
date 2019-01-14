@@ -54,11 +54,11 @@ public class SettingPage extends BasePage{
             }
         }
 
-        int addX=DIFFERENCE_X;
+
         int addY=0;
         for(int i = 0 ; i < LINE_SIZE ; i++){
             for(int j = 0 ; j < COLUMN_SIZE ; j++){
-                super.addComponent(ckbox[i][j], CKBOX_X + ( addX * j ), CKBOX_Y + addY, CKBOX_W, CKBOX_H);
+                super.addComponent(ckbox[i][j], CKBOX_X + ( DIFFERENCE_X * j ), CKBOX_Y + addY, CKBOX_W, CKBOX_H);
             }
             addY+=DIFFERENCE_Y;
         }

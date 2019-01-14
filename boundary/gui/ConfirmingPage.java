@@ -95,10 +95,7 @@ public class ConfirmingPage extends BasePage {
     */
     @Override
     public boolean canChangePage(PageName page) {
-        if(comboBox == null && page == PageName.CONFIRM_RESULT)
-            return false;
-        else
-            return true;
+        return !(comboBox == null && page == PageName.CONFIRM_RESULT);
     }
 
     /**

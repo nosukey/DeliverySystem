@@ -52,7 +52,7 @@ public class MainFrame extends JFrame {
             if(page.canChangePage(this.to)) {
                 ParamData data = newDataFormat(this.from, this.to);
                 if(system.canExecuteSubSystem(data)) {
-                    changePage(this.from, this.to);
+                    changePage(this.to);
                     system.executeSubSystem(data);
                 } else {
                     JOptionPane.showMessageDialog(this.parent, ERROR_MESSAGE);
@@ -99,7 +99,7 @@ public class MainFrame extends JFrame {
                 if(system.canExecuteSubSystem(data)) {
                     int option = JOptionPane.showConfirmDialog(this.parent, this.msg, this.title, JOptionPane.YES_NO_OPTION);
                     if(option == JOptionPane.YES_OPTION) {
-                        changePage(from, to);
+                        changePage(to);
                         system.executeSubSystem(data);
                     }
                 } else {
@@ -164,7 +164,7 @@ public class MainFrame extends JFrame {
         page.setVisible(isVisible);
     }
 
-    private void changePage(PageName from, PageName to) {
+    private void changePage(PageName to) {
         for(PageName name : this.pageMap.keySet()) {
             BasePage page = this.pageMap.get(name);
             if(name == to) {
@@ -244,6 +244,7 @@ public class MainFrame extends JFrame {
     /**
      * 設定された配達記録の依頼IDを削除します。
     */
+    //TODO これ現在は使われていない。けどでバックとか何かに使う？？
     public void resetComfirmSelection() {
         ((ConfirmingPage)this.pageMap.get(PageName.CONFIRMING)).removeRequestIds();
     }
