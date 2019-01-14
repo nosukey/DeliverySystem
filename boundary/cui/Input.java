@@ -10,15 +10,13 @@ import java.io.IOException;
  * @version 1.0 (2019/01/13)
 */
 class Input {
-    private final String ERROR_INPUT_INT = "Input value is not int value.\n";
-    private final String ERROR_INPUT_STR = "Input value is not string value.\n";
-
     /**
      * 整数値を標準入力します。
      * @param msg 入力を促すメッセージ
      * @return 標準入力された整数値
     */
     public int inputInt(String msg) {
+        final String ERROR_INPUT_INT = "Input value is not int value.\n";
         System.out.print(msg);
         try {
             return Integer.parseInt(input());
@@ -34,6 +32,7 @@ class Input {
      * @return 標準入力された文字列
     */
     public String inputString(String msg) {
+        final String ERROR_INPUT_STR = "Input value is not string value.\n";
         System.out.print(msg);
         try {
             return input();
