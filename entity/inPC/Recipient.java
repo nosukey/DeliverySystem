@@ -66,22 +66,22 @@ public class Recipient {
 	}
 
 	private void autoSetInfos(){
-	 	this.recipientsInfo[0]  = new PersonInfo("a",1,"09001010101");
-		this.recipientsInfo[1]  = new PersonInfo("b",2,"09002020202");
-		this.recipientsInfo[2]  = new PersonInfo("c",3,"09003030303");
-		this.recipientsInfo[3]  = new PersonInfo("d",4,"09004040404");
-		this.recipientsInfo[4]  = new PersonInfo("e",5,"09005050505");
-		this.recipientsInfo[5]  = new PersonInfo("f",6,"09006060606");
-		this.recipientsInfo[6]  = new PersonInfo("g",7,"09007070707");
-		this.recipientsInfo[7]  = new PersonInfo("h",8,"09008080808");
-		this.recipientsInfo[8]  = new PersonInfo("i",9,"09009090909");
-		this.recipientsInfo[9]  = new PersonInfo("j",10,"09010101010");
-		this.recipientsInfo[10] = new PersonInfo("k",11,"09011111111");
-		this.recipientsInfo[11] = new PersonInfo("l",12,"09012121212");
-		this.recipientsInfo[12] = new PersonInfo("m",13,"09013131313");
-		this.recipientsInfo[13] = new PersonInfo("n",14,"09014141414");
-		this.recipientsInfo[14] = new PersonInfo("o",15,"09015151515");
-		this.recipientsInfo[15] = new PersonInfo("p",16,"09016161616");
+	 	this.recipientsInfo[0]  = new PersonInfo("Alice",1,"09001010101");
+		this.recipientsInfo[1]  = new PersonInfo("Bax",2,"09002020202");
+		this.recipientsInfo[2]  = new PersonInfo("Cato",3,"09003030303");
+		this.recipientsInfo[3]  = new PersonInfo("Dan",4,"09004040404");
+		this.recipientsInfo[4]  = new PersonInfo("Egon",5,"09005050505");
+		this.recipientsInfo[5]  = new PersonInfo("Fip",6,"09006060606");
+		this.recipientsInfo[6]  = new PersonInfo("Galt",7,"09007070707");
+		this.recipientsInfo[7]  = new PersonInfo("Hank",8,"09008080808");
+		this.recipientsInfo[8]  = new PersonInfo("Ivan",9,"09009090909");
+		this.recipientsInfo[9]  = new PersonInfo("Jack",10,"09010101010");
+		this.recipientsInfo[10] = new PersonInfo("Kim",11,"09011111111");
+		this.recipientsInfo[11] = new PersonInfo("Lee",12,"09012121212");
+		this.recipientsInfo[12] = new PersonInfo("Mike",13,"09013131313");
+		this.recipientsInfo[13] = new PersonInfo("Noah",14,"09014141414");
+		this.recipientsInfo[14] = new PersonInfo("Oliver",15,"09015151515");
+		this.recipientsInfo[15] = new PersonInfo("Paul",16,"09016161616");
 	}
 
 	private void autoSetIsHome(){

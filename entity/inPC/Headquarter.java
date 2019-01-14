@@ -12,14 +12,13 @@ import java.util.List;
 import java.util.Map;
 import entity.common.State;
 import entity.common.PersonInfo;
+
 /**
  *本部の役割を担うクラスです。
  *他のサブシステムを担うクラスと通信を行います。
  *@author 大場 貴斗
  *@version 1.0(2019/1/12)
  */
-
-
 public class Headquarter {
 
 	private List<Record> records;
@@ -29,76 +28,23 @@ public class Headquarter {
 	private HeadquarterCommunication commToRelayStation;
 
 	private static final int RECEPTION_PORT = 10000;
+
 	private static final String RELAY_STA_ADDRESS = "btspp://0016535DEB1C:1";
+
     /**
-     *
-     *配達記録を保管するlistを作成します。
-     *
-     */
+    *
+    *配達記録を保管するlistを作成します。
+    *
+    */
 	public Headquarter() {
 		this.records = new ArrayList<Record>();
-
-		autoSetRecords();
-		printBefore();
 	}
 
-	private synchronized void printBefore() {
-		// System.out.println("Head before:");
-		// System.out.println("records: " + records.size());
-		// for(Record record : records) {
-		// 	System.out.println(record.toString());
-		// }
-	}
-
-	public synchronized void printAfter() {
-		System.out.println("Head after:");
-		System.out.println("records: " + records.size());
-		for(Record record : records) {
-			System.out.println(record.toString());
-		}
-	}
-
-	private void autoSetRecords() {
-		this.records.add(
-			new Record(
-				0,
-				new PersonInfo("j", 10, "09010101010"),
-				new PersonInfo("a", 1, "09001010101"),
-				Date.getCurrentDate()
-			)
-		);
-		this.records.add(
-			new Record(
-				1,
-				new PersonInfo("j", 10, "09010101010"),
-				new PersonInfo("c", 3, "09003030303"),
-				Date.getCurrentDate()
-			)
-		);
-		this.records.add(
-			new Record(
-				2,
-				new PersonInfo("j", 10, "09010101010"),
-				new PersonInfo("e", 5, "09005050605"),
-				Date.getCurrentDate()
-			)
-		);
-		this.records.add(
-			new Record(
-				3,
-				new PersonInfo("j", 10, "09010101010"),
-				new PersonInfo("wrong", 15, "09015151515"),
-				Date.getCurrentDate()
-			)
-		);
-		this.records.get(3).setState(State.WRONG_RECIPIENT);
-	}
-
-	/**
-	 * 中継所と宅配受付所の通信を確立します
+    /**
+     * 中継所と宅配受付所の通信を確立します
      * またスレッドを実行し標準出力のためのBoundaryクラスのインスタンスを生成します。
      *
-	 */
+     */
 	public void execute() {
 		this.commToReception = new HeadquarterCommunication(this, RECEPTION_PORT);
 		new Thread(commToReception).start();
@@ -111,80 +57,64 @@ public class Headquarter {
 		io.printMessage("Headquarter is started.");
 	}
 
-	// TODO 削除
 	public void connected() {
 		Boundary io = new Boundary();
 		io.printMessage("Headquarter is connected.");
 	}
 
-	/**
+    /**
      * 発送報告用の配達記録と再配達依頼IDをリストとして受け取ります
      * またその再配達依頼IDから発送状況を「配達中」に変更します。
-	 * @param records 宅配受付所から受け取る配送報告用の配達記録リスト
+     * @param records 宅配受付所から受け取る配送報告用の配達記録リスト
      * @param requestIds 宅配受付所から受け取る再配達用の依頼IDリスト
-	 *
-	 */
+     *
+     */
 	public synchronized void receiveTransportStartingReport(List<Record> records, List<Integer> requestIds) {
-
-		System.out.println("receiveTransportStartingReport()");
-
         this.records.addAll(records);
         for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setState(State.ON_DELIVERY);
         }
 	}
 
-	/**
-	 * 宅配受付所から中継所引き渡し失敗した依頼IDを受け取り配達状況を「中継所引き渡し失敗」に更新します。
-	 * @param requestIds 宅配受付所から受け取る中継所引き渡し失敗報告用の依頼IDリスト
-	 *
-	 */
+    /**
+     * 宅配受付所から中継所引き渡し失敗した依頼IDを受け取り配達状況を「中継所引き渡し失敗」に更新します。
+     * @param requestIds 宅配受付所から受け取る中継所引き渡し失敗報告用の依頼IDリスト
+     *
+     */
 	public synchronized void receiveTransportFailureReport(List<Integer> requestIds) {
-
-		System.out.println("receiveTransportFailureReport()");
-
         for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setState(State.TRANSPORT_FAILURE);
         }
 	}
 
-	/**
-	 * 中継所から中継所到着報告をした依頼IDを受け取り中継所到着時間を更新します。
-	 * @param requestIds 中継所から受け取る中継所到着報告用の依頼IDリスト
-	 *
-	 */
+    /**
+     * 中継所から中継所到着報告をした依頼IDを受け取り中継所到着時間を更新します。
+     * @param requestIds 中継所から受け取る中継所到着報告用の依頼IDリスト
+     *
+     */
 	public synchronized void receiveTransportSuccessReport(List<Integer> requestIds) {
-
-		System.out.println("receiveTransportSuccessReport()");
-
         for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setTransportSuccessDate(Date.getCurrentDate());
         }
 	}
 
-	/**
-	 * 中継所から配達記録報告用の依頼IDを受け取り配達開始時間を更新します。
-	 * @param requestIds 中継所から受け取る配達報告用の依頼IDリスト
-	 *
-	 */
+    /**
+     * 中継所から配達記録報告用の依頼IDを受け取り配達開始時間を更新します。
+     * @param requestIds 中継所から受け取る配達報告用の依頼IDリスト
+     *
+     */
 	public synchronized void receiveDeliveryStartingReport(List<Integer> requestIds) {
-
-		System.out.println("receiveDeliveryStartingReport()");
-
 		for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setDeliveryStartingDate(Date.getCurrentDate());
         }
 	}
 
-	/**
-	 * 中継所から配達完了報告用の受取時間表を受け取り配達記録に受取時間と配達完了時間を更新し配達状況を「配達済み」に更新します。
-	 * @param receivingDateMap 中継所から受け取る配達完了報告用の受取時間表
-	 *
-	 */
+    /**
+     * 中継所から配達完了報告用の受取時間表を受け取り配達記録に受取時間と配達完了時間を更新し配達状況を「配達済み」に更新します。
+     * @param receivingDateMap 中継所から受け取る配達完了報告用の受取時間表
+     *
+     */
 	public synchronized void receiveDeliverySuccessReport(Map<Integer, Date> receivingDateMap) {
-
-		System.out.println("receiveDeliverySuccessReport()");
-
         for(Map.Entry<Integer , Date > entry : receivingDateMap.entrySet()){
             Record record = this.records.get(entry.getKey().intValue());
             record.setReceivingDate(entry.getValue());
@@ -193,39 +123,33 @@ public class Headquarter {
         }
 	}
 
-	/**
-	 * 中継所から受取人不在報告用の依頼IDを受け取り配達記録の配達状況を「再配達待ち」に更新します。
-	 * @param requestIds 中継所から受け取る受取人不在報告用の依頼IDリスト
-	 *
-	 */
+    /**
+     * 中継所から受取人不在報告用の依頼IDを受け取り配達記録の配達状況を「再配達待ち」に更新します。
+     * @param requestIds 中継所から受け取る受取人不在報告用の依頼IDリスト
+     *
+     */
 	public synchronized void receiveWithoutRecipientReport(List<Integer> requestIds) {
-
-		System.out.println("receiveWithoutRecipientReport()");
-
 	    for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setState(State.RE_DELIVERY);
         }
 	}
 
-	/**
-	 * 中継所から宛先間違いの依頼IDを受け取り配達記録の配達状況を「宛先間違い」に更新します。
-	 * @param requestIds 中継所から受け取る宛先間違い報告用の依頼IDリスト
-	 *
-	 */
+    /**
+     * 中継所から宛先間違いの依頼IDを受け取り配達記録の配達状況を「宛先間違い」に更新します。
+     * @param requestIds 中継所から受け取る宛先間違い報告用の依頼IDリスト
+     *
+     */
 	public synchronized void receiveWrongRecipientReport(List<Integer> requestIds) {
-
-		System.out.println("receiveWrongRecipientReport()");
-
 		 for(Integer requestId : requestIds){
             this.records.get(requestId.intValue()).setState(State.WRONG_RECIPIENT);
         }
 	}
 
-	/**
-	 * 入力された依頼IDから配達記録を返します。
+    /**
+     * 入力された依頼IDから配達記録を返します。
      * @param id 参照したい入力された依頼IDです。
      * @return 依頼IDから一致した配達記録
-	 */
+     */
 	public synchronized Record referRecord(int id) {
 		Record record = null;
 		if(contains(id)) {
@@ -233,6 +157,7 @@ public class Headquarter {
 		}
 		return record;
 	}
+
     /**
      * 配達記録の中から引数で受け取った依頼人個人情報と一致する依頼ID全てを配列として渡します。
      * @param info 依頼人個人情報
@@ -251,6 +176,7 @@ public class Headquarter {
 		else
 			return null;
 	}
+
     /**
      * 宛先間違いだった場合の配達記録に新しい受取人個人情報を書き換えます
      * @param record 宛先間違いが含まれている配達記録
@@ -260,18 +186,18 @@ public class Headquarter {
 	public synchronized Record fixWrongRecipient(Record record, PersonInfo recipientInfo) {
         record.setRecipientInfo(recipientInfo);
         record.setState(State.RE_DELIVERY);
-		// commToRelayStation.writeMethod("fixWrongRecipient", record.getRequestId(), recipientInfo);
+		commToRelayStation.writeMethod("fixWrongRecipient", record.getRequestId(), recipientInfo);
 		return record;
 	}
 
-	/**
-	 * 引数の依頼IDと配達記録リストの要素数を比較し
-	 * 依頼ID <= 要素数 ならばtrue
-	 * 依頼ID > 要素数 ならばfalse
-	 * を返すメソッドです。
+    /**
+     * 引数の依頼IDと配達記録リストの要素数を比較し
+     * 依頼ID <= 要素数 ならばtrue
+     * 依頼ID > 要素数 ならばfalse
+     * を返すメソッドです。
      * @param requestId 依頼ID
      * @return 比較した結果
-	 */
+     */
 	public boolean contains(int requestId) {
 		if(requestId <= this.records.size())
             return true;
