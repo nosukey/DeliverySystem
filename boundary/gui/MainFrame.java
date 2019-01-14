@@ -127,6 +127,8 @@ public class MainFrame extends JFrame {
         this.pageMap = new HashMap<PageName, BasePage>();
 
         setBounds(x, y, w, h);
+        setTitle("宅配システム");
+        setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         addPage(new LoginPage(this), true);

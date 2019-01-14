@@ -1,5 +1,7 @@
 package boundary.gui;
 
+import java.awt.Font;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -14,6 +16,12 @@ public class ConfirmingPage extends BasePage {
     private final int COMBO_Y = 200;
     private final int COMBO_W = 400;
     private final int COMBO_H = 30;
+
+    private final int LABEL_X = 170;
+    private final int LABEL_Y = 250;
+    private final int LABEL_W = 500;
+    private final int LABEL_H = 30;
+    private final int LETTER_SIZE = 30;
 
     private final int OK_BUTTON_X = 325;
     private final int OK_BUTTON_Y = 450;
@@ -52,9 +60,9 @@ public class ConfirmingPage extends BasePage {
         removeComponents();
 
         if(ids == null) {
-            // TODO ちゃんとレイアウト決めてもらう
-            this.msg = new JLabel("配達記録がありませんでした");
-            super.addComponent(msg, COMBO_X, COMBO_Y, COMBO_W, COMBO_H);
+            this.msg = new JLabel("配達記録がありませんでした。");
+            this.msg.setFont(new Font("ＭＳ ゴシック", Font.BOLD, LETTER_SIZE));
+            super.addComponent(msg, LABEL_X, LABEL_Y, LABEL_W, LABEL_H);
         } else {
             this.comboBox = new JComboBox<Integer>(ids);
             super.addComponent(comboBox, COMBO_X, COMBO_Y, COMBO_W, COMBO_H);

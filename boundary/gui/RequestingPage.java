@@ -77,7 +77,7 @@ public class RequestingPage extends BasePage {
 
 
         JButton moveResultButton = new JButton("決定");
-        moveResultButton.addActionListener(frame.new MoveDialogActionListener(frame, "この入力で決定しますか？", "Move RequestResult Page", NAME, PageName.REQUEST_RESULT));
+        moveResultButton.addActionListener(frame.new MoveDialogActionListener(frame, "この入力で決定しますか？", "メッセージ", NAME, PageName.REQUEST_RESULT));
         super.addComponent(moveResultButton, CFM_BUTTON_X, CFM_BUTTON_Y, CFM_BUTTON_W, CFM_BUTTON_H);
 
         JButton moveSelectButton = new JButton("戻る");

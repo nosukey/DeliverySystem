@@ -1,6 +1,8 @@
 package boundary.gui;
 
+import java.awt.Color;
 import java.awt.Font;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,10 +50,14 @@ public abstract class BasePage extends JPanel {
 
         setLayout(null);
         setSize(PAGE_W, PAGE_H);
-
+        setOpaque(true);
+        setBackground(new Color(153, 204, 255));
         this.label.setBounds(PAGE_X, PAGE_Y, PAGE_W, LABEL_H);
+        this.label.setOpaque(true);
+        this.label.setBackground(new Color(102, 153, 255));
         this.label.setFont(new Font("ＭＳ ゴシック", Font.BOLD, LABEL_FONT));
         add(this.label);
+
     }
 
     /**

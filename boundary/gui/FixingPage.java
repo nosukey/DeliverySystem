@@ -70,7 +70,7 @@ public class FixingPage extends BasePage {
         }
 
         JButton moveFixResultButton = new JButton("決定");
-        moveFixResultButton.addActionListener(frame.new MoveDialogActionListener(frame, "この入力で決定しますか？", "Move Page Dialog", NAME, PageName.FIX_RESULT));
+        moveFixResultButton.addActionListener(frame.new MoveDialogActionListener(frame, "この入力で決定しますか？", "メッセージ", NAME, PageName.FIX_RESULT));
         super.addComponent(moveFixResultButton, CFM_BUTTON_X, CFM_BUTTON_Y, CFM_BUTTON_W, CFM_BUTTON_H);
     }
 

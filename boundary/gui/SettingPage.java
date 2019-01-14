@@ -1,8 +1,10 @@
 package boundary.gui;
 
+import java.awt.Color;
+
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 
 /**
  * 受取人宅の在否をチェックボックスで設定するページのクラスです。
@@ -16,7 +18,7 @@ public class SettingPage extends BasePage{
 
     /*ckboxを作成するための座標・幅・高さ*/
     private final int CKBOX_X = 60;
-    private final int CKBOX_Y = 80;
+    private final int CKBOX_Y = 90; //80
     private final int CKBOX_W = 90;
     private final int CKBOX_H = 90;
 
@@ -26,9 +28,9 @@ public class SettingPage extends BasePage{
 
     /*決定ボタンの座標・幅・高さ*/
     private final int BUTTON_X = 650;
-    private final int BUTTON_Y = 380;
+    private final int BUTTON_Y = 430;
     private final int BUTTON_W = 100;
-    private final int BUTTON_H = 120;
+    private final int BUTTON_H = 70;
 
     private JCheckBox[][] ckbox;
     private static final PageName NAME = PageName.SETTING;
@@ -47,6 +49,7 @@ public class SettingPage extends BasePage{
             for(int j = 0 ; j < COLUMN_SIZE ; j++){
                 ckbox[i][j] = new JCheckBox( block + "番地", true);
                 ckbox[i][j].setBorderPainted(true);
+                ckbox[i][j].setBackground(new Color(0, 102, 255));
                 block++;
             }
         }
@@ -91,6 +94,11 @@ public class SettingPage extends BasePage{
         for(int i=0; i<LINE_SIZE; i++) {
             for(int j=0; j<COLUMN_SIZE; j++) {
                 bools[i*LINE_SIZE+j] = ckbox[i][j].isSelected();
+                if(bools[i*LINE_SIZE+j]) {
+                  ckbox[i][j].setBackground(new Color(0, 102, 255));
+                } else {
+                  ckbox[i][j].setBackground(new Color(102, 102, 102));
+                }
             }
         }
         return bools;

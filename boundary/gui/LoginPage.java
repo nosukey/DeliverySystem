@@ -72,7 +72,7 @@ public class LoginPage extends BasePage {
 
 
         JButton moveSelectButton = new JButton("ログイン");
-        moveSelectButton.addActionListener(frame.new MoveDialogActionListener(frame, "この入力で決定しますか？", "Move Page Dialog", NAME, PageName.USER_TOP));
+        moveSelectButton.addActionListener(frame.new MoveDialogActionListener(frame, "この入力で決定しますか？", "メッセージ", NAME, PageName.USER_TOP));
         super.addComponent(moveSelectButton, CFM_BUTTON_X, CFM_BUTTON_Y, CFM_BUTTON_W, CFM_BUTTON_H);
 
     }
