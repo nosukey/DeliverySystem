@@ -13,7 +13,12 @@ import lejos.hardware.Key;
 import lejos.hardware.KeyListener;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
-
+/**
+ * サブシステム「配達担当ロボット」クラスです。
+ * 他のサブシステム「中継所」クラス、「受取人宅」クラスと通信を行います。
+ * @author 山下京之介
+ * @version 1.0(2019/01/15)
+ */
 public class Deliverer extends Robot {
 
 	private List<Parcel> deliveredParcels;
@@ -38,6 +43,10 @@ public class Deliverer extends Robot {
 	private final int RECIPIENTS_PER_ROW = 4;
 
 
+	/**
+	 * イベントリスナークラスです。
+	 * 配達担当ロボットのButtonが押されたことを認識するためのクラスです。
+	 */
 	private class ButtonEventListener implements KeyListener {
 		public void keyPressed(Key key) {
 			switch(key.getId()) {
@@ -51,9 +60,17 @@ public class Deliverer extends Robot {
 			}
 		}
 
+		/**
+		 * 配達担当ロボットのボタンが離された時に何も行いません。
+		 * @param key Keyクラス
+		 */
+		@Override
 		public void keyReleased(Key key) {}
 	}
 
+	/**
+	 * 配達担当ロボットインスタンスを生成します。
+	 */
 	private Deliverer() {
 		this.deliveredParcels        = new LinkedList<Parcel>();
 		this.receivingDateMap        = new HashMap<Integer, Date>();
@@ -63,6 +80,11 @@ public class Deliverer extends Robot {
 		this.commToRecipient    = null;
 	}
 
+	/**
+	 * 配達担当ロボットを起動します。
+	 * 中継所、受取人宅からの接続待ち状態に入ります。
+	 * @param args コマンドライン引数
+	 */
 	public static void main(String[] args) {
 
 		final int CONNECTION_INTERVAL = 60000;
@@ -86,6 +108,9 @@ public class Deliverer extends Robot {
 		LCD.drawString("Ready.", 0, 2);
 	}
 
+	/**
+	 * 通信を確立された場合に呼び出され、状況を確認することができます。
+	 */
 	public void connected() {
 		LCD.drawString("Connected.", 0, 1);
 
@@ -100,13 +125,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * ユースケース「待機所で待機する」を包含するメソッド
-	 *
-	 * ローカル定数
-	 * 待機時間 = 20秒
-	 *
-	 * 統合テストで確認してください
-	 *
+	 * 中継所から待機所に移動し、待機所で待機します。
 	 */
 	public void waitInStandbyStation() {
 
@@ -137,10 +156,8 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * ユースケース「荷物を配達する」を包含するメソッド
-	 *
-	 * 統合テストで確認してください
-	 *
+	 * 中継所から荷物を受け取り、受取人宅に配達します。
+	 * @param parcels 中継所から受け取った荷物リスト
 	 */
 	public void deliverParcels(List<Parcel> parcels) {
 
@@ -205,7 +222,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * ユースケース「配達の有無を確認する」を包含するメソッド
+	 * 中継所に対して配達の有無の確認を行います。
 	 */
 	public void goCheck() {
 		isRightSide = true;
@@ -224,7 +241,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * ユースケース「配達結果を連絡する」を包含するメソッド
+	 * 中継所に対して配達結果の連絡を行います。
 	 */
 	private void notifyDeliveryResults() {
 
@@ -248,10 +265,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現段階では,
-	 * 待機所から中継所進入点までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
+	 * 待機所から中継所進入点に移動します。
 	 */
 	private void moveFromStandbyStaToEntryPoint() {
 		final float DISTANCE_FROM_STANDBYSTA_TO_ENTRYPOINT = 76f;
@@ -260,10 +274,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現段階では,
-	 * 合流点から待機所までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
+	 * 合流点から待機所に移動します。
 	 */
 	private void moveFromIntersectionToStandbySta() {
 		final float DISTANCE_INTERSECTION_TO_STANDBYSTA = 118.5f;
@@ -272,10 +283,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現段階では,
-	 * 中継所進入点から中継所までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
+	 * 中継所進入点から中継所に移動します。
 	 */
 	private void moveFromEntryPointToRelaySta() {
 
@@ -293,10 +301,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現段階では,
-	 * 中継所進入点から合流点までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
+	 * 中継所進入点から合流点に移動します。
 	 */
 	private void moveFromEntryPointToIntersection() {
 		final float DISTANCE_ENTRYPOINT_TO_INTERSECTION = 39.5f;
@@ -305,10 +310,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現段階では,
-	 * 合流点から中継所進入点までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
+	 * 合流点から中継所進入点に移動します。
 	 */
 	private void moveFromIntersectionToEntryPoint() {
 		final float DISTANCE_INTERSECTION_TO_ENTRYPOINT = 38.0f;
@@ -317,10 +319,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現段階では,
-	 * 合流点から中継所までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
+	 * 合流点から中継所に移動します。
 	 */
 	private void moveFromIntersectionToRelaySta() {
 		final float DISTANCE_INTERSECTION_TO_RELAYSTA = 60f;
@@ -329,10 +328,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現段階では,
-	 * 中継所から合流点までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
+	 * 中継所から合流点に移動します。
 	 */
 	private void moveFromRelayStaToIntersection() {
 		final float DISTANCE_RELAYSTA_TO_INTERSECTION = 58.5f;
@@ -341,10 +337,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現段階では,
-	 * 中継所進入点から受取人宅基準点までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
+	 * 中継所進入点から受取人宅基準点移動します。
 	 */
 	private void moveFromEntryPointToStartingPoint() {
 		final float DISTANCE_ENTRYPOINT_TO_CURVE = 50f;
@@ -355,10 +348,7 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現段階では,
-	 * 受取人宅基準点から中継所進入点までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
+	 * 受取人宅基準点から中継所進入点に移動します。
 	 */
 	private void moveFromStartingPointToEntryPoint() {
 		final float DISTANCE_STARTINGPOINT_TO_CURVE = 121f;
@@ -369,14 +359,9 @@ public class Deliverer extends Robot {
 	}
 
 	/**
-	 * 現在行 = (現在番地 / 4)
-	 * 目的行 = (目的番地 / 4)
-	 * 現在行 == 目的行を判定し,
-	 * trueならば, (1区間の距離 * (目的番地 - 現在番地)) だけ正方向に移動する
-	 * falseならば, (1区間の距離 * 現在番地) だけ負方向に移動する -> 90度回転 -> (1区間の距離 * 目的番地) だけ移動する
-	 *
-	 * ローカル定数
-	 * 1区間の距離
+	 * 現在いる番地から配達先の番地へ移動します。
+	 * @param from 現在いる番地
+	 * @param to 配達先の番地
 	 */
 	private void moveNextRecipient(int from, int to) {
 		int currentAddress 	= from-1;
@@ -445,6 +430,10 @@ public class Deliverer extends Robot {
 		}
 	}
 
+	/**
+	 * 現在いる番地から受取人宅基準点に移動する。
+	 * @param from 現在いる番地
+	 */
     private void goBackToStartingPoint(int from) {
 		int currentAddress = from-1;
     	final int RECIPIENT_BLOCK 		= 4;
@@ -478,21 +467,25 @@ public class Deliverer extends Robot {
     	}
    }
 
-
+	/**
+	 * 行方面に一区画分移動する。
+	 */
     private void moveRecipientSide() {
     	final float WIDTH_BETWEEN_RECIPIENT = 44.8f;
 
     	lineTrace(WIDTH_BETWEEN_RECIPIENT,THIRD_GEAR_SPEED);
 		initRotate();
     }
-
+	/**
+	 * 列方面に一区画分移動する。
+	 */
     private void moveRecipientHeight() {
     	final float HEIGHT_BETWEEN_RECIPIENT = 44.5f;
 		lineTrace(HEIGHT_BETWEEN_RECIPIENT,THIRD_GEAR_SPEED);
     }
 
 	/**
-	 * 配達用の荷物リスト, 受取時間表, 受取人不在の荷物リスト, 宛先間違いの荷物リストを空にする
+	 * 配達用の荷物リスト, 受取時間表, 受取人不在の荷物リスト, 宛先間違いの荷物リストを空にする。
 	 */
 	private void init() {
          this.deliveredParcels.clear();
@@ -502,8 +495,9 @@ public class Deliverer extends Robot {
 
 	}
     /**
-    *中継所へ侵入確認を行う
-    */
+	 * 中継所へ侵入確認を行います。
+	 * @return boolean
+	 */
      private boolean checkCanEntry(){
 		 commToRelayStation.writeMethod("canEntry");
 		 return commToRelayStation.readBoolean();
