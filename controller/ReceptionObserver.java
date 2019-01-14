@@ -16,6 +16,8 @@ public class ReceptionObserver {
 
 	private boolean hasCollector;
 
+	private boolean isTimeOut;
+
 	private static final int THRESHOLD_AMOUNT = 3;
 
 	private static final int WAIT_TIME = 90000;
@@ -28,6 +30,7 @@ public class ReceptionObserver {
 		this.reception    = parent;
 		this.numOfStocks  = 0;
 		this.hasCollector = true;
+		this.isTimeOut    = false;
 	}
 
 	/**
@@ -37,6 +40,7 @@ public class ReceptionObserver {
 	public void init(int numOfStocks) {
 		this.numOfStocks  = numOfStocks;
 		this.hasCollector = false;
+		this.isTimeOut    = false;
 	}
 
 	/**
@@ -45,10 +49,7 @@ public class ReceptionObserver {
 	*/
 	public void update(int numOfStocks) {
 		this.numOfStocks = numOfStocks;
-
-		if(canStartTransport()) {
-			reception.promptToTransport();
-		}
+		update();
 	}
 
 	/**
@@ -57,19 +58,7 @@ public class ReceptionObserver {
 	*/
 	public void update(boolean hasCollector) {
 		this.hasCollector = hasCollector;
-
-		if(!canStartTransport()) {
-			try {
-				Thread.sleep(WAIT_TIME);
-			} catch(InterruptedException e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-		}
-
-		if(!reception.isEmpty()) {
-			reception.promptToTransport();
-		}
+		update();
 	}
 
 	/**
@@ -78,8 +67,29 @@ public class ReceptionObserver {
 	 * @param hasCollector 宅配受付所に収集担当ロボットがいるか
 	*/
 	public void update(int numOfStocks, boolean hasCollector) {
-		this.numOfStocks = numOfStocks;
-		update(hasCollector);
+		this.numOfStocks  = numOfStocks;
+		this.hasCollector = hasCollector;
+		update();
+	}
+
+	private void update() {
+		if(canStartTransport()) {
+			reception.promptToTransport();
+			return;
+		}
+		
+		try {
+			Thread.sleep(WAIT_TIME);
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		if(reception.isEmpty()) {
+			this.isTimeOut = true;
+		} else {
+			reception.promptToTransport();
+		}
 	}
 
 	/**
@@ -91,7 +101,7 @@ public class ReceptionObserver {
 	}
 
 	private boolean canStartTransport() {
-		return numOfStocks >= THRESHOLD_AMOUNT && hasCollector;
+		return (numOfStocks >= THRESHOLD_AMOUNT && hasCollector) || (isTimeOut && !reception.isEmpty());
 	}
 
 }

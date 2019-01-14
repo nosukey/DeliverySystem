@@ -75,10 +75,6 @@ public class Boundary {
 		final String SEPARATION  = ", ";
 		final String BR          = "\n";
 
-//		if(input.inputInt(BRANCH_ZERO + msg0 + SEPARATION + BRANCH_ONE + msg1 + BR) == 0)
-//			return true;
-//		else
-//			return false;
 		return input.inputInt(BRANCH_ZERO + msg0 + SEPARATION + BRANCH_ONE + msg1 + BR) == 0;
 	}
 

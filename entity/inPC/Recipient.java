@@ -128,9 +128,10 @@ public class Recipient {
 	 * @return 存在する場合はtrue,存在しない場合はfalse。
 	 */
 	public boolean contains(PersonInfo info) {
-		for(PersonInfo recipientInfo : this.recipientsInfo) {
-			if(recipientInfo.equals(info)) return true;
-		}
-		return false;
+//		for(PersonInfo recipientInfo : this.recipientsInfo) {
+//			if(recipientInfo.equals(info)) return true;
+//		}
+//		return false;
+		return Arrays.asList(recipientsInfo).contains(info);
 	}
 }

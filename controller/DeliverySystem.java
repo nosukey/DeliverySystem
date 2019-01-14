@@ -86,9 +86,9 @@ public class DeliverySystem {
 		myself.io = new Boundary();
 		myself.io.printMessage("DeliverySystem is started.");
 
-		myself.headquarter.execute();
-		myself.reception.execute();
-		myself.recipient.execute();
+		// myself.headquarter.execute();
+		// myself.reception.execute();
+		// myself.recipient.execute();
 
 		try {
 			Thread.sleep(DELAY);
