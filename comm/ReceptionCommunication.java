@@ -111,21 +111,17 @@ public class ReceptionCommunication extends Communication implements Runnable {
 	}
 
 	private void connectToPC() throws IOException {
-		System.out.println("Recep-Head connecting is started.");
 		socket = new Socket(target, port);
 
-		dis = new DataInputStream(socket.getInputStream());
-		dos = new DataOutputStream(socket.getOutputStream());
-		System.out.println("Recep-Head connecting is finished.");
+		setDis(new DataInputStream(socket.getInputStream()));
+		setDos(new DataOutputStream(socket.getOutputStream()));
 	}
 
 	private void connectToEV3() throws IOException {
-		System.out.println("Recep-Coll connecting is started.");
 		connection = Connector.open(target);
 
-		dis = new DataInputStream(((InputConnection)connection).openInputStream());
-		dos = new DataOutputStream(((OutputConnection)connection).openOutputStream());
-		System.out.println("Recep-Coll connecting is finished.");
+		setDis(new DataInputStream(((InputConnection)connection).openInputStream()));
+		setDos(new DataOutputStream(((OutputConnection)connection).openOutputStream()));
 	}
 
 }

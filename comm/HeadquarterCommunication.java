@@ -70,7 +70,6 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 			else
 				connect();
 		} catch(IOException e) {
-			System.out.println("Exception: Headquarter's connection failed.");
 			Delay.msDelay(DELAY_TIME);
 			System.exit(1);
 		}
@@ -125,14 +124,10 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 	*/
 	@Override
 	protected void connect() throws IOException {
-		System.out.println("Head-Relay connecting is started.");
-
 		connection = Connector.open(target);
 
-		dis = new DataInputStream(((InputConnection)connection).openInputStream());
-		dos = new DataOutputStream(((OutputConnection)connection).openOutputStream());
-
-		System.out.println("Head-Relay connecting is finished.");
+		setDis(new DataInputStream(((InputConnection)connection).openInputStream()));
+		setDos(new DataOutputStream(((OutputConnection)connection).openOutputStream()));
 	}
 
 	/**
@@ -140,15 +135,11 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 	*/
 	@Override
 	protected void waitForConnection() throws IOException {
-		System.out.println("Head-Recep connecting is started.");
-
 		srvSocket = new ServerSocket(port);
 		socket    = srvSocket.accept();
 
-		dis = new DataInputStream(socket.getInputStream());
-		dos = new DataOutputStream(socket.getOutputStream());
-
-		System.out.println("Head-Recep connecting is finished.");
+		setDis(new DataInputStream(socket.getInputStream()));
+		setDos(new DataOutputStream(socket.getOutputStream()));
 	}
 
 }

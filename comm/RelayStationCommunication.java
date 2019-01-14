@@ -75,7 +75,7 @@ public class RelayStationCommunication extends Communication implements Runnable
 	*/
 	@Override
 	protected void selectMethod(String methodName, String data) {
-		String[] params = null;
+		String[] params;
 
 		switch(methodName) {
 			case "receiveParcels":
@@ -119,8 +119,8 @@ public class RelayStationCommunication extends Communication implements Runnable
 		if(connection == null)
 			throw new IOException("Can't connect.");
 
-		dis = connection.openDataInputStream();
-		dos = connection.openDataOutputStream();
+		setDis(connection.openDataInputStream());
+		setDos(connection.openDataOutputStream());
 	}
 
 	/**
@@ -131,8 +131,8 @@ public class RelayStationCommunication extends Communication implements Runnable
 		LCD.drawString("Ready", 0, 2);
 		connection = connector.waitForConnection(TIMEOUT, BTConnection.RAW);
 
-		dis = connection.openDataInputStream();
-		dos = connection.openDataOutputStream();
+		setDis(connection.openDataInputStream());
+		setDos(connection.openDataOutputStream());
 
 	}
 

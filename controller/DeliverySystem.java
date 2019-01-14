@@ -107,7 +107,7 @@ public class DeliverySystem {
 
 	private synchronized void executeReceiveRequest() {
 		PersonInfo clientInfo    = null;
-		PersonInfo recipientInfo = null;;
+		PersonInfo recipientInfo = null;
 
 		clientInfo = inputPersonInfo("依頼人");
 		if(clientInfo == null) return;
@@ -144,7 +144,7 @@ public class DeliverySystem {
 
 		Record targetRecord = this.headquarter.referRecord(id);
 
-		PersonInfo clientInfo = null;
+		PersonInfo clientInfo;
 
 		while(true) {
 			do {

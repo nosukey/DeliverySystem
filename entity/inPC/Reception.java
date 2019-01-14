@@ -99,8 +99,6 @@ public class Reception {
 		Record record = new Record(newId, clientInfo, recipientInfo, receptionDate);
 		recordsForReporting.add(record);
 
-		System.out.println("receiveRequest: " + PersonInfo.encode(clientInfo) + ", " + PersonInfo.encode(recipientInfo));
-
 		newId++;
 
 		// オブザーバー更新するを追加する箇所
@@ -160,7 +158,7 @@ public class Reception {
  		reportTransportFailure(parcels);
  		redeliveryParcels.addAll(parcels);
 
- 		observer.update(true);
+ 		observer.update(parcels.size(), true);
  	}
 
 	private void reportTransportStarting(List<Record> records, List<Integer> requestIds) {

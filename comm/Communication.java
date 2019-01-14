@@ -22,11 +22,11 @@ import lejos.utility.Delay;
 */
 public abstract class Communication {
 
-	protected DataInputStream dis;
-	protected DataOutputStream dos;
+	private DataInputStream dis;
+	private DataOutputStream dos;
 
-	protected static final int TIMEOUT = 0;
-	protected static final int DELAY_TIME = 5000;
+	static final int TIMEOUT = 0;
+	static final int DELAY_TIME = 5000;
 	private static final String DUMMY = "dummy";
 
 	private static final String METHOD_SEPARATION = "%";
@@ -55,6 +55,19 @@ public abstract class Communication {
 			return this.bytes;
 		}
 	}
+
+	/**
+	 * DataInputStreamに値を代入します。
+	 * @param dis DataInputStreamのインスタンス
+	 */
+	void setDis(DataInputStream dis){ this.dis = dis;}
+
+	/**
+	 * DataOutputStreamに値を代入します。
+	 * @param dos DataOutputStreamのインスタンス
+	 */
+	void setDos(DataOutputStream dos){ this.dos = dos;}
+
 
 	/**
 	 * サブシステムのメソッドを呼び出します。
@@ -280,10 +293,11 @@ public abstract class Communication {
 	}
 
 	private String encodeRequestIds(List<Integer> requestIds) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 
 		for(Integer id : requestIds) {
-			result += (id.toString() + LIST_SEPARATION);
+			result.append(id);
+			result.append(LIST_SEPARATION);
 		}
 
 		if(result.isEmpty())
@@ -310,10 +324,11 @@ public abstract class Communication {
 	}
 
 	private String encodeParcels(List<Parcel> parcels) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 
 		for(Parcel parcel : parcels) {
-			result += (Parcel.encode(parcel) + LIST_SEPARATION);
+			result.append(Parcel.encode(parcel));
+			result.append(LIST_SEPARATION);
 		}
 
 		if(result.isEmpty())
@@ -340,10 +355,12 @@ public abstract class Communication {
 	}
 
 	private String encodeRecords(List<Record> records) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
+
 
 		for(Record record : records) {
-			result += (Record.encode(record) + LIST_SEPARATION);
+			result.append(Record.encode(record));
+			result.append(LIST_SEPARATION);
 		}
 
 		if(result.isEmpty())
@@ -371,10 +388,13 @@ public abstract class Communication {
 	}
 
 	private String encodeDateMap(Map<Integer, Date> dateMap) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 
 		for(Map.Entry<Integer, Date> entry : dateMap.entrySet()) {
-			result += (entry.getKey().toString() + SET_SEPARATION + Date.encode(entry.getValue()) + LIST_SEPARATION);
+			result.append(entry.getKey());
+			result.append(SET_SEPARATION);
+			result.append(Date.encode(entry.getValue()));
+			result.append(LIST_SEPARATION);
 		}
 
 		if(result.isEmpty())

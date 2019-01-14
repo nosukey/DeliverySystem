@@ -44,7 +44,6 @@ public class RecipientCommunication extends Communication implements Runnable {
 		try {
 			connect();
 		} catch(IOException e) {
-			System.out.println("Exception: Recipient's connection failed.");
 			Delay.msDelay(DELAY_TIME);
 			System.exit(1);
 		}
@@ -84,12 +83,10 @@ public class RecipientCommunication extends Communication implements Runnable {
 	*/
 	@Override
 	protected void connect() throws IOException {
-		System.out.println("Recip-Deli connecting is started.");
 		connection = Connector.open(target);
 
-		dis = new DataInputStream(((InputConnection)connection).openInputStream());
-		dos = new DataOutputStream(((OutputConnection)connection).openOutputStream());
-		System.out.println("Recip-Deli connecting is finished.");
+		setDis(new DataInputStream(((InputConnection)connection).openInputStream()));
+		setDos(new DataOutputStream(((OutputConnection)connection).openOutputStream()));
 	}
 
 	/**

@@ -79,8 +79,8 @@ public class DelivererCommunication extends Communication implements Runnable {
 	protected void waitForConnection() throws IOException {
 		connection = connector.waitForConnection(TIMEOUT, BTConnection.RAW);
 
-		dis = connection.openDataInputStream();
-		dos = connection.openDataOutputStream();
+		setDis(connection.openDataInputStream());
+		setDos(connection.openDataOutputStream());
 
 		connector.close();
 	}
