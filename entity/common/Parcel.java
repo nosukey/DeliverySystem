@@ -2,8 +2,8 @@ package entity.common;
 
 /**
  * 荷物クラスです。
- * @author 山下京之介
- * @version 1.0 (2019/01/14)
+ * @author
+ * @version 1.0
 */
 public class Parcel {
 

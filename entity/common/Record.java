@@ -2,8 +2,8 @@ package entity.common;
 
 /**
  * 配達記録クラスです。
- * @author 山下京之介
- * @version 1.0 (2019/01/14)
+ * @author
+ * @version 1.0
 */
 public class Record {
 
@@ -226,7 +226,6 @@ public class Record {
 	 * RecordオブジェクトをStringに変換し、返します。
 	 * @return String 配達記録の文字列表現。
 	 */
-	@Override
 	public String toString() {
 		final String NOTHING = "--/--/--/ --:--";
 
