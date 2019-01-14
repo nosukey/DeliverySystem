@@ -48,6 +48,10 @@ public class Deliverer extends Robot {
 	 * 配達担当ロボットのButtonが押されたことを認識するためのクラスです。
 	 */
 	private class ButtonEventListener implements KeyListener {
+		/**
+		 * 配達担当ロボットのボタンが押された場合に動作準備を始めます。
+		 * @param key Keyクラス
+		 */
 		public void keyPressed(Key key) {
 			switch(key.getId()) {
 				case Button.ID_UP:
@@ -64,7 +68,6 @@ public class Deliverer extends Robot {
 		 * 配達担当ロボットのボタンが離された時に何も行いません。
 		 * @param key Keyクラス
 		 */
-		@Override
 		public void keyReleased(Key key) {}
 	}
 
