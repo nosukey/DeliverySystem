@@ -17,7 +17,7 @@ import lejos.utility.Delay;
  * サブシステム「配達担当ロボット」クラスです。
  * 他のサブシステム「中継所」クラス、「受取人宅」クラスと通信を行います。
  * @author 山下京之介
- * @version 1.0(2019/01/15)
+ * @version 1.0(2019/01/14)
  */
 public class Deliverer extends Robot {
 
