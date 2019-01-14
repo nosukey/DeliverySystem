@@ -160,7 +160,7 @@ public class Reception {
  		reportTransportFailure(parcels);
  		redeliveryParcels.addAll(parcels);
 
- 		observer.update(true);
+ 		observer.update(parcels.size(),true);
  	}
 
 	private void reportTransportStarting(List<Record> records, List<Integer> requestIds) {
