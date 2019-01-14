@@ -177,7 +177,7 @@ public class Collector extends Robot {
 	 */
 	private void moveFromRelayStaToReception() {
 		final float DISTANCE_RELAYSTA_TO_ENTRYPOINT = 80f;
-		final float DISTANCE_ENTRYPOINT_TO_RECEPTION = 468.5f;
+		final float DISTANCE_ENTRYPOINT_TO_RECEPTION = 455.5f;
 		final int FOURTH_GEAR_SPEED = 200;
 
 		setIsRightSide(true);
@@ -207,12 +207,13 @@ public class Collector extends Robot {
 	private void moveFromEntryPointToRelaySta() {
 
 		final float DISTANCE_MINUTE = 8f;
-		final float DISTANCE_ENTRYPOINT_TO_RELAYSTA = 50f;
+		final float DISTANCE_ENTRYPOINT_TO_RELAYSTA = 43f;
 		final int FOURTH_GEAR_SPEED = 200;
 		final int FIFTH_GEAR_SPEED = 365;
 
 		lineTrace(DISTANCE_MINUTE, FIFTH_GEAR_SPEED);
 
+		rotate(6);
 		setIsRightSide(false);
 
 		lineTrace(DISTANCE_ENTRYPOINT_TO_RELAYSTA,FOURTH_GEAR_SPEED);
