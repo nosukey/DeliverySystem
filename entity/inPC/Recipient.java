@@ -8,7 +8,6 @@ import entity.common.Date;
 import entity.common.PersonInfo;
 import entity.common.Parcel;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
