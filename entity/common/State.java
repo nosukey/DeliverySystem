@@ -39,7 +39,7 @@ public enum State {
 
 	private final String text;
 
-	private State(final String str) {
+	State(final String str) {
 		this.text = str;
 	}
 

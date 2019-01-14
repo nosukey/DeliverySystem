@@ -7,6 +7,8 @@ import comm.RecipientCommunication;
 import entity.common.Date;
 import entity.common.PersonInfo;
 import entity.common.Parcel;
+
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -126,9 +128,10 @@ public class Recipient {
 	 * @return 存在する場合はtrue,存在しない場合はfalse。
 	 */
 	public boolean contains(PersonInfo info) {
-		for(PersonInfo recipientInfo : this.recipientsInfo) {
-			if(recipientInfo.equals(info)) return true;
-		}
-		return false;
+//		for(PersonInfo recipientInfo : this.recipientsInfo) {
+//			if(recipientInfo.equals(info)) return true;
+//		}
+//		return false;
+		return Arrays.asList(recipientsInfo).contains(info);
 	}
 }

@@ -96,7 +96,7 @@ public class Collector extends Robot {
 	 */
 	public void transportParcels(List<Parcel> parcels) {
 		this.transportedParcels.addAll(parcels);
-		isRightSide=true;
+		setIsRightSide(true);
 
 		moveFromReceptionToRelaySta();
 
@@ -113,7 +113,7 @@ public class Collector extends Robot {
 
 		parking();
 
-		isRightSide=true;
+		setIsRightSide(true);
 
 		commToReception.writeMethod("receiveSuccessNotification");
 
@@ -130,7 +130,7 @@ public class Collector extends Robot {
 
 		parking();
 
-		isRightSide=true;
+		setIsRightSide(true);
 
 		commToReception.writeMethodWithParcels("receiveFailureNotification",this.transportedParcels);
 
@@ -155,7 +155,7 @@ public class Collector extends Robot {
 	private void moveFromReceptionToRelaySta() {
 		final int ENTRY_WAITING_TIME = 1000;
 		final int ADJAST_MINUTE_ANGLE = 3;
-		isRightSide = true;
+		setIsRightSide(true);
 
 		moveFromReceptionToEntryPoint();
 
@@ -180,7 +180,7 @@ public class Collector extends Robot {
 		final float DISTANCE_ENTRYPOINT_TO_RECEPTION = 468.5f;
 		final int FOURTH_GEAR_SPEED = 200;
 
-		isRightSide = true;
+		setIsRightSide(true);
 
 		lineTrace(DISTANCE_RELAYSTA_TO_ENTRYPOINT,FOURTH_GEAR_SPEED);
 		lineTrace(DISTANCE_ENTRYPOINT_TO_RECEPTION,THIRD_GEAR_SPEED);
@@ -213,7 +213,7 @@ public class Collector extends Robot {
 
 		lineTrace(DISTANCE_MINUTE, FIFTH_GEAR_SPEED);
 
-		isRightSide = false;
+		setIsRightSide(false);
 
 		lineTrace(DISTANCE_ENTRYPOINT_TO_RELAYSTA,FOURTH_GEAR_SPEED);
 	}

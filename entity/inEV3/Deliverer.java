@@ -33,6 +33,11 @@ public class Deliverer extends Robot {
 
 	private DelivererCommunication commToRecipient;
 
+	private final int SECOND_GEAR_SPEED = 175;
+
+	private final int RIGHT_ANGLE = 90;
+
+
 	/*
 	 * ロボットの方向転換時に限定角（0,90,-90,180)から搬送路の片側の適切な位置に調整するための角度を設定
 	 */
@@ -130,7 +135,7 @@ public class Deliverer extends Robot {
 		final int WAITING_TIME = 20000;
 		final int ADJAST_ANGLE = 3;
 
-		isRightSide = false;
+		setIsRightSide(false);
 
 		/*
 		 * 中継所から合流点まで移動する
@@ -166,7 +171,7 @@ public class Deliverer extends Robot {
         int targetAddress;
 
         this.deliveredParcels.addAll(parcels);
-        super.isRightSide = false;
+        setIsRightSide(false);
 
         /*
          * 中継所から合流点へ移動する
@@ -223,7 +228,7 @@ public class Deliverer extends Robot {
 	 * 中継所に対して配達の有無の確認を行います。
 	 */
 	private void goCheck() {
-		isRightSide = true;
+		setIsRightSide(true);
 		/*
          *待機所から中継所進入点へ移動する
          */
@@ -244,7 +249,7 @@ public class Deliverer extends Robot {
 	private void notifyDeliveryResults() {
 
 
-        isRightSide = true;
+        setIsRightSide(true);
         /*
          *受取人宅基準点から中継所進入点まで移動する
          */
@@ -292,10 +297,10 @@ public class Deliverer extends Robot {
 		}
 
 		moveFromEntryPointToIntersection();
-		super.rotate(-RIGHT_ANGLE + ADJAST_ANGLE);
+		rotate(-RIGHT_ANGLE + ADJAST_ANGLE);
 
 		moveFromIntersectionToRelaySta();
-		super.rotate(-STRAIGHT_ANGLE);
+		rotate(-STRAIGHT_ANGLE);
 	}
 
 	/**
@@ -381,8 +386,7 @@ public class Deliverer extends Robot {
 		} else if(currentAddress == nextAddress) {
 			rotate(STRAIGHT_ANGLE-ADJAST_ANGLE);
 			initRotate();
-			isRightSide = true;
-
+			setIsRightSide(true);
 		} else {
 			/*
 			 * 現在の番地と次の番地が同じ行にある場合
@@ -399,7 +403,7 @@ public class Deliverer extends Robot {
 				}else {
 					rotate(STRAIGHT_ANGLE-ADJAST_ANGLE);
 					initRotate();
-					isRightSide = true;
+					setIsRightSide(true);
 
 					/*
 					 * 受取人基準点まで行方向に移動
@@ -411,7 +415,7 @@ public class Deliverer extends Robot {
 					initRotate();
 				}
 
-				isRightSide = false;
+				setIsRightSide(false);
 
 				for(int i=CURRENT_LINE;i<NEXT_LINE;i++) {
 					moveRecipientHeight();
@@ -441,8 +445,7 @@ public class Deliverer extends Robot {
 
     	rotate(STRAIGHT_ANGLE-ADJAST_ANGLE);
     	initRotate();
-    	isRightSide = true;
-
+		setIsRightSide(true);
     	/*
     	 * 現在いる列が受取人基準点の列でない場合
     	 */
