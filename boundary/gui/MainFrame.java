@@ -244,7 +244,7 @@ public class MainFrame extends JFrame {
     /**
      * 設定された配達記録の依頼IDを削除します。
     */
-    //これ現在は使われていない。けどでバックとか何かに使う？？
+    //TODO これ現在は使われていない。けどでバックとか何かに使う？？
     public void resetComfirmSelection() {
         ((ConfirmingPage)this.pageMap.get(PageName.CONFIRMING)).removeRequestIds();
     }
