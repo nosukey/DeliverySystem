@@ -4,6 +4,11 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+/**
+ * ユーザーが受けたいサービスを選択することができるページを作成するクラスです。
+ * @author 池田はるか
+ * @version 1.0(2019/01/13)
+ */
 public class UserTopPage extends BasePage {
     private final int LETTER_SIZE = 24;
 
@@ -20,6 +25,10 @@ public class UserTopPage extends BasePage {
 
     private static final PageName NAME = PageName.USER_TOP;
 
+    /**
+     * ユーザーが受けたいサービスを選択することができるページを作成します。
+     * @param frame メインフレーム
+    */
     public UserTopPage(MainFrame frame){
         super(frame, NAME, new JLabel(NAME.toString()));
 
@@ -39,10 +48,18 @@ public class UserTopPage extends BasePage {
 
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public void refresh(){
 
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public boolean canChangePage(PageName page) {
         return true;
     }

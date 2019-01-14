@@ -4,6 +4,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
 
+/**
+ * 受取人宅の在否をチェックボックスで設定するページのクラスです。
+ * @author 大場貴斗
+ * @version 1.0(2019/01/13)
+ */
 public class SettingPage extends BasePage{
     /*配列ckboxの行と列の大きさ*/
     private final int LINE_SIZE = 4;
@@ -28,6 +33,10 @@ public class SettingPage extends BasePage{
     private JCheckBox[][] ckbox;
     private static final PageName NAME = PageName.SETTING;
 
+    /**
+     * 受取人宅の在否をチェックボックスで設定するページを作成します。
+     * @param frame メインフレーム
+    */
     public SettingPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));
 
@@ -36,7 +45,7 @@ public class SettingPage extends BasePage{
         int block=1;  //番地の値(1から16まで)
         for(int i = 0 ; i < LINE_SIZE ; i++){
             for(int j = 0 ; j < COLUMN_SIZE ; j++){
-                ckbox[i][j] = new JCheckBox( block + "番地");
+                ckbox[i][j] = new JCheckBox( block + "番地", true);
                 ckbox[i][j].setBorderPainted(true);
                 block++;
             }
@@ -57,14 +66,26 @@ public class SettingPage extends BasePage{
         super.addComponent(button, BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H);
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public void refresh(){
 
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public boolean canChangePage(PageName page) {
         return true;
     }
 
+    /**
+     * 受取人宅の在否の配列を返します。
+     *  @return 受取人宅の在否の配列
+     */
     public boolean[] getBools() {
         boolean[] bools = new boolean[LINE_SIZE*COLUMN_SIZE];
         for(int i=0; i<LINE_SIZE; i++) {

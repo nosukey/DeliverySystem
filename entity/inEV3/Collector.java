@@ -1,16 +1,22 @@
 package entity.inEV3;
 
-import comm.CollectorCommunication;
-import entity.common.Parcel;
 import java.util.LinkedList;
 import java.util.List;
 
+import comm.CollectorCommunication;
+import entity.common.Parcel;
 import lejos.hardware.Button;
 import lejos.hardware.Key;
 import lejos.hardware.KeyListener;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
+/**
+ *サブシステム「収集担当ロボット」クラスです。
+ *他のサブシステム「宅配受付所」クラス、「中継所」クラスと通信を行います。
+ *@author 池田はるか
+ *@version 1.0(2019/01/13)
+ */
 public class Collector extends Robot {
 
 	private List<Parcel> transportedParcels;
@@ -24,9 +30,7 @@ public class Collector extends Robot {
 			switch(key.getId()) {
 				case Button.ID_UP:
 					openSensor();
-					break;
-				case Button.ID_DOWN:
-					LCD.drawString("checkCanEntry(): " + checkCanEntry(), 0, 5);
+					setParkingDistance();
 					break;
 				default:
 					break;
@@ -42,7 +46,15 @@ public class Collector extends Robot {
 		this.commToRelayStation = null;
 	}
 
+	/**
+	 * 収集担当ロボットを起動します。
+	 * 中継所、宅配受付所からの接続待ち状態に入ります。
+	 * @param args コマンドライン引数
+	*/
 	public static void main(String[] args) {
+
+		final int CONNECTION_INTERVAL = 60000;
+
 		Collector myself = new Collector();
 
 		myself.commToRelayStation = new CollectorCommunication(myself);
@@ -53,16 +65,18 @@ public class Collector extends Robot {
 
 		new Thread(myself.commToRelayStation).start();
 
-		Delay.msDelay(60000);
+		Delay.msDelay(CONNECTION_INTERVAL);
 		new Thread(myself.commToReception).start();
 
 		ButtonEventListener listener = myself.new ButtonEventListener();
 		Button.UP.addKeyListener(listener);
-		Button.DOWN.addKeyListener(listener);
 
 		LCD.drawString("Ready.", 0, 2);
 	}
 
+	/**
+	 * 通信が正常に確立されたことを表示します。
+	 */
 	public void connected() {
 		LCD.drawString("Connected.", 0, 1);
 
@@ -77,76 +91,56 @@ public class Collector extends Robot {
 	}
 
 	/**
-	 * ユースケース「荷物を搬送する」を包含するメソッド
-	 * 統合テストで確認してください
-	 *
+	 * 宅配受付所で渡された荷物を宅配受付所から中継所まで搬送します。
+	 * @param parcels 宅配受付所で渡される荷物リスト。
 	 */
 	public void transportParcels(List<Parcel> parcels) {
-		System.out.println("transportParcels()");
-
 		this.transportedParcels.addAll(parcels);
 		isRightSide=true;
 
 		moveFromReceptionToRelaySta();
 
-		//TODO 消す
-		System.out.println("parcels size: " + this.transportedParcels.size());
-
 		commToRelayStation.writeMethod("canSendParcels", this.transportedParcels.size());
 	}
 
 	/**
-	 * ユースケース「中継所引き渡し成功を連絡する」を包含するメソッド
-	 * 統合テストで確認してください
-	 *
+	 * 宅配受付所に中継所引き渡し成功を連絡します。
 	 */
 	public void notifySuccess() {
-		System.out.println("notifySuccess()");
-
 		moveFromRelayStaToReception();
 
 		turn();
+
+		parking();
+
 		isRightSide=true;
 
-		//TODO 消す
-		System.out.println("isRightSide(true) = "+isRightSide);
-
-		System.out.println("parcels size(0): " + this.transportedParcels.size());
 		commToReception.writeMethod("receiveSuccessNotification");
 
 		this.transportedParcels.clear();
-		System.out.println("parcels size(0): " + this.transportedParcels.size());
 	}
 
 	/**
-	 * ユースケース「中継所引き渡し失敗を連絡する」を包含するメソッド
-	 * 統合テストで確認してください
-	 *
+	 * 宅配受付所に中継所引き渡し失敗を連絡します。
 	 */
 	public void notifyFailure() {
-		System.out.println("notifyFailure()");
-
 		moveFromRelayStaToReception();
 
 		turn();
+
+		parking();
+
 		isRightSide=true;
 
-		//TODO 消す
-		System.out.println("isRightSide(true) = "+isRightSide);
-
-		System.out.println("parcels size(0): " + this.transportedParcels.size());
 		commToReception.writeMethodWithParcels("receiveFailureNotification",this.transportedParcels);
 
 		this.transportedParcels.clear();
-		System.out.println("parcels size(0): " + this.transportedParcels.size());
 	}
 
 	/**
-	 * ユースケース「荷物を渡す」を包含するメソッド
+	 * 中継所に荷物を渡します。
 	 */
 	public void sendParcels() {
-		System.out.println("sendParcels()");
-
 		commToRelayStation.writeMethodWithParcels("receiveParcels",this.transportedParcels);
 
 		notifySuccess();
@@ -159,21 +153,20 @@ public class Collector extends Robot {
 	 * 形をとる予定である
 	 */
 	private void moveFromReceptionToRelaySta() {
-		System.out.println("moveFromReceptionToRelaySta()");
-
+		final int ENTRY_WAITING_TIME = 1000;
+		final int ADJAST_MINUTE_ANGLE = 3;
 		isRightSide = true;
 
 		moveFromReceptionToEntryPoint();
 
-		//決まり次第追加する
 		//何秒か待つ
 		while(!checkCanEntry()){
-			Delay.msDelay(10000);
+			Delay.msDelay(ENTRY_WAITING_TIME);
 		}
 
 		moveFromEntryPointToRelaySta();
 
-		rotate(177);
+		rotate(STRAIGHT_ANGLE-ADJAST_MINUTE_ANGLE);
 	}
 
 	/**
@@ -183,12 +176,14 @@ public class Collector extends Robot {
 	 * 形をとる予定である
 	 */
 	private void moveFromRelayStaToReception() {
-		System.out.println("moveFromRelayStaToReception()");
+		final float DISTANCE_RELAYSTA_TO_ENTRYPOINT = 80f;
+		final float DISTANCE_ENTRYPOINT_TO_RECEPTION = 468.5f;
+		final int FOURTH_GEAR_SPEED = 200;
 
 		isRightSide = true;
 
-		lineTrace(80f,200);
-		lineTrace(468.5f,315);
+		lineTrace(DISTANCE_RELAYSTA_TO_ENTRYPOINT,FOURTH_GEAR_SPEED);
+		lineTrace(DISTANCE_ENTRYPOINT_TO_RECEPTION,THIRD_GEAR_SPEED);
 	}
 
 	/**
@@ -198,9 +193,9 @@ public class Collector extends Robot {
 	 * 形をとる予定である
 	 */
 	private void moveFromReceptionToEntryPoint() {
-		System.out.println("moveFromReceptionToEntryPoint()");
+		final float DISTANCE_RECEPTION_TO_ENTRYPOINT = 203f;
 
-		lineTrace(203f,315);
+		lineTrace(DISTANCE_RECEPTION_TO_ENTRYPOINT,THIRD_GEAR_SPEED);
 	}
 
 	/**
@@ -210,13 +205,17 @@ public class Collector extends Robot {
 	 * 形をとる予定である
 	 */
 	private void moveFromEntryPointToRelaySta() {
-		System.out.println("moveFromEntryPointToRelaySta()");
 
-		lineTrace(8f, 365);
+		final float DISTANCE_MINUTE = 8f;
+		final float DISTANCE_ENTRYPOINT_TO_RELAYSTA = 50f;
+		final int FOURTH_GEAR_SPEED = 200;
+		final int FIFTH_GEAR_SPEED = 365;
+
+		lineTrace(DISTANCE_MINUTE, FIFTH_GEAR_SPEED);
 
 		isRightSide = false;
 
-		lineTrace(50f,200);
+		lineTrace(DISTANCE_ENTRYPOINT_TO_RELAYSTA,FOURTH_GEAR_SPEED);
 	}
 
 	private boolean checkCanEntry(){

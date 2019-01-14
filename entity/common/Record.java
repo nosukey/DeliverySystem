@@ -1,5 +1,10 @@
 package entity.common;
 
+/**
+ * 配達記録クラスです。
+ * @author
+ * @version 1.0
+*/
 public class Record {
 
 	private int requestId;
@@ -26,6 +31,13 @@ public class Record {
 
 	private static final String BR = "\n";
 
+	/**
+	 * 配達記録インスタンスを生成します。
+	 * @param id 依頼ID
+	 * @param clientInfo 依頼人個人情報
+	 * @param recipientInfo 受取人個人情報
+	 * @param receptionDate 受付時間
+	*/
 	public Record(int id, PersonInfo clientInfo, PersonInfo recipientInfo, Date receptionDate) {
 		this.requestId = id;
 		this.clientInfo = clientInfo;
@@ -171,20 +183,14 @@ public class Record {
 	 * @return boolean
 	 */
 	public boolean isWrongRecipient() {
-		if(this.state == State.WRONG_RECIPIENT)
-			return true;
-		else
-			return false;
-		// refactコード記載
-		// return this.state == State.WRONG_RECIPIENT
-
+		return this.state == State.WRONG_RECIPIENT;
 	}
 
 	/**
 	 * 文字列できた情報から配達記録クラスのインスタンスを返します。
 	 *
 	 * TODO もっと良いアルゴリズムに変更したい
-	 * @params str 通信フォーマットに従った文字列。
+	 * @param str 通信フォーマットに従った文字列。
 	 * @return Recordオブジェクト。
 	 */
 	public static Record decode(String str) {

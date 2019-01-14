@@ -12,12 +12,25 @@ import javax.microedition.io.InputConnection;
 import javax.microedition.io.OutputConnection;
 import lejos.utility.Delay;
 
+/**
+ * 受取人宅専用の通信クラスです。
+ * 他のサブシステムとの通信を確立し、データの受け渡しをサポートします。
+ * @author 澤田 悠暉
+ * @version 1.0 (2019/01/14)
+*/
 public class RecipientCommunication extends Communication implements Runnable {
 
 	private Recipient recipient;
 	private String target;
 	private Connection connection;
 
+	private static final String PARAM_SEPARATION  = "&";
+
+	/**
+	 * 通信の確立に必要なインスタンスを生成します。
+	 * @param parent 受取人宅
+	 * @param target デバイスの名前やアドレス
+	*/
 	public RecipientCommunication(Recipient parent, String target) {
 		this.recipient  = parent;
 		this.target     = target;
@@ -25,9 +38,8 @@ public class RecipientCommunication extends Communication implements Runnable {
 	}
 
 	/**
-	 * 「接続する」を呼び出す
-	 * 「文字列を読み込む->操作を選択する」ループに入る
-	 */
+	 * 通信を確立し、他のサブシステムからの命令待ち状態に入ります。
+	*/
 	public void run() {
 		try {
 			connect();
@@ -44,19 +56,16 @@ public class RecipientCommunication extends Communication implements Runnable {
 	}
 
 	/**
-	 * 第1引数
-	 * 操作名には受取人宅のpublicメソッド名
-	 * 第2引数
-	 * データにはそのメソッドの引数の文字列データ
-	 *
-	 * から受取人宅のpublicメソッドを呼び出す
-	 *
-	 * TODO あとで
-	 */
+	 * 受取人宅のメソッドを呼び出します。
+	 * @param methodName メソッド名
+	 * @param data パラメータの文字列データ
+	 * {@inheritDoc}
+	*/
+	@Override
 	protected void selectMethod(String methodName, String data) {
 		switch(methodName) {
 			case "verifyRecipientInfo":
-				String[] params = data.split("&");
+				String[] params = data.split(PARAM_SEPARATION);
 				recipient.verifyRecipientInfo(
 					Integer.parseInt(params[0]),
 					PersonInfo.decode(params[1])
@@ -71,8 +80,9 @@ public class RecipientCommunication extends Communication implements Runnable {
 	}
 
 	/**
-	 * 他の通信クラスとの通信を確立する
-	 */
+	 * {@inheritDoc}
+	*/
+	@Override
 	protected void connect() throws IOException {
 		System.out.println("Recip-Deli connecting is started.");
 		connection = Connector.open(target);
@@ -82,6 +92,10 @@ public class RecipientCommunication extends Communication implements Runnable {
 		System.out.println("Recip-Deli connecting is finished.");
 	}
 
+	/**
+	 * {@inheritDoc}
+	*/
+	@Override
 	protected void waitForConnection() throws IOException {
 
 	}

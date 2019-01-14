@@ -12,6 +12,12 @@ import javax.microedition.io.InputConnection;
 import javax.microedition.io.OutputConnection;
 import lejos.utility.Delay;
 
+/**
+ * 本部専用の通信クラスです。
+ * 他のサブシステムとの通信を確立し、データの受け渡しをサポートします。
+ * @author 澤田 悠暉
+ * @version 1.0 (2019/01/14)
+*/
 public class HeadquarterCommunication extends Communication implements Runnable {
 
 	private Headquarter headquarter;
@@ -22,11 +28,24 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 	private Connection connection;
 
 	private static final int DEFAULT_PORT = -1;
+	private static final String PARAM_SEPARATION = "&";
 
+	/**
+	 * 通信の確立に必要なインスタンスを生成します。
+	 * このコンストラクタを用いて生成されたインスタンスは対EV3の通信を実現します。
+	 * @param parent 本部
+	 * @param target デバイスの名前やアドレス
+	*/
 	public HeadquarterCommunication(Headquarter parent, String target) {
 		this(parent, target, DEFAULT_PORT);
 	}
 
+	/**
+	 * 通信の確立に必要なインスタンスを生成します。
+	 * このコンストラクタを用いて生成されたインスタンスは対PCの通信を実現します。
+	 * @param parent 本部
+	 * @param port ポート番号
+	*/
 	public HeadquarterCommunication(Headquarter parent, int port) {
 		this(parent, null, port);
 	}
@@ -42,9 +61,8 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 
 
 	/**
-	 * 「接続する」を呼び出す
-	 * 「文字列を読み込む->操作を選択する」ループに入る
-	 */
+	 * 通信を確立し、他のサブシステムからの命令待ち状態に入ります。
+	*/
 	public void run() {
 		try {
 			if(target == null)
@@ -64,19 +82,16 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 	}
 
 	/**
-	 * 第1引数
-	 * 操作名には本部のpublicメソッド名
-	 * 第2引数
-	 * データにはそのメソッドの引数の文字列データ
-	 *
-	 * から本部のpublicメソッドを呼び出す
-	 *
-	 * TODO あとで
-	 */
+	 * 本部のメソッドを呼び出します。
+	 * @param methodName メソッド名
+	 * @param data パラメータの文字列データ
+	 * {@inheritDoc}
+	*/
+	@Override
 	protected void selectMethod(String methodName, String data) {
 		switch(methodName) {
 			case "receiveTransportStartingReport":
-				String[] params = data.split("&");
+				String[] params = data.split(PARAM_SEPARATION);
 				headquarter.receiveTransportStartingReport(
 					decodeRecords(params[0]),
 					decodeRequestIds(params[1])
@@ -106,8 +121,9 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 	}
 
 	/**
-	 * 他の通信クラスとの通信を確立する
-	 */
+	 * {@inheritDoc}
+	*/
+	@Override
 	protected void connect() throws IOException {
 		System.out.println("Head-Relay connecting is started.");
 
@@ -119,6 +135,10 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 		System.out.println("Head-Relay connecting is finished.");
 	}
 
+	/**
+	 * {@inheritDoc}
+	*/
+	@Override
 	protected void waitForConnection() throws IOException {
 		System.out.println("Head-Recep connecting is started.");
 

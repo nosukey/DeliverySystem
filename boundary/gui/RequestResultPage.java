@@ -5,6 +5,11 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+/**
+ * 依頼情報の確認ページを作成するクラスです。
+ * @author 池田はるか
+ * @version 1.0(2019/01/13)
+ */
 public class RequestResultPage extends BasePage {
   /* ラベルの位置と文字のサイズ */
     private final int LABEL_W = 220;
@@ -37,6 +42,10 @@ public class RequestResultPage extends BasePage {
     private static final int ADDRESS_ID = 2;
     private static final int PHONE_ID   = 3;
 
+    /**
+     * 依頼情報の確認ページを作成します。
+     * @param frame メインフレーム
+    */
     public RequestResultPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));
 
@@ -89,6 +98,10 @@ public class RequestResultPage extends BasePage {
         super.addComponent(moveSelectButton, OK_BUTTON_X, OK_BUTTON_Y, OK_BUTTON_W, OK_BUTTON_H);
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public void refresh(){
         for(JLabel output : leftOutput) {
             output.setText("");
@@ -98,10 +111,18 @@ public class RequestResultPage extends BasePage {
         }
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public boolean canChangePage(PageName page) {
         return true;
     }
 
+    /**
+     * 依頼結果を設定します。
+     * @param data 依頼結果
+    */
     public void setOutputs(ParamData data) {
         leftOutput[ID_ID].setText("" + data.getRequestId());
         leftOutput[NAME_ID].setText(data.getClientName());

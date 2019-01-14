@@ -12,22 +12,41 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+/**
+ * GUIのフレームのクラスです。
+ * ページ遷移の管理をし、コントローラーと情報のやりとりをします。
+ * @author 澤田 悠暉
+ * @version 1.0(2019/01/13)
+ */
 public class MainFrame extends JFrame {
     private DeliverySystem system;
     private Map<PageName, BasePage> pageMap;
 
     private final String ERROR_MESSAGE = "入力が正しくありません.";
 
+    /**
+     * ページ遷移するためのアクションリスナーです。
+    */
     public class MovePageActionListener implements ActionListener {
         private JFrame parent;
         private PageName from, to;
 
+        /**
+         * フレームと現在表示してるページと次に表示されるページを設定します。
+         * @param frame フレーム
+         * @param from 現在のページ名
+         * @param to 次のページ名
+         */
         public MovePageActionListener(JFrame frame, PageName from, PageName to) {
             this.parent = frame;
             this.from   = from;
             this.to     = to;
         }
 
+        /**
+         * {@inheritDoc}
+        */
+        @Override
         public void actionPerformed(ActionEvent e) {
             BasePage page = pageMap.get(this.from);
             if(page.canChangePage(this.to)) {
@@ -44,14 +63,23 @@ public class MainFrame extends JFrame {
         }
     }
 
+    /**
+     * ダイアログを表示するためのアクションリスナーです。
+    */
     public class MoveDialogActionListener implements ActionListener {
         private JFrame parent;
         private String title;
         private String msg;
         private PageName from, to;
 
-        private final String ERROR_MESSAGE = "入力が正しくありません.";
-
+        /**
+         * 表示するダイアログを設定します。
+         * @param frame フレーム
+         * @param msg ダイアログに表示されるメッセージ
+         * @param title 表示されるダイアログのタイトル
+         * @param from 現在のページ
+         * @param to 次のページ
+         */
         public MoveDialogActionListener(JFrame frame, String msg, String title, PageName from, PageName to) {
             this.parent = frame;
             this.title  = title;
@@ -60,6 +88,10 @@ public class MainFrame extends JFrame {
             this.to     = to;
         }
 
+        /**
+         * {@inheritDoc}
+        */
+        @Override
         public void actionPerformed(ActionEvent e) {
             BasePage page = pageMap.get(this.from);
             if(page.canChangePage(this.to)) {
@@ -80,6 +112,16 @@ public class MainFrame extends JFrame {
         }
     }
 
+    /**
+     * フレームを作成します。
+     * 各ページを追加します。
+     * メニューバーを設置します。
+     * @param system システムのコントローラ
+     * @param x フレームのx座標
+     * @param y フレームのy座標
+     * @param w フレームの幅
+     * @param h フレームの高さ
+     */
     public MainFrame(DeliverySystem system, int x, int y, int w, int h) {
         this.system  = system;
         this.pageMap = new HashMap<PageName, BasePage>();
@@ -121,10 +163,6 @@ public class MainFrame extends JFrame {
     }
 
     private void changePage(PageName from, PageName to) {
-        if(to == PageName.LOGIN) {
-            ((ConfirmingPage)this.pageMap.get(PageName.CONFIRMING)).resetRequestIds();
-        }
-
         for(PageName name : this.pageMap.keySet()) {
             BasePage page = this.pageMap.get(name);
             if(name == to) {
@@ -178,25 +216,51 @@ public class MainFrame extends JFrame {
             data = new ParamData(DeliverySystem.SETTING, ((SettingPage)page).getBools());
         } else if(to == PageName.LOGIN) {
             data = new ParamData(DeliverySystem.LOGOUT);
+        } else if(to == PageName.CONFIRMING) {
+            data = new ParamData(DeliverySystem.LOGGING);
         }
 
         return data;
     }
 
+    /**
+     * 依頼情報の確認ページに依頼情報を設定します。
+     * @param data 依頼情報
+    */
     public void setRequestResults(ParamData data) {
         ((RequestResultPage)this.pageMap.get(PageName.REQUEST_RESULT)).setOutputs(data);
     }
 
+    /**
+     * 依頼ID選択ページにユーザの保有している配達記録の依頼IDを設定します。
+     * @param ids 配達記録の依頼IDの配列
+    */
     public void setComfirmSelection(Integer[] ids) {
         ((ConfirmingPage)this.pageMap.get(PageName.CONFIRMING)).setRequestIds(ids);
     }
 
+    /**
+     * 設定された配達記録の依頼IDを削除します。
+    */
+    public void resetComfirmSelection() {
+        ((ConfirmingPage)this.pageMap.get(PageName.CONFIRMING)).removeRequestIds();
+    }
+
+    /**
+     * 参照された配達記録の表示ページに参照結果を設定します。
+     * @param data 参照結果
+     * @param bool 参照した配達記録が宛先間違いであればtrue、そうでなければfalse
+    */
     public void setComfirmResults(ParamData data, boolean bool) {
         ConfirmResultPage page = (ConfirmResultPage)this.pageMap.get(PageName.CONFIRM_RESULT);
-        page.setButton(bool);
+        page.setButtonVisible(bool);
         page.setOutputs(data);
     }
 
+    /**
+     * 宛先修正結果の確認ページに宛先修正の結果を設定します。
+     * @param data 宛先が修正された配達記録の情報
+    */
     public void setFixResults(ParamData data) {
         ((FixResultPage)this.pageMap.get(PageName.FIX_RESULT)).setOutputs(data);
     }

@@ -5,6 +5,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+/**
+ * 配達を依頼する受取人個人情報を入力するページを作成するクラスです。
+ * @author 池田はるか
+ * @version 1.0(2019/01/13)
+ */
 public class RequestingPage extends BasePage {
   /************************************************************************/
     /* ラベルの位置と文字のサイズ */
@@ -44,6 +49,10 @@ public class RequestingPage extends BasePage {
     private final int ADDRESS_ID = 1;
     private final int PHONE_ID   = 2;
 
+    /**
+     * 配達を依頼する受取人個人情報を入力するページを作成します。
+     * @param frame メインフレーム
+     */
     public RequestingPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));
 
@@ -76,12 +85,20 @@ public class RequestingPage extends BasePage {
         super.addComponent(moveSelectButton, BACK_BUTTON_X, BACK_BUTTON_Y, BACK_BUTTON_W, BACK_BUTTON_H);
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public void refresh(){
       for(int i=0; i<INPUT_NUM; i++) {
         text[i].setText("");
       }
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public boolean canChangePage(PageName page) {
         if(page == PageName.USER_TOP) return true;
 
@@ -118,14 +135,26 @@ public class RequestingPage extends BasePage {
         return false;
     }
 
+    /**
+     * 入力された名前を返します。
+     * @return 入力された名前
+     */
     public String getName() {
         return text[NAME_ID].getText();
     }
 
+    /**
+     * 入力された番地を返します。
+     * @return 入力された番地
+     */
     public int getAddress() {
         return Integer.parseInt(text[ADDRESS_ID].getText());
     }
 
+    /**
+     * 入力された電話番号を返します。
+     * @return 入力された電話番号
+     */
     public String getPhoneNumber() {
         return text[PHONE_ID].getText();
     }

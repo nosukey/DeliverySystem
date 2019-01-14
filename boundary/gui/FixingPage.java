@@ -5,6 +5,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+/**
+ * 受取人個人情報を修正するページを作成するクラスです。
+ * @author 池田はるか
+ * @version 1.0(2019/01/13)
+ */
 public class FixingPage extends BasePage {
   /************************************************************************/
     /* ラベルの位置と文字のサイズ */
@@ -38,6 +43,10 @@ public class FixingPage extends BasePage {
     private static final int ADDRESS_ID = 1;
     private static final int PHONE_ID   = 2;
 
+    /**
+     * 受取人個人情報を修正するページを作成します。
+     * @param frame メインフレーム
+     */
     public FixingPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));
 
@@ -60,19 +69,25 @@ public class FixingPage extends BasePage {
           addY += DISTANCE;
         }
 
-
         JButton moveFixResultButton = new JButton("決定");
         moveFixResultButton.addActionListener(frame.new MoveDialogActionListener(frame, "この入力で決定しますか？", "Move Page Dialog", NAME, PageName.FIX_RESULT));
         super.addComponent(moveFixResultButton, CFM_BUTTON_X, CFM_BUTTON_Y, CFM_BUTTON_W, CFM_BUTTON_H);
-
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public void refresh() {
       for(int i=0; i<INPUT_NUM; i++) {
         text[i].setText("");
       }
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public boolean canChangePage(PageName page) {
         if(page == PageName.USER_TOP) return true;
 
@@ -109,14 +124,26 @@ public class FixingPage extends BasePage {
         return false;
     }
 
+    /**
+     * 入力された名前を返します。
+     * @return 入力された名前
+     */
     public String getName() {
         return text[NAME_ID].getText();
     }
 
+    /**
+     * 入力された番地を返します。
+     * @return 入力された番地
+     */
     public int getAddress() {
         return Integer.parseInt(text[ADDRESS_ID].getText());
     }
 
+    /**
+     * 入力された電話番号を返します。
+     * @return 入力された電話番号
+     */
     public String getPhoneNumber() {
         return text[PHONE_ID].getText();
     }

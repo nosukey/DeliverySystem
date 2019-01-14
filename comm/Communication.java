@@ -13,6 +13,13 @@ import java.util.List;
 import java.util.Map;
 import lejos.utility.Delay;
 
+
+/**
+ * サブシステム間の通信を実現する抽象クラスです。
+ * 他のサブシステムとの通信を確立し、データの受け渡しをサポートします。
+ * @author 澤田 悠暉
+ * @version 1.0 (2019/01/14)
+*/
 public abstract class Communication {
 
 	protected DataInputStream dis;
@@ -20,7 +27,12 @@ public abstract class Communication {
 
 	protected static final int TIMEOUT = 0;
 	protected static final int DELAY_TIME = 5000;
-	private final String DUMMY = "dummy";
+	private static final String DUMMY = "dummy";
+
+	private static final String METHOD_SEPARATION = "%";
+	private static final String PARAM_SEPARATION  = "&";
+	private static final String LIST_SEPARATION   = "#";
+	private static final String SET_SEPARATION    = "!";
 
 	private static class InterruptSystem extends Thread {
 		private int bytes;
@@ -35,7 +47,6 @@ public abstract class Communication {
 			try {
 				this.bytes = dis.available();
 			} catch(IOException e) {
-				System.out.println("error");
 				e.printStackTrace();
 			}
 		}
@@ -45,12 +56,26 @@ public abstract class Communication {
 		}
 	}
 
+	/**
+	 * サブシステムのメソッドを呼び出します。
+	 * @param methodName メソッド名
+	 * @param data パラメータの文字列データ
+	*/
 	protected abstract void selectMethod(String methodName, String data);
 
+	/**
+	 * 接続待ち状態になっているターゲットとなるサブシステムに接続します。
+	*/
  	protected abstract void connect() throws IOException;
 
+	/**
+	 * 他のサブシステムからの接続待ち状態に入ります。
+	*/
 	protected abstract void waitForConnection() throws IOException;
 
+	/**
+	 * 他のサブシステムからの命令待ち状態に入ります。
+	*/
 	protected void waitForInvoke() {
 		while(true) {
 			String buffer = readString();
@@ -59,48 +84,54 @@ public abstract class Communication {
 	}
 
 	/**
-	 * ストリームから真偽値を読み込む
-	 */
+	 * データ入力ストリームから真偽値を読み込みます。
+ 	 * @return 読み込んだ真偽値
+	*/
 	public boolean readBoolean() {
 		try {
 			return dis.readBoolean();
 		} catch(IOException e) {
-			System.out.println("Exception: Stream is closed.");
+			e.printStackTrace();
 			Delay.msDelay(DELAY_TIME);
 			return readBoolean();
 		}
 	}
 
 	/**
-	 * ストリームに真偽値を書き込む
-	 */
+	 * データ出力ストリームに真偽値を書き込みます。
+	 * @param bool 真偽値
+	*/
 	public void writeBoolean(boolean bool) {
 		try {
 			Delay.msDelay(DELAY_TIME);
 			dos.writeBoolean(bool);
 			dos.flush();
 		} catch(IOException e) {
-    		System.out.println("Exception: I/O error.");
+			e.printStackTrace();
         	Delay.msDelay(DELAY_TIME);
-			// System.exit(1);
 			writeBoolean(bool);
 		}
 	}
 
 	/**
-	 * ストリームから文字列を読み込む
-	 */
+	 * データ入力ストリームから文字列を読み込みます。
+ 	 * @return 読み込んだ文字列
+	*/
 	public String readString() {
 		try {
 			return dis.readUTF();
 		} catch(IOException e) {
-			System.out.println("Exception: Stream is closed.");
+			e.printStackTrace();
 			Delay.msDelay(DELAY_TIME);
-			// System.exit(1);
 			return readString();
 		}
 	}
 
+	/**
+	 * データ入力ストリームから文字列を読み込みます。
+	 * ただし, 引数で渡された時間内にストリームに文字列の書き込みがなかった場合には読み込みを中断し、nullを返します。
+ 	 * @return 読み込んだ文字列 (時間を過ぎた場合はnull)
+	*/
 	public String readString(int millis) {
 		final int MSEC_INTERVAL = 1000;
 
@@ -119,135 +150,128 @@ public abstract class Communication {
 	}
 
 	/**
-	 * ストリームに文字列を書き込む
-	 */
+	 * データ出力ストリームに文字列を書き込みます。
+	 * @param str 文字列
+	*/
 	public void writeString(String str) {
 		try {
 			Delay.msDelay(DELAY_TIME);
 			dos.writeUTF(str);
 			dos.flush();
 		} catch(IOException e) {
-    		System.out.println("Exception: I/O error.");
+			e.printStackTrace();
         	Delay.msDelay(DELAY_TIME);
-			// System.exit(1);
 			writeString(str);
 		}
 	}
 
 	/**
-	 * 操作名を通信パケットとし, 文字列としてストリームに書き込む
-	 *
-	 * 単体テスト
-	 * 通信パケットを表示し, フォーマットを確認する
-	 */
+	 * データ出力ストリームに他のサブシステムに実行させたいメソッド名を書き込みます。
+	 * @param methodName メソッド名
+	*/
 	public void writeMethod(String methodName) {
-		writeString(methodName + "%");
+		writeString(methodName + METHOD_SEPARATION);
 	}
 
 	/**
-	 * 操作名とデータを文字列に変換したものを連結させたものを通信パケットとし, 文字列としてストリームに書き込む
-	 *
-	 * 単体テスト
-	 * 通信パケットを表示し, フォーマットを確認する
-	 */
+	 * データ出力ストリームに他のサブシステムに実行させたいメソッド名とパラメータを書き込みます。
+	 * @param methodName メソッド名
+	 * @param value 整数値パラメータ
+	*/
 	public void writeMethod(String methodName, int value) {
-		writeString(methodName + "%" + value);
+		writeString(methodName + METHOD_SEPARATION + value);
 	}
 
 	/**
-	 * 操作名とデータを文字列に変換したものを連結させたものを通信パケットとし, 文字列としてストリームに書き込む
-	 *
-	 * 単体テスト
-	 * 通信パケットを表示し, フォーマットを確認する
-	 */
+	 * データ出力ストリームに他のサブシステムに実行させたいメソッド名とパラメータを書き込みます。
+	 * @param methodName メソッド名
+	 * @param str 文字列パラメータ
+	*/
 	public void writeMethod(String methodName, String str) {
-		writeString(methodName + "%" + str);
+		writeString(methodName + METHOD_SEPARATION + str);
 	}
 
 	/**
-	 * 操作名とデータを文字列に変換したものを連結させたものを通信パケットとし, 文字列としてストリームに書き込む
-	 *
-	 * 単体テスト
-	 * 通信パケットを表示し, フォーマットを確認する
-	 */
+	 * データ出力ストリームに他のサブシステムに実行させたいメソッド名とパラメータを書き込みます。
+	 * @param methodName メソッド名
+	 * @param requestId 依頼ID
+	 * @param personInfo 個人情報
+	*/
 	public void writeMethod(String methodName, int requestId, PersonInfo personInfo) {
-		writeString(methodName + "%" + requestId + "&" + PersonInfo.encode(personInfo));
+		writeString(methodName + METHOD_SEPARATION + requestId + PARAM_SEPARATION + PersonInfo.encode(personInfo));
 	}
 
 	/**
-	 * 操作名とデータを文字列に変換したものを連結させたものを通信パケットとし, 文字列としてストリームに書き込む
-	 *
-	 * 単体テスト
-	 * 通信パケットを表示し, フォーマットを確認する
-	 */
+	 * データ出力ストリームに他のサブシステムに実行させたいメソッド名とパラメータを書き込みます。
+	 * @param methodName メソッド名
+	 * @param parcel 荷物
+	*/
 	public void writeMethod(String methodName, Parcel parcel) {
-		writeString(methodName + "%" + Parcel.encode(parcel));
+		writeString(methodName + METHOD_SEPARATION + Parcel.encode(parcel));
 	}
 
 	/**
-	 * 操作名とデータを文字列に変換したものを連結させたものを通信パケットとし, 文字列としてストリームに書き込む
-	 *
-	 * 単体テスト
-	 * 通信パケットを表示し, フォーマットを確認する
-	 */
+	 * データ出力ストリームに他のサブシステムに実行させたいメソッド名とパラメータを書き込みます。
+	 * @param methodName メソッド名
+	 * @param parcels 荷物のリスト
+	*/
 	public void writeMethodWithParcels(String methodName, List<Parcel> parcels) {
-		writeString(methodName + "%" + encodeParcels(parcels));
+		writeString(methodName + METHOD_SEPARATION + encodeParcels(parcels));
 	}
 
 	/**
-	 * 操作名とデータを文字列に変換したものを連結させたものを通信パケットとし, 文字列としてストリームに書き込む
-	 *
-	 * 単体テスト
-	 * 通信パケットを表示し, フォーマットを確認する
-	 */
+	 * データ出力ストリームに他のサブシステムに実行させたいメソッド名とパラメータを書き込みます。
+	 * @param methodName メソッド名
+	 * @param requestIds 依頼IDのリスト
+	*/
 	public void writeMethodWithIds(String methodName, List<Integer> requestIds) {
-		writeString(methodName + "%" + encodeRequestIds(requestIds));
+		writeString(methodName + METHOD_SEPARATION + encodeRequestIds(requestIds));
 	}
 
 	/**
-	 * 操作名とデータを文字列に変換したものを連結させたものを通信パケットとし, 文字列としてストリームに書き込む
-	 *
-	 * 単体テスト
-	 * 通信パケットを表示し, フォーマットを確認する
-	 */
+	 * データ出力ストリームに他のサブシステムに実行させたいメソッド名とパラメータを書き込みます。
+	 * @param methodName メソッド名
+	 * @param records 配達記録のリスト
+	 * @param requestIds 依頼IDのリスト
+	*/
 	public void writeMethod(String methodName, List<Record> records, List<Integer> requestIds) {
-		writeString(methodName + "%" + encodeRecords(records) + "&" + encodeRequestIds(requestIds));
+		writeString(methodName + METHOD_SEPARATION + encodeRecords(records) + PARAM_SEPARATION + encodeRequestIds(requestIds));
 	}
 
 	/**
-	 * 操作名とデータを文字列に変換したものを連結させたものを通信パケットとし, 文字列としてストリームに書き込む
-	 *
-	 * 単体テスト
-	 * 通信パケットを表示し, フォーマットを確認する
-	 */
+	 * データ出力ストリームに他のサブシステムに実行させたいメソッド名とパラメータを書き込みます。
+	 * @param methodName メソッド名
+	 * @param receivingDateMap 受取時間表
+	 * @param withoutRecipientParcels 受取人不在の荷物リスト
+	 * @param wrongRecipientParcels 宛先間違いの荷物リスト
+	*/
 	public void writeMethod(String methodName, Map<Integer, Date> receivingDateMap, List<Parcel> withoutRecipientParcels, List<Parcel> wrongRecipientParcels) {
-		writeString(methodName + "%" + encodeDateMap(receivingDateMap) + "&" + encodeParcels(withoutRecipientParcels) + "&" + encodeParcels(wrongRecipientParcels));
+		writeString(methodName + METHOD_SEPARATION + encodeDateMap(receivingDateMap) + PARAM_SEPARATION + encodeParcels(withoutRecipientParcels) + PARAM_SEPARATION + encodeParcels(wrongRecipientParcels));
 	}
 
-	/**
-	 * 引数として代入された文字列から操作名を抽出する
-	 */
 	private String extractMethodName(String packet) {
-		String[] packs = packet.split("%");
+		String[] packs = packet.split(METHOD_SEPARATION);
 		return packs[0];
 	}
 
-	/**
-	 * 引数として代入された文字列からデータを抽出する
-	 */
 	private String extractData(String packet) {
-		String[] packs = packet.split("%");
+		String[] packs = packet.split(METHOD_SEPARATION);
 		if(packs.length < 2)
 			return DUMMY;
 		else
 			return packs[1];
 	}
 
+	/**
+	 * 文字列を依頼IDのリストに変換する。
+	 * @param str 依頼IDリストの文字列データ
+	 * @return 依頼IDのリスト
+	*/
 	protected List<Integer> decodeRequestIds(String str) {
 		List<Integer> requestIds = new LinkedList<Integer>();
 
 		if(!str.equals(DUMMY)) {
-			for(String element : str.split("#")) {
+			for(String element : str.split(LIST_SEPARATION)) {
 				requestIds.add(Integer.valueOf(element));
 			}
 		}
@@ -259,7 +283,7 @@ public abstract class Communication {
 		String result = "";
 
 		for(Integer id : requestIds) {
-			result += (id.toString() + "#");
+			result += (id.toString() + LIST_SEPARATION);
 		}
 
 		if(result.isEmpty())
@@ -268,11 +292,16 @@ public abstract class Communication {
 			return result.substring(0, result.length()-1);
 	}
 
+	/**
+	 * 文字列を荷物のリストに変換する。
+	 * @param str 荷物リストの文字列データ
+	 * @return 荷物のリスト
+	*/
 	protected List<Parcel> decodeParcels(String str) {
 		List<Parcel> parcels = new LinkedList<Parcel>();
 
 		if(!str.equals(DUMMY)) {
-			for(String element : str.split("#")) {
+			for(String element : str.split(LIST_SEPARATION)) {
 				parcels.add(Parcel.decode(element));
 			}
 		}
@@ -284,7 +313,7 @@ public abstract class Communication {
 		String result = "";
 
 		for(Parcel parcel : parcels) {
-			result += (Parcel.encode(parcel) + "#");
+			result += (Parcel.encode(parcel) + LIST_SEPARATION);
 		}
 
 		if(result.isEmpty())
@@ -293,11 +322,16 @@ public abstract class Communication {
 			return result.substring(0, result.length()-1);
 	}
 
+	/**
+	 * 文字列を配達記録のリストに変換する。
+	 * @param str 配達記録リストの文字列データ
+	 * @return 配達記録のリスト
+	*/
 	protected List<Record> decodeRecords(String str) {
 		List<Record> records = new LinkedList<Record>();
 
 		if(!str.equals(DUMMY)) {
-			for(String element : str.split("#")) {
+			for(String element : str.split(LIST_SEPARATION)) {
 				records.add(Record.decode(element));
 			}
 		}
@@ -309,7 +343,7 @@ public abstract class Communication {
 		String result = "";
 
 		for(Record record : records) {
-			result += (Record.encode(record) + "#");
+			result += (Record.encode(record) + LIST_SEPARATION);
 		}
 
 		if(result.isEmpty())
@@ -318,12 +352,17 @@ public abstract class Communication {
 			return result.substring(0, result.length()-1);
 	}
 
+	/**
+	 * 文字列を受取時間表に変換する。
+	 * @param str 受取時間表の文字列データ
+	 * @return 受取時間表
+	*/
 	protected Map<Integer, Date> decodeDateMap(String str) {
 		Map<Integer, Date> map = new HashMap<Integer, Date>();
 
 		if(!str.equals(DUMMY)) {
-			for(String strMap : str.split("#")) {
-				String[] elements = strMap.split("!");
+			for(String strMap : str.split(LIST_SEPARATION)) {
+				String[] elements = strMap.split(SET_SEPARATION);
 				map.put(Integer.valueOf(elements[0]), Date.decode(elements[1]));
 			}
 		}
@@ -335,7 +374,7 @@ public abstract class Communication {
 		String result = "";
 
 		for(Map.Entry<Integer, Date> entry : dateMap.entrySet()) {
-			result += (entry.getKey().toString() + "!" + Date.encode(entry.getValue()) + "#");
+			result += (entry.getKey().toString() + SET_SEPARATION + Date.encode(entry.getValue()) + LIST_SEPARATION);
 		}
 
 		if(result.isEmpty())

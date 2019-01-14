@@ -10,6 +10,12 @@ import entity.common.PersonInfo;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
+/**
+ * サブシステム「中継所」クラスです。
+ * 他のサブシステム「本部」クラス、「収集担当ロボット」クラス、「配達担当ロボット」クラスとの通信を行います。
+ * @author 大久保美涼
+ * @version 1.0(2019/01/13)
+ */
 public class RelayStation {
 
 	private List<Parcel> storedParcels;
@@ -24,17 +30,33 @@ public class RelayStation {
 
 	private boolean canEntry;
 
-	private static final int MAX_STORAGE = 30;
-
 	private int numOfDeliveredParcels;
 
 	private int timesCameDeliveryRobot = 0;
 
+	private static final int MAX_STORAGE = 30;
 
+	private static final int THRESHOLD_AMOUNT = 3;
+
+	private static final int THRESHOLD_COMING_COUNT = 3;
+
+	private static final String COLLECTOR_NAME = "Collector1";
+
+	private static final String DELIVERER_NAME = "Delivery1";
+
+	private static final int CONNECTION_DELAY = 60000;
+
+	private static final int ENTRY_DELAY = 10000;
+
+	/**
+	 * 中継所を起動します。
+	 * 収集担当ロボット、配達担当ロボットとの接続を行い、本部からの接続待ち状態に入ります。
+	 * @param args コマンドライン引数
+	*/
 	public static void main(String[] args) {
 		RelayStation myself = new RelayStation();
-		myself.commToCollector   = new RelayStationCommunication(myself, "Collector1");
-		myself.commToDeliverer   = new RelayStationCommunication(myself, "Delivery1");
+		myself.commToCollector   = new RelayStationCommunication(myself, COLLECTOR_NAME);
+		myself.commToDeliverer   = new RelayStationCommunication(myself, DELIVERER_NAME);
 		myself.commToHeadquarter = new RelayStationCommunication(myself);
 
 		LCD.clear();
@@ -43,120 +65,47 @@ public class RelayStation {
 		new Thread(myself.commToCollector).start();
 		new Thread(myself.commToDeliverer).start();
 
-		Delay.msDelay(60000);
+		Delay.msDelay(CONNECTION_DELAY);
 		new Thread(myself.commToHeadquarter).start();
 	}
 
+	/**
+	 * 配達待ちの荷物を保管する荷物リストを初期化します。
+	 * 宛先間違いの荷物を保管する荷物リストを初期化します。
+	 */
 	public RelayStation(){
 		this.storedParcels         = new LinkedList<Parcel>();
 		this.wrongRecipientParcels = new ArrayList<Parcel>();
 		this.canEntry              = true;
 		this.numOfDeliveredParcels = 0;
-
-		autoSetParcels();
-		printBefore();
-	}
-
-	private synchronized void printBefore() {
-		// System.out.println("Relay before:");
-		// System.out.println("stored: " + storedParcels.size());
-		// for(Parcel parcel : storedParcels) {
-		// 	System.out.println(Parcel.encode(parcel));
-		// }
-		// System.out.println("wrong: " + wrongRecipientParcels.size());
-		// for(Parcel parcel : wrongRecipientParcels) {
-		// 	System.out.println(Parcel.encode(parcel));
-		// }
-	}
-
-	private synchronized void printAfter() {
-		// System.out.println("Relay after:");
-		// for(Parcel parcel : storedParcels) {
-		// 	System.out.println(Parcel.encode(parcel));
-		// }
-		// System.out.println("wrong: " + wrongRecipientParcels.size());
-		// for(Parcel parcel : wrongRecipientParcels) {
-		// 	System.out.println(Parcel.encode(parcel));
-		// }
-	}
-
-	private void autoSetParcels() {
-		// this.storedParcels.add(
-		// 	new Parcel(
-		// 		0,
-		// 		new PersonInfo("j", 10, "09010101010"),
-		// 		new PersonInfo("a", 1, "09001010101")
-		// 	)
-		// );
-		//
-		// // 不在
-		// this.storedParcels.add(
-		// 	new Parcel(
-		// 		1,
-		// 		new PersonInfo("j", 10, "09010101010"),
-		// 		new PersonInfo("c", 3, "09003030303")
-		// 	)
-		// );
-		//
-		// // 電話番号間違い
-		// this.storedParcels.add(
-		// 	new Parcel(
-		// 		2,
-		// 		new PersonInfo("j", 10, "09010101010"),
-		// 		new PersonInfo("e", 10, "09005050605")
-		// 	)
-		// );
-		//
-		// // 名前間違い
-		// this.storedParcels.add(
-		// 	new Parcel(
-		// 		3,
-		// 		new PersonInfo("j", 10, "09010101010"),
-		// 		new PersonInfo("wrong", 12, "09015151515")
-		// 	)
-		// );
-	}
-
-	public void connected() {
-		LCD.drawString("Connected.", 0, 1);
-
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
 	}
 
 	/**
-	* ユースケース「荷物を受け取る」を包含するメソッド
-	*
-	* 統合テストで確認してください
-	*
+	 * 通信を確立された場合に呼び出され、状況を確認することができます。
+	*/
+	public void connected() {
+		final String REFRESH_DISPLAY = "\n\n\n\n\n\n\n";
+		System.out.println(REFRESH_DISPLAY);
+
+		LCD.drawString("Connected.", 0, 1);
+	}
+
+	/**
+	* 収集担当ロボットから荷物を受け取ります。
+	* @param parcels 収集担当ロボットから受け取った荷物リスト
 	*/
 	public void receiveParcels(List<Parcel> parcels) {
-		System.out.println("receiveParcels()");
-
-		// TODO これいらない
-		// commToCollector.writeMethod("notifySuccess");
-
 		storedParcels.addAll(parcels);
 		reportTransportSuccess(parcels);
 		enableEntry();
 	}
 
 	/**
-	 * ユースケース「荷物を渡す」を包含するメソッド
-	 *
-	 * 統合テストで確認してください
-	 *
+	 * 配達担当ロボットに配達待ちの荷物リストを渡します。
+	 * 配達待ちの荷物リストにある荷物が運べる状態であれば、配達担当ロボットに渡しますが、
+	 * 運べない状態であれば、渡しません。
 	 */
 	public void sendParcels() {
-
-		System.out.println("sendParcels()");
-
 		if(!canStartDelivery()){
 			commToDeliverer.writeMethod("waitInStandbyStation");
 
@@ -172,9 +121,11 @@ public class RelayStation {
 	}
 
 	private List<Parcel> sortingParcels(){
+		final int MAX_ADDRESS = 16;
+
 		List<Parcel> deliveryParcels = new LinkedList<Parcel>();
 
-		for(int i=1; i<16; i++){
+		for(int i=1; i<=MAX_ADDRESS; i++){
 			for(Parcel parcel : storedParcels){
 				if(i == parcel.getAddress()){
 					deliveryParcels.add(parcel);
@@ -185,43 +136,37 @@ public class RelayStation {
 	}
 
 	/**
-	 * ユースケース「配達完了連絡を受け取る」を包含するメソッド
-	 *
-	 * 統合テストで確認してください
-	 *
+	 * 配達担当ロボットが配達完了した結果を受け取ります。
+	 * 配達できた荷物は受取時間と依頼IDの表を本部に報告します。
+	 * 不在の荷物は配達待ちの荷物リストに追加します。
+	 * 宛先間違いの荷物は宛先間違いの荷物リストに追加します。
+	 * @param strOfReceivingDateMap 受取時間表
+	 * @param withoutRecipientParcels 受取人不在の荷物リスト
+	 * @param wrongRecipientParcels 宛先間違いの荷物リスト
 	 */
 	public void receiveFinishDeliveryNotification(String strOfReceivingDateMap, List<Parcel> withoutRecipientParcels, List<Parcel> wrongRecipientParcels) {
 		reportDeliveryResults(strOfReceivingDateMap, withoutRecipientParcels, wrongRecipientParcels);
-
-		System.out.println("receiveFinishDeliveryNotification()");
 
 		this.storedParcels.addAll(withoutRecipientParcels);
 		this.wrongRecipientParcels.addAll(wrongRecipientParcels);
 		this.numOfDeliveredParcels = 0;
 		sendParcels();
-
-		printAfter();
 	}
 
 	/**
-	 * ユースケース「ロボットの進入の可否を判定する」を包含するメソッド
-	 *
-	 * 統合テストで確認してください
-	 *
+	 * ロボットが中継所に進入できるか判定をします。
+	 * @return 進入できるか
 	 */
 	public synchronized boolean canEntry() {
- 		System.out.println("canEntry(): " + canEntry);
  		boolean returnValue = canEntry;
  		canEntry = false;
  		return returnValue;
- 		// 通信を行わないように変更しました。　12/12
  	}
 
 	/**
-	 * ユースケース「荷物の宛先を修正する」を包含するメソッド
-	 *
-	 * 統合テストで確認してください
-	 *
+	 * 宛先間違いの荷物リストにある荷物の宛先を修正します。
+	 * @param requestId 修正したい荷物の依頼ID
+	 * @param recipientInfo 修正したい荷物の受取人個人情報
 	 */
 	public void fixWrongRecipient(int requestId, PersonInfo recipientInfo) {
 		Parcel parcel = removeWrongRecipientParcel(requestId);
@@ -232,16 +177,13 @@ public class RelayStation {
 	}
 
 	/**
-	 * 引数の引き渡し予定の荷物数 < (貯蔵限度 - 配達中の荷物数 - 配達待ちの荷物リストの要素数 - 宛先間違いの荷物リストの要素数) を判定する
-	 * その結果によって, 収集担当ロボットのメソッドを切り替え, 通信によって呼び出す
-	 *
-	 * 引数に引き渡し予定の荷物数を代入する
-	 * 引き渡し可能の場合と引き渡し不可の場合で分岐しているか確認する
-	 *
+	 * 収集担当ロボットから荷物を受け取るかの判定をします。
+	 * 引数の引き渡し予定の荷物数 < (貯蔵限度 - 配達中の荷物数 - 配達待ちの荷物リストの要素数 - 宛先間違いの荷物リストの要素数) の
+	 * 条件を満たす場合は荷物を受け取る通信をします。
+	 * 条件を満たさない場合は荷物を受け取りません。
+	 * @param numOfParcelsToSend 引数の引き渡し予定の荷物数
 	 */
 	public void canSendParcels(int numOfParcelsToSend) {
-		System.out.println("canSendParcels()");
-
 		if(numOfParcelsToSend <= (MAX_STORAGE - numOfDeliveredParcels - storedParcels.size() - wrongRecipientParcels.size())){
 			commToCollector.writeMethod("sendParcels");
 		}else{
@@ -249,26 +191,17 @@ public class RelayStation {
 		}
 	}
 
-	/**
-	 * ユースケース「中継所到着を報告する」を包含するメソッド
-	 */
 	private void reportTransportSuccess(List<Parcel> parcels) {
 		List<Integer> ids = newRequestIdList(parcels);
 		commToHeadquarter.writeMethodWithIds("receiveTransportSuccessReport", ids);
 	}
 
-	/**
-	 * ユースケース「配達開始を報告する」を包含するメソッド
-	 */
 	 private void reportDeliveryStarting() {
  		List<Integer> ids = newRequestIdList(storedParcels);
 
  		commToHeadquarter.writeMethodWithIds("receiveDeliveryStartingReport", ids);
  	}
 
-	/**
-	 * ユースケース「配達結果を報告する」を包含するメソッド
-	 */
 	private void reportDeliveryResults(String strOfReceivingDateMap, List<Parcel> withoutRecipientParcels, List<Parcel> wrongRecipientParcels) {
 		if(!strOfReceivingDateMap.isEmpty()){
 			commToHeadquarter.writeMethod("receiveDeliverySuccessReport", strOfReceivingDateMap);
@@ -283,62 +216,32 @@ public class RelayStation {
 		}
 	}
 
-	/**
-	 * ユースケース「進入制限を解除する」を包含するメソッド
-	 */
 	private void enableEntry() {
-		// 一定時間待機する処理（EV3で可能ならばなんでも良い）
-		Delay.msDelay(10000);
-		// ここまで
+		Delay.msDelay(ENTRY_DELAY);
 		canEntry = true;
-
-		System.out.println("Finish enableEntry()");
 	}
 
-	/**
-	 * (配達待ちの荷物リストの要素数 + 宛先間違いの荷物リストの要素数 >= 3) && (有無の確認回数 >= 有無の確認限度)を判定し,
-	 * trueならば, static変数を0にしてtrueを返す
-	 * falseならば, そのままfalseを返す
-	 *
-	 * ローカルなstatic変数
-	 * 配達担当ロボットが配達の有無を確認しに来た回数
-	 * ローカルな定数
-	 * 配達担当ロボットが配達の有無を確認しに来る限度 = 3回
-	 *
-	 */
 	private boolean canStartDelivery() {
 		timesCameDeliveryRobot++;
 
-		System.out.println("times: "+timesCameDeliveryRobot);
-
 		// 前半：3つ以上の荷物があるときGo　　　　　　　　　　　　　　　　　　　　　　後半３回以上の仕事確認 && 荷物が１こ以上ある。
-		if((storedParcels.size() >= 3) || (timesCameDeliveryRobot >= 3 && (!storedParcels.isEmpty()))){
+		if((storedParcels.size() >= THRESHOLD_AMOUNT) || (timesCameDeliveryRobot >= THRESHOLD_COMING_COUNT && (!storedParcels.isEmpty()))){
 			timesCameDeliveryRobot = 0;
 			return true;
 		}
 		return false;
 	}
 
-	/**
-	 * 荷物リストの荷物から依頼IDを取得し, 依頼IDリストに追加する
-	 * これを繰り返すことで報告用の依頼IDリストを作成する
-	 */
 	private List<Integer> newRequestIdList(List<Parcel> parcels) {
-		//System.out.println("newRequestIdList");
 		List<Integer> requestIds = new LinkedList<Integer>();
 
 		for(Parcel parcel : parcels){
 			requestIds.add(parcel.getRequestId());
 		}
-		//System.out.println(requestIds);
 		return requestIds;
 	}
 
-	/**
-	 * 宛先間違いの荷物リストから引数で渡された依頼IDの荷物を取り除く
-	 * ループで該当する荷物を見つけなければならないためメソッドにした
-	 */
-	 private Parcel removeWrongRecipientParcel(int requestId) {
+	private Parcel removeWrongRecipientParcel(int requestId) {
  		for(Parcel parcel : wrongRecipientParcels){
  			if(requestId == parcel.getRequestId()){
 				wrongRecipientParcels.remove(parcel);

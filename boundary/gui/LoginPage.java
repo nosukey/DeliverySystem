@@ -5,6 +5,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+/**
+ * 依頼人個人情報を入力してログインするページクラスです。
+ * @author 大久保美涼
+ * @version 1.0(2019/01/13)
+ */
 public class LoginPage extends BasePage {
   /************************************************************************/
     /* ラベルの位置と文字のサイズ */
@@ -38,6 +43,10 @@ public class LoginPage extends BasePage {
     private final int ADDRESS_ID = 1;
     private final int PHONE_ID   = 2;
 
+    /**
+     * 依頼人個人情報を入力してログインするページを作成します。
+     * @param frame メインフレーム
+     */
     public LoginPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));
 
@@ -68,12 +77,20 @@ public class LoginPage extends BasePage {
 
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public void refresh() {
         for(int i=0; i<INPUT_NUM; i++) {
           text[i].setText("");
         }
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public boolean canChangePage(PageName page) {
         if(page == PageName.SETTING) return true;
 
@@ -110,14 +127,26 @@ public class LoginPage extends BasePage {
         return false;
     }
 
+    /**
+     * テキストフィールドに入力された名前を取得します。
+     * @return 名前
+     */
     public String getName() {
         return text[NAME_ID].getText();
     }
 
+    /**
+     * テキストフィールドに入力された番地を取得します。
+     * @return 番地
+     */
     public int getAddress() {
         return Integer.parseInt(text[ADDRESS_ID].getText());
     }
 
+    /**
+     * テキストフィールドに入力された電話番号を取得します。
+     * @return 電話番号
+     */
     public String getPhoneNumber() {
         return text[PHONE_ID].getText();
     }

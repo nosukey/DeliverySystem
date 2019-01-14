@@ -3,9 +3,10 @@ package entity.common;
 import java.util.Calendar;
 
 /**
- * APIの日時クラスのラップクラス
- * 日時クラスをnewすることはない
- * 現在時刻を取得するによって日時インスタンスを取得することができる
+ * java.util.Calenderのラップクラスです。
+ * 現在時刻を取得するによって日時インスタンスを取得することができます。
+ * @author 山下京之介
+ * @version 1.0 (2019/01/14)
  */
 public class Date {
 
@@ -33,13 +34,15 @@ public class Date {
 
 	/**
 	 * APIの日時クラスで現在時刻を取得し, 現在時刻の日時クラスのインスタンスを返します。
-	 * @return Dateオブジェクト。
+	 * @return Dateインスタンス。
 	 */
 	public static Date getCurrentDate() {
+		final int MONTH_GAP = 1;
+
 		Calendar calender = Calendar.getInstance();
 		return new Date(
 			calender.get(Calendar.YEAR),
-			calender.get(Calendar.MONTH) + 1, 		// ずれ補正
+			calender.get(Calendar.MONTH) + MONTH_GAP,
 			calender.get(Calendar.DATE),
 			calender.get(Calendar.HOUR_OF_DAY),
 			calender.get(Calendar.MINUTE)
@@ -49,7 +52,7 @@ public class Date {
 	/**
 	 * 文字列できた情報から日時クラスのインスタンスを返します。
 	 * @param str 通信フォーマットに従った文字列。
-	 * @return Dateオブジェクト。 Returns {@code null} if strが日付を表現する文字列でなかったとき。
+	 * @return Dateインスタンス。 Returns {@code null} if strが日付を表現する文字列でなかったとき。
 	 */
 	public static Date decode(String str) {
 		if(str.equals(NOTHING)) {
@@ -68,7 +71,7 @@ public class Date {
 
 	/**
 	 * 日時を文字列に変換し、その文字列を返します。
-	 * @param date Dataオブジェクト。
+	 * @param date Dataインスタンス。
 	 * @return String　通信フォーマットに従った文字列。 Returns {@code null} if dateがnullであるとき。
 	 */
 	public static String encode(Date date) {
@@ -79,9 +82,11 @@ public class Date {
 	}
 
 	/**
-	 * DataオブジェクトをStringに変換し、返します。
+	 * DataインスタンスをStringに変換し、返します。
+	 * {@inheritDoc}
 	 * @return String 日時の文字列表現。
 	 */
+	 @Override
 	public String toString() {
 		return String.format("%d/%02d/%02d/ %02d:%02d", this.year, this.month, this.day, this.hour, this.minute);
 	}

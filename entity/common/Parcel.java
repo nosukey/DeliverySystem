@@ -1,5 +1,10 @@
 package entity.common;
 
+/**
+ * 荷物クラスです。
+ * @author
+ * @version 1.0
+*/
 public class Parcel {
 
 	private int requestId;
@@ -10,6 +15,12 @@ public class Parcel {
 
 	private static final String COMMA = ",";
 
+	/**
+	 * 荷物インスタンスを生成します。
+	 * @param requestId 依頼ID
+	 * @param clientInfo 依頼人個人情報
+	 * @param recipientInfo 受取人個人情報
+	*/
 	public Parcel(int requestId, PersonInfo clientInfo, PersonInfo recipientInfo) {
 		this.requestId     = requestId;
 		this.clientInfo    = clientInfo;
@@ -50,8 +61,8 @@ public class Parcel {
 
 	/**
 	 * 文字列できた情報から荷物クラスのインスタンスを返します。
-	 * @params str 荷物クラスを表現した文字列。
-	 * @return Parcelオブジェクト。
+	 * @param str 荷物クラスを表現した文字列。
+	 * @return Parcelインスタンス。
 	 */
 	public static Parcel decode(String str) {
 		String[] parameters = str.split(COMMA);
@@ -64,7 +75,7 @@ public class Parcel {
 
 	/**
 	 * 荷物を文字列に変換し、その文字列を返します。
-	 * @params parcel Parcelオブジェクト。
+	 * @param parcel Parcelインスタンス。
 	 * @return String 通信フォーマットに従った文字列。
 	 */
 	public static String encode(Parcel parcel) {

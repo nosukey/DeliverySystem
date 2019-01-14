@@ -44,7 +44,7 @@ public enum State {
 	}
 
 	/**
-	 * StateオブジェクトをStringに変換します。
+	 * StateインスタンスをStringに変換します。
 	 * {@inheritDoc}
 	 * @return 配達状況の文字列表現。
 	*/
@@ -54,9 +54,9 @@ public enum State {
 	}
 
 	/**
-	 * 通信フォーマットをStateオブジェクトに変換します。通信のフォーマットに合わない文字列が与えられた場合にはnullを返します。
+	 * 通信フォーマットをStateインスタンスに変換します。通信のフォーマットに合わない文字列が与えられた場合にはnullを返します。
 	 * @param str 通信フォーマットに従った文字列。
-	 * @return Stateオブジェクト。
+	 * @return Stateインスタンス。
 	*/
 	public static State decode(String str) {
 		for(State state : State.values()) {
@@ -68,8 +68,8 @@ public enum State {
 	}
 
 	/**
-	 * Stateオブジェクトを通信フォーマットに従った文字列に変換します。
-	 * @param state Stateオブジェクト。
+	 * Stateインスタンスを通信フォーマットに従った文字列に変換します。
+	 * @param state Stateインスタンス。
 	 * @return 通信フォーマットに従った文字列。
 	*/
 	public static String encode(State state) {

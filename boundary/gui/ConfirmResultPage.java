@@ -4,7 +4,11 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-
+/**
+ * 参照を希望した依頼IDの配達記録を参照するページを作成するクラスです。
+ * @author 池田はるか
+ * @version 1.0(2019/01/13)
+ */
 public class ConfirmResultPage extends BasePage {
     /*ラベルの文字の大きさ*/
     private final int LETTER_SIZE = 16;
@@ -24,9 +28,6 @@ public class ConfirmResultPage extends BasePage {
     private final int OK_BUTTON_Y = 450;
     private final int OK_BUTTON_W = 160;
     private final int OK_BUTTON_H = 50;
-
-    /*配列の要素数(一列に並べる配達記録の数)*/
-    private final int OUTPUT_NUM = 7;
 
     /*ラベルのy座標の差*/
     private final int DIFFERENCE_Y = 50;
@@ -53,48 +54,46 @@ public class ConfirmResultPage extends BasePage {
     private JLabel[] rightOutput;
     private JButton button;
 
+    /**
+     * 参照を希望した依頼IDの配達記録を参照するページを作成します。
+     * @param frame メインフレーム
+     */
     public ConfirmResultPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));
 
-        JLabel[] leftHeading = new JLabel[OUTPUT_NUM];
-        leftHeading[0] = new JLabel("依頼ID : ");
-        leftHeading[1] = new JLabel("依頼人名前 : ");
-        leftHeading[2] = new JLabel("依頼人番地 : ");
-        leftHeading[3] = new JLabel("依頼人電話番号 : ");
-        leftHeading[4] = new JLabel("受取人名前 : ");
-        leftHeading[5] = new JLabel("受取人番地 : ");
-        leftHeading[6] = new JLabel("受取人電話番号 : ");
+        JLabel[] leftHeading = {
+            new JLabel("依頼ID : "),
+            new JLabel("依頼人名前 : "),
+            new JLabel("依頼人番地 : "),
+            new JLabel("依頼人電話番号 : "),
+            new JLabel("受取人名前 : "),
+            new JLabel("受取人番地 : "),
+            new JLabel("受取人電話番号 : ")
+        };
 
-        this.leftOutput = new JLabel[OUTPUT_NUM];
-        leftOutput[0] = new JLabel();
-        leftOutput[1] = new JLabel();
-        leftOutput[2] = new JLabel();
-        leftOutput[3] = new JLabel();
-        leftOutput[4] = new JLabel();
-        leftOutput[5] = new JLabel();
-        leftOutput[6] = new JLabel();
+        this.leftOutput = new JLabel[leftHeading.length];
+        for(int i=0; i<this.leftOutput.length; i++) {
+            leftOutput[i] = new JLabel();
+        }
 
-        JLabel[] rightHeading = new JLabel[OUTPUT_NUM];
-        rightHeading[0] = new JLabel("配達状況 : ");
-        rightHeading[1] = new JLabel("受付時間 : ");
-        rightHeading[2] = new JLabel("発送時間 : ");
-        rightHeading[3] = new JLabel("中継所到着時間 : ");
-        rightHeading[4] = new JLabel("配達開始時間 : ");
-        rightHeading[5] = new JLabel("受取時間 : ");
-        rightHeading[6] = new JLabel("配達完了時間 : ");
+        JLabel[] rightHeading = {
+            new JLabel("配達状況 : "),
+            new JLabel("受付時間 : "),
+            new JLabel("発送時間 : "),
+            new JLabel("中継所到着時間 : "),
+            new JLabel("配達開始時間 : "),
+            new JLabel("受取時間 : "),
+            new JLabel("配達完了時間 : ")
+        };
 
-        this.rightOutput = new JLabel[OUTPUT_NUM];
-        rightOutput[0] = new JLabel();
-        rightOutput[1] = new JLabel();
-        rightOutput[2] = new JLabel();
-        rightOutput[3] = new JLabel();
-        rightOutput[4] = new JLabel();
-        rightOutput[5] = new JLabel();
-        rightOutput[6] = new JLabel();
+        this.rightOutput = new JLabel[rightHeading.length];
+        for(int i=0; i<this.rightOutput.length; i++) {
+            rightOutput[i] = new JLabel();
+        }
 
         int addY=0;
 
-        for(int i = 0 ; i < OUTPUT_NUM ; i++){
+        for(int i = 0 ; i < this.leftOutput.length ; i++){
             leftHeading[i].setHorizontalAlignment(JLabel.RIGHT);
             rightHeading[i].setHorizontalAlignment(JLabel.RIGHT);
 
@@ -112,16 +111,29 @@ public class ConfirmResultPage extends BasePage {
         }
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public void refresh() {
 
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public boolean canChangePage(PageName page) {
         return true;
     }
 
-    public void setButton(boolean bool) {
+    /**
+     * ボタンの可視性を設定し, ボタンを設置します。
+     * @param bool 宛先を修正した方が良い場合はtrue、その他の場合はfalse
+     */
+    public void setButtonVisible(boolean bool) {
         if(this.button != null) {
+            remove(this.button);
             this.button = null;
         }
 
@@ -136,6 +148,10 @@ public class ConfirmResultPage extends BasePage {
         super.addComponent(this.button, OK_BUTTON_X, OK_BUTTON_Y, OK_BUTTON_W, OK_BUTTON_H);
     }
 
+    /**
+     * 参照した配達記録の情報を設定します。
+     * @param data 出力したい配達記録のデータ
+    */
     public void setOutputs(ParamData data) {
         leftOutput[REQUEST_ID_ID].setText("" + data.getRequestId());
         leftOutput[CLIENT_NAME_ID].setText(data.getClientName());

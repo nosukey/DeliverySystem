@@ -4,6 +4,11 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+/**
+ * 受取人個人情報を修正した配達記録を参照するページを作成するクラスです。
+ * @author 池田はるか
+ * @version 1.0(2019/01/13)
+ */
 public class FixResultPage extends BasePage {
     /*ラベルの文字の大きさ*/
     private final int LETTER_SIZE = 16;
@@ -51,6 +56,10 @@ public class FixResultPage extends BasePage {
     private static final int RECEIVING_DATE_ID          = 5;
     private static final int DELIVERY_SUCCESS_DATE_ID   = 6;
 
+    /**
+     * 取人個人情報を修正した配達記録を参照するページを作成します。
+     * @param frame メインフレーム
+     */
     public FixResultPage(MainFrame frame){
         super(frame, NAME, new JLabel(NAME.toString()));
 
@@ -64,13 +73,13 @@ public class FixResultPage extends BasePage {
         leftHeading[6] = new JLabel("受取人電話番号 : ");
 
         this.leftOutput = new JLabel[OUTPUT_NUM];
-        leftOutput[0] = new JLabel("3");
-        leftOutput[1] = new JLabel("John");
-        leftOutput[2] = new JLabel("5");
-        leftOutput[3] = new JLabel("08062517384");
-        leftOutput[4] = new JLabel("Jack");
-        leftOutput[5] = new JLabel("8");
-        leftOutput[6] = new JLabel("09076528371");
+        leftOutput[0] = new JLabel();
+        leftOutput[1] = new JLabel();
+        leftOutput[2] = new JLabel();
+        leftOutput[3] = new JLabel();
+        leftOutput[4] = new JLabel();
+        leftOutput[5] = new JLabel();
+        leftOutput[6] = new JLabel();
 
         JLabel[] rightHeading = new JLabel[OUTPUT_NUM];
         rightHeading[0] = new JLabel("配達状況 : ");
@@ -82,13 +91,13 @@ public class FixResultPage extends BasePage {
         rightHeading[6] = new JLabel("配達完了時間 : ");
 
         this.rightOutput = new JLabel[OUTPUT_NUM];
-        rightOutput[0] = new JLabel("配達中");
-        rightOutput[1] = new JLabel("2019年1月9日20時3分");
-        rightOutput[2] = new JLabel("2019年1月9日20時3分");
-        rightOutput[3] = new JLabel("2019年1月9日20時3分");
-        rightOutput[4] = new JLabel("2019年11月93日20時35分");
-        rightOutput[5] = new JLabel("");
-        rightOutput[6] = new JLabel("");
+        rightOutput[0] = new JLabel();
+        rightOutput[1] = new JLabel();
+        rightOutput[2] = new JLabel();
+        rightOutput[3] = new JLabel();
+        rightOutput[4] = new JLabel();
+        rightOutput[5] = new JLabel();
+        rightOutput[6] = new JLabel();
 
         int addY=0;
 
@@ -116,6 +125,10 @@ public class FixResultPage extends BasePage {
 
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public void refresh(){
         for(JLabel output : leftOutput) {
             output.setText("");
@@ -125,10 +138,18 @@ public class FixResultPage extends BasePage {
         }
     }
 
+    /**
+     * {@inheritDoc}
+    */
+    @Override
     public boolean canChangePage(PageName page) {
         return true;
     }
 
+    /**
+     * 宛先を修正した配達記録の情報を設定します。
+     * @param data 出力したい配達記録のデータ
+    */
     public void setOutputs(ParamData data) {
         leftOutput[REQUEST_ID_ID].setText("" + data.getRequestId());
         leftOutput[CLIENT_NAME_ID].setText(data.getClientName());

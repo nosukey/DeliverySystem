@@ -10,6 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
 
+/**
+ * サブシステム「宅配受付所」クラスです。
+ * 他のサブシステム「本部」クラス、「収集担当ロボット」クラスと通信を行います。
+ * 荷物の個数や収集担当ロボットの在否を監視するobserverクラスを持っています。
+ * @author 大久保美涼
+ * @version 1.0(2019/01/13)
+*/
 public class Reception {
 
 	private List<Parcel> undeliveredParcels;
@@ -36,6 +43,12 @@ public class Reception {
 	private static final int HEADQUARTER_PORT       = 10000;
 	private static final String COLLECTOR_ADDRESS   = "btspp://001653420416:1";
 
+	/**
+	 * 未配達の荷物を保管する荷物リストを初期化します。
+	 * 再配達の荷物を保管する荷物リストを初期化します。
+	 * 報告用の配達記録を保管する配達記録リストを初期化します。
+	 * 宅配受付所オブザーバーのインスタンスを生成します。
+	 */
 	public Reception() {
 		this.undeliveredParcels  = new LinkedList<Parcel>();
 		this.redeliveryParcels   = new LinkedList<Parcel>();
@@ -45,9 +58,7 @@ public class Reception {
 	}
 
 	/**
-	 * 本部との通信を確立する
-	 * 収集担当ロボットとの通信を確立する
-	 * 宅配受付所オブザーバ－をたてる
+	 * 本部と収集担当ロボットとの通信を確立します。
 	 */
 	public void execute() {
 		this.commToHeadquarter = new ReceptionCommunication(this, HEADQUARTER_ADDRESS, HEADQUARTER_PORT);
@@ -61,13 +72,25 @@ public class Reception {
 		io.printMessage("Reception is started.");
 	}
 
-	// TODO 削除
+	/**
+	 * 通信を確立された場合に呼び出され、状況を確認することができます。
+	*/
 	public void connected() {
 		Boundary io = new Boundary();
 		io.printMessage("Reception is connected.");
 	}
 
-	public synchronized void receiveRequest(PersonInfo clientInfo, PersonInfo recipientInfo) {
+	/**
+	 * 依頼された情報で荷物と配達記録を作成します。
+	 * 荷物を作成します。
+	 * 発送時刻を取得します。
+	 * 配達記録を作成します。
+	 * 宅配受付所オブザーバーをアップデートします。
+	 * @param clientInfo 依頼人個人情報。
+	 * @param recipientInfo 受取人個人情報。
+	 * @return 配達記録
+	 */
+	public synchronized Record receiveRequest(PersonInfo clientInfo, PersonInfo recipientInfo) {
 		Parcel parcel = new Parcel(newId, clientInfo, recipientInfo);
 		undeliveredParcels.add(parcel);
 
@@ -82,18 +105,22 @@ public class Reception {
 
 		// オブザーバー更新するを追加する箇所
 		observer.update(undeliveredParcels.size() + redeliveryParcels.size());
+
+		return record;
 	}
 
 	/**
-	 * ユースケース「発送させる」を包含しているメソッド
-	 * 統合テストで確認してください
-	 *
+	 * 保管している再配達の荷物、未配達の荷物を再配達の荷物から順番に最大10個まで荷物を発送します。
+	 * 収集担当ロボットと通信し、荷物リストを渡します。
+	 * 宅配受付所オブザーバーを初期化します。
 	 */
 	public synchronized void promptToTransport() {
  		List<Parcel>  deliveryParcels     = new LinkedList<Parcel>();
  		List<Record>  recordsForTransport = new LinkedList<Record>();
  		List<Integer> redeliveryIdList   = new LinkedList<Integer>();
  		int firstElementNumber = 0;
+
+		if(!this.observer.hasCollector()) return;
 
  		while(MAX_STORAGE > deliveryParcels.size() && (!redeliveryParcels.isEmpty() || !undeliveredParcels.isEmpty())){
  			if(!redeliveryParcels.isEmpty()){
@@ -116,18 +143,18 @@ public class Reception {
  	}
 
 	/**
-	 * ユースケース「中継所引き渡し成功の連絡を受け取る」を包含しているメソッド
-	 * 統合テストで確認してください
-	 *
+	 * 宅配受付所オブザーバーのアップデートをします。
 	 */
 	public void receiveSuccessNotification() {
 		observer.update(true);
 	}
 
 	/**
-	 * ユースケース「中継所引き渡し失敗の連絡を受け取る」を包含しているメソッド
-	 * 統合テストで確認してください
-	 *
+	 * 中継所引き渡し失敗の連絡を受け取ります。
+	 * 中継所引き渡し失敗をした荷物の報告をします。
+	 * 引き渡し失敗した荷物を再配達の荷物リストに追加します。
+	 * 宅配受付所オブザーバーのアップデートをします。
+	 * @param parcels 中継所引き渡し失敗の荷物リスト
 	 */
 	public void receiveFailureNotification(List<Parcel> parcels) {
  		reportTransportFailure(parcels);
@@ -136,11 +163,6 @@ public class Reception {
  		observer.update(true);
  	}
 
-	/**
-	 * ユースケース「発送を報告する」を包含しているメソッド
-	 *
-	 *
-	 */
 	private void reportTransportStarting(List<Record> records, List<Integer> requestIds) {
  		Date transportStartingDate = Date.getCurrentDate();
 
@@ -151,19 +173,12 @@ public class Reception {
  		commToHeadquarter.writeMethod("receiveTransportStartingReport", records, requestIds);
  	}
 
-	/**
-	 * ユースケース「中継所引き渡し失敗を報告する」を包含しているメソッド
-	 */
 	private void reportTransportFailure(List<Parcel> failureParcels) {
 		List<Integer> reportTransportFailureIds = newRequestIdList(failureParcels);
 
 		commToHeadquarter.writeMethodWithIds("receiveTransportFailureReport", reportTransportFailureIds);
 	}
 
-	/**
-	 * 荷物リストの荷物から依頼IDを取得し, 依頼IDリストに追加する
-	 * これを繰り返すことで報告用の依頼IDリストを作成する
-	 */
 	private List<Integer> newRequestIdList(List<Parcel> parcels) {
 		List<Integer> requestIds = new LinkedList<Integer>();
 
@@ -173,10 +188,6 @@ public class Reception {
 		return requestIds;
 	}
 
-	/**
-	 * 受付完了後の配達記録リストから引数で渡された依頼IDの配達記録を取り除く
-	 * ループで該当する配達記録を見つけなければならないためメソッドにした
-	 */
 	private Record removeRecordForReport(int requestId) {
 		for(Record record : recordsForReporting){
 			if(requestId == record.getRequestId()){
@@ -187,6 +198,9 @@ public class Reception {
 		return null;
 	}
 
+	/**
+	 * 保管している荷物があるか判定します。
+	 */
 	public boolean isEmpty() {
 		return undeliveredParcels.isEmpty() && redeliveryParcels.isEmpty();
 	}

@@ -1,5 +1,10 @@
 package entity.common;
 
+/**
+ * 個人情報クラスです。
+ * @author
+ * @version 1.0
+*/
 public class PersonInfo {
 
 	private String name;
@@ -10,6 +15,12 @@ public class PersonInfo {
 
 	private static final String COMMA = ",";
 
+	/**
+	 * 個人情報インスタンスを生成します。
+	 * @param name 名前
+	 * @param address 番地
+	 * @param phoneNumber 電話番号
+	*/
 	public PersonInfo(String name, int address, String phoneNumber) {
 		this.name = name;
 		this.address = address;
@@ -21,17 +32,11 @@ public class PersonInfo {
 	 * フィールドの番地, 引数の番地
 	 * フィールドの電話番号, 引数の電話番号
 	 * をそれぞれ比較し, すべて一致すればtrue, それ以外はfalseを返します。
-	 * @params info PersonInfoオブジェクト
+	 * @param info PersonInfoオブジェクト
 	 * @return boolean
 	 */
 	public boolean equals(PersonInfo info) {
-		if(this.name.equals(info.name) && this.address == info.address && this.phoneNumber.replaceAll("[-()]","").equals(info.phoneNumber.replaceAll("[-()]",""))) {
-			return true;
-		} else {
-			return false;
-		}
-		// refact
-		// return (this.name.equals(info.name) && this.address == info.address && this.phoneNumber.replaceAll("[-()]","").equals(info.phoneNumber.replaceAll("[-()]","")))
+		return (this.name.equals(info.name) && this.address == info.address && this.phoneNumber.replaceAll("[-()]","").equals(info.phoneNumber.replaceAll("[-()]","")));
 	}
 
 	/**

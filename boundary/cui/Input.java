@@ -4,10 +4,20 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
+/**
+ * 標準入力を実現するクラスです。
+ * @author 澤田 悠暉
+ * @version 1.0 (2019/01/13)
+*/
 class Input {
     private final String ERROR_INPUT_INT = "Input value is not int value.\n";
     private final String ERROR_INPUT_STR = "Input value is not string value.\n";
 
+    /**
+     * 整数値を標準入力します。
+     * @param msg 入力を促すメッセージ
+     * @return 標準入力された整数値
+    */
     public int inputInt(String msg) {
         System.out.print(msg);
         try {
@@ -18,6 +28,11 @@ class Input {
         }
     }
 
+    /**
+     * 文字列を標準入力します。
+     * @param msg 入力を促すメッセージ
+     * @return 標準入力された文字列
+    */
     public String inputString(String msg) {
         System.out.print(msg);
         try {

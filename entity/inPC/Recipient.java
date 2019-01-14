@@ -10,6 +10,13 @@ import entity.common.Parcel;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * サブシステム「受取人宅」クラスです。
+ * 他のサブシステム「配達担当ロボット」クラスと通信を行います。
+ * 番地1～16の受取人宅の情報を保持しています。
+ * @author 池田はるか
+ * @version 1.0(2019/01/13)
+ */
 public class Recipient {
 
 	private List<Parcel> parcels;
@@ -20,18 +27,26 @@ public class Recipient {
 
 	private boolean[] isHome;
 
+	private static final int ADDRESS_GAP = 1;
+
 	private static final String DELIVERER_ADDRESS = "btspp://001653423DA3:1";
 
+	/**
+	 * 全て受取人宅が受け取った荷物を格納するためのParcelクラスの配列を生成します。
+	 * 番地1～16の受取人宅の個人情報を格納する配列を生成します。
+	 * 番地1～16の受取人宅が在宅しているかどうかを格納する配列を生成します。
+	 * 受取人宅の個人情報と在宅しているかどうかを設定します。
+	 */
 	public Recipient() {
 		this.parcels = new LinkedList<Parcel>();
 		this.recipientsInfo = new PersonInfo[16];
 		this.isHome = new boolean[16];
 		autoSetInfos();
-		// autoSetIsHome();
+		autoSetIsHome();
 	}
 
 	/**
-	 * 配達担当ロボットとの通信を確立する
+	 * 配達担当ロボットとの通信を確立します。
 	 */
 	public void execute() {
 		this.commToDeliverer = new RecipientCommunication(this, DELIVERER_ADDRESS);
@@ -42,7 +57,9 @@ public class Recipient {
 		io.printMessage("Recipient is started.");
 	}
 
-	// TODO 削除
+	/**
+	 * 通信が正常に確立されたことを表示します。
+	 */
 	public void connected() {
 		Boundary io = new Boundary();
 		io.printMessage("Recipient is connected.");
@@ -67,70 +84,47 @@ public class Recipient {
 		this.recipientsInfo[15] = new PersonInfo("p",16,"09016161616");
 	}
 
-	// private void autoSetIsHome(){
-	// 	this.isHome[0]=true;
-	// 	this.isHome[1]=true;
-	// 	this.isHome[2]=false;
-	// 	this.isHome[3]=true;
-	// 	this.isHome[4]=true;
-	// 	this.isHome[5]=true;
-	// 	this.isHome[6]=true;
-	// 	this.isHome[7]=true;
-	// 	this.isHome[8]=true;
-	// 	this.isHome[9]=true;
-	// 	this.isHome[10]=true;
-	// 	this.isHome[11]=true;
-	// 	this.isHome[12]=true;
-	// 	this.isHome[13]=true;
-	// 	this.isHome[14]=true;
-	// 	this.isHome[15]=true;
-	// }
+	private void autoSetIsHome(){
+		for(int i=0; i<this.isHome.length; i++) {
+			this.isHome[i] = true;
+		}
+	}
 
+	/**
+	 * 番地1～16の受取人宅を全て故意的に"在宅"に設定します。
+	 * @param isHome 在宅しているかどうかを表すboolean配列。
+	 */
 	public void setIsHome(boolean[] isHome) {
 		this.isHome = isHome;
-
-		for(boolean bool : isHome) {
-			System.out.println(bool);
-		}
 	}
 
-
 	/**
-	 * ユースケース「本人確認を行う」を包含しているメソッド
-	 * 統合テストで確認してください
-	 *
+	 * 配達担当ロボットから渡される個人情報をもとに本人確認を行います。
+	 * @param address 配達担当ロボットから渡される番地。
+	 * @param personalInfo 配達担当ロボットから渡される個人情報。
 	 */
 	public void verifyRecipientInfo(int address, PersonInfo personalInfo) {
-
-		System.out.println("verifyRecipientInfo()");
-
-		if(isHome[address-1]){
-			commToDeliverer.writeString(Boolean.toString(recipientsInfo[address-1].equals(personalInfo)));
-			System.out.println(recipientsInfo[address-1].equals(personalInfo));
+		if(isHome[address-ADDRESS_GAP]){
+			commToDeliverer.writeString(Boolean.toString(recipientsInfo[address-ADDRESS_GAP].equals(personalInfo)));
+			System.out.println(recipientsInfo[address-ADDRESS_GAP].equals(personalInfo));
 		}
 	}
 
 	/**
-	 * ユースケース「荷物を受け取る」を包含しているメソッド
-	 * 統合テストで確認してください
-	 *
+	 * 配達担当ロボットから渡される荷物を受け取ります。
+	 * @param parcel 渡される荷物。
 	 */
 	public void receiveParcel(Parcel parcel) {
-
-		System.out.println("receiveParcel()");
-
 		parcels.add(parcel);
 
-		//TODO テスト終わったら変数削除しても良い
-		String receivingTimeData=Date.encode(Date.getCurrentDate());
-
-		//TODO 消す
-		System.out.println("receivingTimeData = "+receivingTimeData);
-
-		//TODO 通信
-		commToDeliverer.writeString(receivingTimeData);
+		commToDeliverer.writeString(Date.encode(Date.getCurrentDate()));
 	}
 
+	/**
+	 * 引数で渡された個人情報と同じ受取人宅が存在するかどうかを判定します。
+	 * @param info 渡される個人情報。
+	 * @return 存在する場合はtrue,存在しない場合はfalse。
+	 */
 	public boolean contains(PersonInfo info) {
 		for(PersonInfo recipientInfo : this.recipientsInfo) {
 			if(recipientInfo.equals(info)) return true;
