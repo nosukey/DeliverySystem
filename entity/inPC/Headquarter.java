@@ -273,10 +273,11 @@ public class Headquarter {
      * @return 比較した結果
 	 */
 	public boolean contains(int requestId) {
-		if(requestId <= this.records.size())
-            return true;
-        else
-            return false;
+//		if(requestId <= this.records.size())
+//            return true;
+//        else
+//            return false;
+		return requestId <= this.records.size();
 	}
 
 }

@@ -20,33 +20,11 @@ import lejos.utility.Delay;
  */
 public class Robot {
 
-	protected final float P_GAIN = 0.84f;
+	private boolean isRightSide;
 
-	protected final float I_GAIN = 0.13f;
+	final int THIRD_GEAR_SPEED = 315;
 
-	protected final float D_GAIN = 0.65f;
-
-	protected boolean isRightSide;
-
-	protected final float BLACK_THRESHOLD = 0.17f;
-
-	protected final float WHITE_THRESHOLD = 0.44f;
-
-	protected final float GRAY_THRESHOLD = (BLACK_THRESHOLD + WHITE_THRESHOLD) * 0.5f;
-
-	protected final int SECOND_GEAR_SPEED = 175;
-
-	protected final int THIRD_GEAR_SPEED = 315;
-
-	protected final int ZERO_ANGLE = 0;
-
-	protected final int RIGHT_ANGLE = 90;
-
-	protected final int STRAIGHT_ANGLE = 180;
-
-	protected final int ROUND_ANGLE = 360;
-
-	private final float DELTA_TIME = 0.01f;
+	final int STRAIGHT_ANGLE = 180;
 
 	private final int DELAY_TIME = 100;
 
@@ -76,6 +54,11 @@ public class Robot {
 
 	private float[] irSamples;
 
+	/**
+	 * isRightSideに値を代入します。
+	 * @param isRightSide {@link #isRightSide}
+	 */
+	void setIsRightSide(boolean isRightSide){ this.isRightSide = isRightSide; }
 
 	/**
 	 * ロボットに取り付けられたセンサ（光センサ・ジャイロセンサ・IRセンサ）を稼働させるために呼び出します。
@@ -83,7 +66,7 @@ public class Robot {
 	 * ジャイロセンサのポート	:2番
 	 * IRセンサのポート			:3番
 	 */
-	protected void openSensor() {
+	void openSensor() {
 		try {
 			colorSensor  = new EV3ColorSensor(SensorPort.S1);
 			colorMode    = colorSensor.getRedMode();
@@ -107,7 +90,7 @@ public class Robot {
 	/**
 	 * ロボットに取り付けられたセンサ（光センサ・ジャイロセンサ・IRセンサ）の接続を切断する処理をします。
 	 */
-	protected void closeSensor(){
+	void closeSensor(){
 		colorSensor.close();
 		gyroSensor.close();
 		ev3IRSensor.close();
@@ -121,7 +104,7 @@ public class Robot {
 	 * @param distance ロボットを移動させたい距離
 	 * @param speed ロボットを走らせるときの速度
 	 */
-	protected void lineTrace(float distance, int speed) {
+	void lineTrace(float distance, int speed) {
 		try{
 			EV3LargeRegulatedMotor motorA;
 			EV3LargeRegulatedMotor motorB;
@@ -133,21 +116,28 @@ public class Robot {
 				motorB = new EV3LargeRegulatedMotor(MotorPort.A);
 			}
 
+			final float BLACK_THRESHOLD = 0.17f;
+			final float WHITE_THRESHOLD = 0.44f;
 			final float DIAMETER_TIRE = 5.6f;
+			final float DELTA_TIME = 0.01f;
+			final float GRAY_THRESHOLD = (BLACK_THRESHOLD + WHITE_THRESHOLD) * 0.5f;
 			final float DIFFERENCE_BLACK_WHITE = 1/(BLACK_THRESHOLD-WHITE_THRESHOLD) * 100;
-			float p = 0.0f;
+			final float P_GAIN = 0.84f;
+			final float I_GAIN = 0.13f;
+			final float D_GAIN = 0.65f;
+			float p;
 			float i = 0.0f;
-			float d = 0.0f;
+			float d;
 			float mileage = 0.0f;
 			float turn = 0.0f;
 			float eval = 0.0f;
 
 			while(mileage <= distance) {
 				colorMode.fetchSample(colorSamples, 0);
-	            if(turn==0) Sound.beep();
+	            if(turn == 0) Sound.beep();
 
 				// TODO ここ処理時間削減できるよ
-				p = P_GAIN * (float)(colorSamples[0] - GRAY_THRESHOLD) * DIFFERENCE_BLACK_WHITE;
+				p = P_GAIN * (colorSamples[0] - GRAY_THRESHOLD) * DIFFERENCE_BLACK_WHITE;
 				d = D_GAIN * (colorSamples[0] - eval) * DIFFERENCE_BLACK_WHITE;
 				i += I_GAIN * (colorSamples[0] - GRAY_THRESHOLD) * DIFFERENCE_BLACK_WHITE * DELTA_TIME;
 				turn = p + d + i;
@@ -175,7 +165,7 @@ public class Robot {
 	 *
 	 * @param angle 機体を回転させたい回転角
 	 */
-	protected void rotate(int angle) {
+	void rotate(int angle) {
 
 		final int SPEED  = 100;
 		EV3LargeRegulatedMotor motorA = null;
@@ -211,7 +201,7 @@ public class Robot {
 	/**
 	 * 機体の方向を0°,90°,-90°,180°に合わせます。
 	 */
-    protected void initRotate(){
+    void initRotate(){
     	Button.LEDPattern(LED_GREEN);
     	gyroMode.fetchSample(gyroSamples,0);
 
@@ -228,7 +218,7 @@ public class Robot {
     /**
      * 搬送路のトレースする側面をそのままに方向転換をするためのメソッドです。
      */
-	protected void turn() {
+	void turn() {
 		try {
 			EV3LargeRegulatedMotor motorA;
 			EV3LargeRegulatedMotor motorB;
@@ -264,7 +254,7 @@ public class Robot {
 	 *ロボットが始動した場所にて帰還した際に位置調整をするための距離を記録するための処理です。
 	 *ロボットの起動時にENTERボタンで距離を決定します。
 	 */
-	protected void setParkingDistance() {
+	void setParkingDistance() {
 		parkingDistance = 0;
 		final int DISPLAY_X = 0;
 		final int DISPLAY_Y = 2;
@@ -282,7 +272,7 @@ public class Robot {
 	/**
 	 * ロボットが始動した場所へ帰還後、ロボット発進時に置いた位置へ調整して停止します。
 	 */
-	protected void parking() {
+	void parking() {
 		try {
 			Button.LEDPattern(LED_GREEN);
 			EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(MotorPort.A);
