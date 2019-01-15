@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 public abstract class BasePage extends JPanel {
     protected MainFrame parent;
     private PageName name;
-    private JLabel label;
 
     private static final int MIN_ADDRESS = 1;
     private static final int MAX_ADDRESS = 16;
@@ -46,17 +45,16 @@ public abstract class BasePage extends JPanel {
     public BasePage(MainFrame frame, PageName name, JLabel label) {
         this.parent = frame;
         this.name   = name;
-        this.label  = label;
 
         setLayout(null);
         setSize(PAGE_W, PAGE_H);
         setOpaque(true);
         setBackground(new Color(153, 204, 255));
-        this.label.setBounds(PAGE_X, PAGE_Y, PAGE_W, LABEL_H);
-        this.label.setOpaque(true);
-        this.label.setBackground(new Color(102, 153, 255));
-        this.label.setFont(new Font("ＭＳ ゴシック", Font.BOLD, LABEL_FONT));
-        add(this.label);
+        label.setBounds(PAGE_X, PAGE_Y, PAGE_W, LABEL_H);
+        label.setOpaque(true);
+        label.setBackground(new Color(102, 153, 255));
+        label.setFont(new Font("ＭＳ ゴシック", Font.BOLD, LABEL_FONT));
+        add(label);
 
     }
 

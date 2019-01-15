@@ -16,22 +16,6 @@ public class SettingPage extends BasePage{
     private final int LINE_SIZE = 4;
     private final int COLUMN_SIZE = 4;
 
-    /*ckboxを作成するための座標・幅・高さ*/
-    private final int CKBOX_X = 60;
-    private final int CKBOX_Y = 90;
-    private final int CKBOX_W = 90;
-    private final int CKBOX_H = 90;
-
-    /*ckboxのx座標の差とy座標の差*/
-    private final int DIFFERENCE_X = 150;
-    private final int DIFFERENCE_Y = 110;
-
-    /*決定ボタンの座標・幅・高さ*/
-    private final int BUTTON_X = 650;
-    private final int BUTTON_Y = 430;
-    private final int BUTTON_W = 100;
-    private final int BUTTON_H = 70;
-
     private JCheckBox[][] ckbox;
     private static final PageName NAME = PageName.SETTING;
 
@@ -41,6 +25,21 @@ public class SettingPage extends BasePage{
     */
     public SettingPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));
+        /*ckboxを作成するための座標・幅・高さ*/
+        final int CKBOX_X = 60;
+        final int CKBOX_Y = 90;
+        final int CKBOX_W = 90;
+        final int CKBOX_H = 90;
+
+        /*ckboxのx座標の差とy座標の差*/
+        final int DIFFERENCE_X = 150;
+        final int DIFFERENCE_Y = 110;
+
+        /*決定ボタンの座標・幅・高さ*/
+        final int BUTTON_X = 650;
+        final int BUTTON_Y = 430;
+        final int BUTTON_W = 100;
+        final int BUTTON_H = 70;
 
         this.ckbox = new JCheckBox[LINE_SIZE][COLUMN_SIZE];
 

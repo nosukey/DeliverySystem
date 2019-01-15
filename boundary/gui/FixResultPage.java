@@ -10,31 +10,6 @@ import javax.swing.JLabel;
  * @version 1.0
  */
 public class FixResultPage extends BasePage {
-    /*ラベルの文字の大きさ*/
-    private final int LETTER_SIZE = 16;
-
-    /*左側と右側のラベルのそれぞれの座標*/
-    private final int LEFT_X = 30;
-    private final int LEFT_Y = 90;
-    private final int RIGHT_X = 340;
-    private final int RIGHT_Y = LEFT_Y;
-
-    /*すべてのラベルの幅・高さ*/
-    private final int LABEL_W = 220;
-    private final int LABEL_H = 40;
-
-    /*ボタンの座標・幅・高さ*/
-    private final int OK_BUTTON_X = 325;
-    private final int OK_BUTTON_Y = 450;
-    private final int OK_BUTTON_W = 160;
-    private final int OK_BUTTON_H = 50;
-
-    /*配列の要素数(一列に並べる配達記録の数)*/
-    private final int OUTPUT_NUM = 7;
-
-    /*ラベルのy座標の差*/
-    private final int DIFFERENCE_Y = 50;
-
     private static final PageName NAME = PageName.FIX_RESULT;
 
     private JLabel[] leftOutput;
@@ -62,6 +37,30 @@ public class FixResultPage extends BasePage {
      */
     public FixResultPage(MainFrame frame){
         super(frame, NAME, new JLabel(NAME.toString()));
+        /*ラベルの文字の大きさ*/
+        final int LETTER_SIZE = 16;
+
+        /*左側と右側のラベルのそれぞれの座標*/
+        final int LEFT_X = 30;
+        final int LEFT_Y = 90;
+        final int RIGHT_X = 340;
+        final int RIGHT_Y = LEFT_Y;
+
+        /*すべてのラベルの幅・高さ*/
+        final int LABEL_W = 220;
+        final int LABEL_H = 40;
+
+        /*ボタンの座標・幅・高さ*/
+        final int OK_BUTTON_X = 325;
+        final int OK_BUTTON_Y = 450;
+        final int OK_BUTTON_W = 160;
+        final int OK_BUTTON_H = 50;
+
+        /*配列の要素数(一列に並べる配達記録の数)*/
+        final int OUTPUT_NUM = 7;
+
+        /*ラベルのy座標の差*/
+        final int DIFFERENCE_Y = 50;
 
         JLabel[] leftHeading = new JLabel[OUTPUT_NUM];
         leftHeading[0] = new JLabel("依頼ID : ");

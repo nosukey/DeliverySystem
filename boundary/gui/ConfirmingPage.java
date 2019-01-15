@@ -12,27 +12,6 @@ import javax.swing.JLabel;
  * @version 1.0
  */
 public class ConfirmingPage extends BasePage {
-    private final int COMBO_X = 200;
-    private final int COMBO_Y = 200;
-    private final int COMBO_W = 400;
-    private final int COMBO_H = 30;
-
-    private final int LABEL_X = 170;
-    private final int LABEL_Y = 250;
-    private final int LABEL_W = 500;
-    private final int LABEL_H = 30;
-    private final int LETTER_SIZE = 30;
-
-    private final int OK_BUTTON_X = 325;
-    private final int OK_BUTTON_Y = 450;
-    private final int OK_BUTTON_W = 160;
-    private final int OK_BUTTON_H = 50;
-
-    private final int BACK_BUTTON_X = 640;
-    private final int BACK_BUTTON_Y = 75;
-    private final int BACK_BUTTON_W = 120;
-    private final int BACK_BUTTON_H = 40;
-
     private static final PageName NAME = PageName.CONFIRMING;
 
     private Integer[] ids = null;
@@ -47,6 +26,10 @@ public class ConfirmingPage extends BasePage {
     public ConfirmingPage(MainFrame frame){
         super(frame, NAME, new JLabel(NAME.toString()));
 
+        final int BACK_BUTTON_X = 640;
+        final int BACK_BUTTON_Y = 75;
+        final int BACK_BUTTON_W = 120;
+        final int BACK_BUTTON_H = 40;
         JButton moveSelectButton = new JButton("戻る");
         moveSelectButton.addActionListener(frame.new MovePageActionListener(frame, NAME, PageName.USER_TOP));
         super.addComponent(moveSelectButton, BACK_BUTTON_X, BACK_BUTTON_Y, BACK_BUTTON_W, BACK_BUTTON_H);
@@ -57,6 +40,22 @@ public class ConfirmingPage extends BasePage {
     */
     @Override
     public void refresh(){
+        final int COMBO_X = 200;
+        final int COMBO_Y = 200;
+        final int COMBO_W = 400;
+        final int COMBO_H = 30;
+
+        final int LABEL_X = 170;
+        final int LABEL_Y = 250;
+        final int LABEL_W = 500;
+        final int LABEL_H = 30;
+        final int LETTER_SIZE = 30;
+
+        final int OK_BUTTON_X = 325;
+        final int OK_BUTTON_Y = 450;
+        final int OK_BUTTON_W = 160;
+        final int OK_BUTTON_H = 50;
+
         removeComponents();
 
         if(ids == null) {

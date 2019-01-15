@@ -12,34 +12,7 @@ import javax.swing.JTextField;
  */
 public class RequestingPage extends BasePage {
   /************************************************************************/
-    /* ラベルの位置と文字のサイズ */
-    private final int LABEL_X = 170;
-    private final int LABEL_Y = 150;
-    private final int LABEL_W = 160;
-    private final int LABEL_H = 30;
-    private final int LETTER_SIZE = 16;
-
-    /* テキストフィールドの位置と文字の入る長さ */
-    private final int TEXT_X = LABEL_X + LABEL_W;
-    private final int TEXT_Y = LABEL_Y;
-    private final int TEXT_W = 300;
-    private final int TEXT_H = LABEL_H;
-    private final int LETTER_LENGTH = 20;
-
-    /* 確認ボタンの位置 */
-    private final int CFM_BUTTON_X = 320;
-    private final int CFM_BUTTON_Y = 370;
-    private final int CFM_BUTTON_W = 160;
-    private final int CFM_BUTTON_H = 50;
-
-    /* 戻るボタンの位置 */
-    private final int BACK_BUTTON_X = 640;
-    private final int BACK_BUTTON_Y = 75;
-    private final int BACK_BUTTON_W = 120;
-    private final int BACK_BUTTON_H = 40;
-
     private final int INPUT_NUM = 3;
-    private final int DISTANCE  = 50;
   /************************************************************************/
 
     private JTextField[] text;
@@ -55,6 +28,35 @@ public class RequestingPage extends BasePage {
      */
     public RequestingPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));
+
+        /* ラベルの位置と文字のサイズ */
+        final int LETTER_SIZE = 16;
+        final int LABEL_X = 170;
+        final int LABEL_Y = 150;
+        final int LABEL_W = 160;
+        final int LABEL_H = 30;
+
+        /* テキストフィールドの位置と文字の入る長さ */
+        final int TEXT_X = LABEL_X + LABEL_W;
+        final int TEXT_Y = LABEL_Y;
+        final int TEXT_W = 300;
+        final int TEXT_H = LABEL_H;
+        final int LETTER_LENGTH = 20;
+
+        /* 確認ボタンの位置 */
+        final int CFM_BUTTON_X = 320;
+        final int CFM_BUTTON_Y = 370;
+        final int CFM_BUTTON_W = 160;
+        final int CFM_BUTTON_H = 50;
+
+        /* 戻るボタンの位置 */
+        final int BACK_BUTTON_X = 640;
+        final int BACK_BUTTON_Y = 75;
+        final int BACK_BUTTON_W = 120;
+        final int BACK_BUTTON_H = 40;
+
+        final int DISTANCE  = 50;
+
 
         JLabel[] label = new JLabel[INPUT_NUM];
         label[0] = new JLabel("受取人 名前");

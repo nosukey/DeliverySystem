@@ -10,19 +10,6 @@ import javax.swing.JLabel;
  * @version 1.0
  */
 public class UserTopPage extends BasePage {
-    private final int LETTER_SIZE = 24;
-
-    private final int REQUEST_BUTTON_X = 80;
-    private final int RECORD_BUTTON_X = 420;
-    private final int BUTTON_Y = 200;
-    private final int BUTTON_W = 300;
-    private final int BUTTON_H = 150;
-
-    private final int BACK_BUTTON_X = 640;
-    private final int BACK_BUTTON_Y = 75;
-    private final int BACK_BUTTON_W = 120;
-    private final int BACK_BUTTON_H = 40;
-
     private static final PageName NAME = PageName.USER_TOP;
 
     /**
@@ -31,6 +18,18 @@ public class UserTopPage extends BasePage {
     */
     public UserTopPage(MainFrame frame){
         super(frame, NAME, new JLabel(NAME.toString()));
+        final int LETTER_SIZE = 24;
+
+        final int REQUEST_BUTTON_X = 80;
+        final int RECORD_BUTTON_X = 420;
+        final int BUTTON_Y = 200;
+        final int BUTTON_W = 300;
+        final int BUTTON_H = 150;
+
+        final int BACK_BUTTON_X = 640;
+        final int BACK_BUTTON_Y = 75;
+        final int BACK_BUTTON_W = 120;
+        final int BACK_BUTTON_H = 40;
 
         JButton moveInputRecipientButton = new JButton("配達を依頼する");
         moveInputRecipientButton.setFont(new Font("ＭＳ ゴシック", Font.PLAIN, LETTER_SIZE));
