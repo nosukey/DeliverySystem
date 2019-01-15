@@ -10,7 +10,7 @@ import lejos.utility.Delay;
  * 配達担当ロボット専用の通信クラスです。
  * 他のサブシステムとの通信を確立し、データの受け渡しをサポートします。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/14)
+ * @version 1.0
 */
 public class DelivererCommunication extends Communication implements Runnable {
 

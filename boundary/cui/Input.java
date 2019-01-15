@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * 標準入力を実現するクラスです。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/13)
+ * @version 1.0
 */
 class Input {
     /**

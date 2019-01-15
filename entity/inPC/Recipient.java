@@ -16,7 +16,7 @@ import java.util.List;
  * 他のサブシステム「配達担当ロボット」クラスと通信を行います。
  * 番地1～16の受取人宅の情報を保持しています。
  * @author 池田はるか
- * @version 1.0(2019/01/13)
+ * @version 1.0
  */
 public class Recipient {
 
@@ -93,7 +93,7 @@ public class Recipient {
 
 	/**
 	 * 番地1～16の受取人宅を全て故意的に"在宅"に設定します。
-	 * @param isHome 在宅しているかどうかを表すboolean配列。
+	 * @param isHome 在宅しているかどうかを表すboolean配列
 	 */
 	public void setIsHome(boolean[] isHome) {
 		this.isHome = isHome;
@@ -101,19 +101,18 @@ public class Recipient {
 
 	/**
 	 * 配達担当ロボットから渡される個人情報をもとに本人確認を行います。
-	 * @param address 配達担当ロボットから渡される番地。
-	 * @param personalInfo 配達担当ロボットから渡される個人情報。
+	 * @param address 配達担当ロボットから渡される番地
+	 * @param personalInfo 配達担当ロボットから渡される個人情報
 	 */
 	public void verifyRecipientInfo(int address, PersonInfo personalInfo) {
 		if(isHome[address-ADDRESS_GAP]){
 			commToDeliverer.writeString(Boolean.toString(recipientsInfo[address-ADDRESS_GAP].equals(personalInfo)));
-			System.out.println(recipientsInfo[address-ADDRESS_GAP].equals(personalInfo));
 		}
 	}
 
 	/**
 	 * 配達担当ロボットから渡される荷物を受け取ります。
-	 * @param parcel 渡される荷物。
+	 * @param parcel 渡される荷物
 	 */
 	public void receiveParcel(Parcel parcel) {
 		parcels.add(parcel);
@@ -123,8 +122,8 @@ public class Recipient {
 
 	/**
 	 * 引数で渡された個人情報と同じ受取人宅が存在するかどうかを判定します。
-	 * @param info 渡される個人情報。
-	 * @return 存在する場合はtrue,存在しない場合はfalse。
+	 * @param info 渡される個人情報
+	 * @return 存在する場合はtrue,存在しない場合はfalse
 	 */
 	public boolean contains(PersonInfo info) {
 		for(PersonInfo recipientInfo : this.recipientsInfo) {

@@ -16,7 +16,7 @@ import lejos.utility.Delay;
  * 配達・収集担当ロボットの親クラスとなるクラスです。
  * ロボットに取り付けられたセンサ・モータ等の制御,機体の移動と方向転換に関する処理をします。
  * @author 大竹 知幸
- * @version 1.0(2019/1/13)
+ * @version 1.0
  */
 public class Robot {
 
@@ -80,7 +80,7 @@ public class Robot {
 			irMode      = ev3IRSensor.getDistanceMode();
 			irSamples   = new float[irMode.sampleSize()];
 		} catch(Exception e) {
-			Button.LEDPattern(LED_GREEN);
+			Button.LEDPattern(LED_RED);
 			Delay.msDelay(DELAY_TIME);
 			openSensor();
 			Button.LEDPattern(LED_OFF);

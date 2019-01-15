@@ -17,7 +17,7 @@ import entity.common.PersonInfo;
  *本部の役割を担うクラスです。
  *他のサブシステムを担うクラスと通信を行います。
  *@author 大場 貴斗
- *@version 1.0(2019/1/12)
+ *@version 1.0
  */
 public class Headquarter {
 
@@ -147,7 +147,7 @@ public class Headquarter {
 
     /**
      * 入力された依頼IDから配達記録を返します。
-     * @param id 参照したい入力された依頼IDです。
+     * @param id 参照したい入力された依頼ID
      * @return 依頼IDから一致した配達記録
      */
 	public synchronized Record referRecord(int id) {

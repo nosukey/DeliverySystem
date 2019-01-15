@@ -6,8 +6,8 @@ import javax.swing.JLabel;
 
 /**
  * ユーザーが受けたいサービスを選択することができるページを作成するクラスです。
- * @author 池田はるか
- * @version 1.0(2019/01/13)
+ * @author 大久保美涼
+ * @version 1.0
  */
 public class UserTopPage extends BasePage {
     private final int LETTER_SIZE = 24;
@@ -27,7 +27,7 @@ public class UserTopPage extends BasePage {
 
     /**
      * ユーザーが受けたいサービスを選択することができるページを作成します。
-     * @param frame メインフレーム
+     * @param frame MainFrameインスタンス
     */
     public UserTopPage(MainFrame frame){
         super(frame, NAME, new JLabel(NAME.toString()));

@@ -8,7 +8,7 @@ import javax.swing.JTextField;
 /**
  * 受取人個人情報を修正するページを作成するクラスです。
  * @author 池田はるか
- * @version 1.0(2019/01/13)
+ * @version 1.0
  */
 public class FixingPage extends BasePage {
   /************************************************************************/
@@ -45,7 +45,7 @@ public class FixingPage extends BasePage {
 
     /**
      * 受取人個人情報を修正するページを作成します。
-     * @param frame メインフレーム
+     * @param frame MainFrameインスタンス
      */
     public FixingPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));

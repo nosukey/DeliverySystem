@@ -13,8 +13,8 @@ import lejos.utility.Delay;
 /**
  * サブシステム「中継所」クラスです。
  * 他のサブシステム「本部」クラス、「収集担当ロボット」クラス、「配達担当ロボット」クラスとの通信を行います。
- * @author 大久保美涼
- * @version 1.0(2019/01/13)
+ * @author 大久保美涼 山下京之介
+ * @version 1.0
  */
 public class RelayStation {
 
@@ -84,9 +84,6 @@ public class RelayStation {
 	 * 通信を確立された場合に呼び出され、状況を確認することができます。
 	*/
 	public void connected() {
-		final String REFRESH_DISPLAY = "\n\n\n\n\n\n\n";
-		System.out.println(REFRESH_DISPLAY);
-
 		LCD.drawString("Connected.", 0, 1);
 	}
 
@@ -178,10 +175,10 @@ public class RelayStation {
 
 	/**
 	 * 収集担当ロボットから荷物を受け取るかの判定をします。
-	 * 引数の引き渡し予定の荷物数 < (貯蔵限度 - 配達中の荷物数 - 配達待ちの荷物リストの要素数 - 宛先間違いの荷物リストの要素数) の
+	 * 引き渡し予定の荷物数 < (貯蔵限度 - 配達中の荷物数 - 配達待ちの荷物リストの要素数 - 宛先間違いの荷物リストの要素数) の
 	 * 条件を満たす場合は荷物を受け取る通信をします。
 	 * 条件を満たさない場合は荷物を受け取りません。
-	 * @param numOfParcelsToSend 引数の引き渡し予定の荷物数
+	 * @param numOfParcelsToSend 引き渡し予定の荷物数
 	 */
 	public void canSendParcels(int numOfParcelsToSend) {
 		if(numOfParcelsToSend <= (MAX_STORAGE - numOfDeliveredParcels - storedParcels.size() - wrongRecipientParcels.size())){

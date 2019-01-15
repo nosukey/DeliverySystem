@@ -16,7 +16,7 @@ import lejos.utility.Delay;
  * 本部専用の通信クラスです。
  * 他のサブシステムとの通信を確立し、データの受け渡しをサポートします。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/14)
+ * @version 1.0
 */
 public class HeadquarterCommunication extends Communication implements Runnable {
 
@@ -70,6 +70,7 @@ public class HeadquarterCommunication extends Communication implements Runnable 
 			else
 				connect();
 		} catch(IOException e) {
+			System.out.println("Exception: Headquarter's connection failed.");
 			Delay.msDelay(DELAY_TIME);
 			System.exit(1);
 		}

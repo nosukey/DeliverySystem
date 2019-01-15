@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 /**
  * 受取人個人情報を修正した配達記録を参照するページを作成するクラスです。
  * @author 池田はるか
- * @version 1.0(2019/01/13)
+ * @version 1.0
  */
 public class FixResultPage extends BasePage {
     /*ラベルの文字の大きさ*/
@@ -58,7 +58,7 @@ public class FixResultPage extends BasePage {
 
     /**
      * 取人個人情報を修正した配達記録を参照するページを作成します。
-     * @param frame メインフレーム
+     * @param frame MainFrameインスタンス
      */
     public FixResultPage(MainFrame frame){
         super(frame, NAME, new JLabel(NAME.toString()));

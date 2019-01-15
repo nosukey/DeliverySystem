@@ -3,7 +3,7 @@ package boundary.gui;
 /**
  * ページの名前を持つ列挙型クラスです。
  * @author 澤田悠暉
- * @version 1.0(2019/01/13)
+ * @version 1.0
  */
 enum PageName {
     /**

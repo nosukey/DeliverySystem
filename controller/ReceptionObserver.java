@@ -6,7 +6,7 @@ import entity.inPC.Reception;
  * 宅配受付所の状態管理クラスです。
  * 宅配受付所の荷物の個数と収集担当ロボットの在否を把握しています。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/14)
+ * @version 1.0
 */
 public class ReceptionObserver {
 
@@ -21,6 +21,23 @@ public class ReceptionObserver {
 	private static final int THRESHOLD_AMOUNT = 3;
 
 	private static final int WAIT_TIME = 90000;
+
+	class TimeWatcher extends Thread {
+		public void run() {
+			try {
+				Thread.sleep(WAIT_TIME);
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+
+			if(reception.isEmpty()) {
+				isTimeOut = true;
+			} else {
+				reception.promptToTransport();
+			}
+		}
+	}
 
 	/**
 	 * 宅配受付所オブザーバを生成します。
@@ -77,19 +94,8 @@ public class ReceptionObserver {
 			reception.promptToTransport();
 			return;
 		}
-		
-		try {
-			Thread.sleep(WAIT_TIME);
-		} catch(InterruptedException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
 
-		if(reception.isEmpty()) {
-			this.isTimeOut = true;
-		} else {
-			reception.promptToTransport();
-		}
+		new TimeWatcher().start();
 	}
 
 	/**

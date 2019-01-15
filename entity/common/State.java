@@ -3,7 +3,7 @@ package entity.common;
 /**
  * 配達状況を持つ列挙型クラスです。
  * @author 澤田悠暉
- * @version 1.0(2019/01/12)
+ * @version 1.0
 */
 public enum State {
 
@@ -46,7 +46,7 @@ public enum State {
 	/**
 	 * StateインスタンスをStringに変換します。
 	 * {@inheritDoc}
-	 * @return 配達状況の文字列表現。
+	 * @return 配達状況の文字列表現
 	*/
 	@Override
 	public String toString() {
@@ -55,8 +55,8 @@ public enum State {
 
 	/**
 	 * 通信フォーマットをStateインスタンスに変換します。通信のフォーマットに合わない文字列が与えられた場合にはnullを返します。
-	 * @param str 通信フォーマットに従った文字列。
-	 * @return Stateインスタンス。
+	 * @param str 通信フォーマットに従った文字列
+	 * @return Stateインスタンス
 	*/
 	public static State decode(String str) {
 		for(State state : State.values()) {
@@ -69,8 +69,8 @@ public enum State {
 
 	/**
 	 * Stateインスタンスを通信フォーマットに従った文字列に変換します。
-	 * @param state Stateインスタンス。
-	 * @return 通信フォーマットに従った文字列。
+	 * @param state Stateインスタンス
+	 * @return 通信フォーマットに従った文字列
 	*/
 	public static String encode(State state) {
 		return "" + state.ordinal();

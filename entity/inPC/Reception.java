@@ -14,8 +14,8 @@ import java.util.LinkedList;
  * サブシステム「宅配受付所」クラスです。
  * 他のサブシステム「本部」クラス、「収集担当ロボット」クラスと通信を行います。
  * 荷物の個数や収集担当ロボットの在否を監視するobserverクラスを持っています。
- * @author 大久保美涼
- * @version 1.0(2019/01/13)
+ * @author 大久保美涼 山下京之介
+ * @version 1.0
 */
 public class Reception {
 
@@ -86,8 +86,8 @@ public class Reception {
 	 * 発送時刻を取得します。
 	 * 配達記録を作成します。
 	 * 宅配受付所オブザーバーをアップデートします。
-	 * @param clientInfo 依頼人個人情報。
-	 * @param recipientInfo 受取人個人情報。
+	 * @param clientInfo 依頼人個人情報
+	 * @param recipientInfo 受取人個人情報
 	 * @return 配達記録
 	 */
 	public synchronized Record receiveRequest(PersonInfo clientInfo, PersonInfo recipientInfo) {

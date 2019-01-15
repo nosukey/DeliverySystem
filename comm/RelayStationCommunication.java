@@ -13,7 +13,7 @@ import lejos.hardware.lcd.LCD;
  * 中継所専用の通信クラスです。
  * 他のサブシステムとの通信を確立し、データの受け渡しをサポートします。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/14)
+ * @version 1.0
 */
 public class RelayStationCommunication extends Communication implements Runnable {
 
@@ -21,7 +21,7 @@ public class RelayStationCommunication extends Communication implements Runnable
 	private String target;
 	private BTConnector connector;
 	private BTConnection connection;
-	
+
 	private static final String PARAM_SEPARATION  = "&";
 
 	/**
@@ -57,6 +57,7 @@ public class RelayStationCommunication extends Communication implements Runnable
 				relayStation.connected();
 			} else {
 				connect();
+				relayStation.connected();
 			}
 		} catch(IOException e) {
 			System.out.println("Exception: Connection failed.");
@@ -128,6 +129,9 @@ public class RelayStationCommunication extends Communication implements Runnable
 	*/
 	@Override
 	protected void waitForConnection() throws IOException {
+		final String REFRESH_DISPLAY = "\n\n\n\n\n\n\n";
+		System.out.println(REFRESH_DISPLAY);
+
 		LCD.drawString("Ready", 0, 2);
 		connection = connector.waitForConnection(TIMEOUT, BTConnection.RAW);
 

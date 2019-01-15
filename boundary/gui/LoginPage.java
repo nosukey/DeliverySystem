@@ -8,7 +8,7 @@ import javax.swing.JTextField;
 /**
  * 依頼人個人情報を入力してログインするページクラスです。
  * @author 大久保美涼
- * @version 1.0(2019/01/13)
+ * @version 1.0
  */
 public class LoginPage extends BasePage {
   /************************************************************************/
@@ -45,7 +45,7 @@ public class LoginPage extends BasePage {
 
     /**
      * 依頼人個人情報を入力してログインするページを作成します。
-     * @param frame メインフレーム
+     * @param frame MainFrameインスタンス
      */
     public LoginPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));

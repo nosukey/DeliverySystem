@@ -2,7 +2,7 @@ package entity.common;
 
 /**
  * 荷物クラスです。
- * @author
+ * @author 大場貴斗
  * @version 1.0
 */
 public class Parcel {
@@ -29,7 +29,7 @@ public class Parcel {
 
 	/**
 	 * requestIdを取得します。
-	 * @return {@link #requestId}
+	 * @return 依頼ID
 	 */
 	public int getRequestId() {
 		return this.requestId;
@@ -37,7 +37,7 @@ public class Parcel {
 
 	/**
 	 * recipientInfoを取得します。
-	 * @return {@link #recipientInfo}
+	 * @return 受取人個人情報
 	 */
 	public PersonInfo getRecipientInfo() {
 		return this.recipientInfo;
@@ -45,7 +45,7 @@ public class Parcel {
 
 	/**
 	 * recipientInfoに値を代入します。
-	 * @param recipientInfo {@link #recipientInfo}
+	 * @param recipientInfo 修正する受取人個人情報
 	 */
 	public void setRecipientInfo(PersonInfo recipientInfo) {
 		this.recipientInfo = recipientInfo;
@@ -53,7 +53,7 @@ public class Parcel {
 
 	/**
 	 * フィールドの受取人個人情報の番地を取得し, それを返します。
-	 * @return int
+	 * @return 受取人番地
 	 */
 	public int getAddress() {
 		return this.recipientInfo.getAddress();
@@ -61,8 +61,8 @@ public class Parcel {
 
 	/**
 	 * 文字列できた情報から荷物クラスのインスタンスを返します。
-	 * @param str 荷物クラスを表現した文字列。
-	 * @return Parcelインスタンス。
+	 * @param str 荷物クラスを表現した文字列
+	 * @return Parcelインスタンス
 	 */
 	public static Parcel decode(String str) {
 		String[] parameters = str.split(COMMA);
@@ -75,8 +75,8 @@ public class Parcel {
 
 	/**
 	 * 荷物を文字列に変換し、その文字列を返します。
-	 * @param parcel Parcelインスタンス。
-	 * @return String 通信フォーマットに従った文字列。
+	 * @param parcel Parcelインスタンス
+	 * @return String 通信フォーマットに従った文字列
 	 */
 	public static String encode(Parcel parcel) {
 		return parcel.requestId + COMMA + PersonInfo.encode(parcel.clientInfo) + COMMA + PersonInfo.encode(parcel.recipientInfo);

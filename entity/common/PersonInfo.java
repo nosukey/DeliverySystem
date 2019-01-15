@@ -2,7 +2,7 @@ package entity.common;
 
 /**
  * 個人情報クラスです。
- * @author
+ * @author 池田はるか
  * @version 1.0
 */
 public class PersonInfo {
@@ -33,31 +33,31 @@ public class PersonInfo {
 	 * フィールドの電話番号, 引数の電話番号
 	 * をそれぞれ比較し, すべて一致すればtrue, それ以外はfalseを返します。
 	 * @param info PersonInfoオブジェクト
-	 * @return boolean
+	 * @return PersonInfoを比較し一致すればtrueを返す
 	 */
 	public boolean equals(PersonInfo info) {
 		return (this.name.equals(info.name) && this.address == info.address && this.phoneNumber.replaceAll("[-()]","").equals(info.phoneNumber.replaceAll("[-()]","")));
 	}
 
 	/**
-	 * nameを取得します。
-	 * @return {@link #name}
+	 * 名前を取得します。
+	 * @return 名前
 	 */
 	public String getName() {
 		return this.name;
 	}
 
 	/**
-	 * addressを取得します。
-	 * @return {@link #address}
+	 * 番地を取得します。
+	 * @return 番地
 	 */
 	public int getAddress() {
 		return this.address;
 	}
 
 	/**
-	 * phoneNumberを取得します。
-	 * @return {@link #phoneNumber}
+	 * 電話番号を取得します。
+	 * @return 電話番号
 	 */
 	public String getPhoneNumber() {
 		return this.phoneNumber;
@@ -65,8 +65,8 @@ public class PersonInfo {
 
 	/**
 	 * 文字列できた情報から個人情報クラスのインスタンスを返します。
-	 * @param str 通信フォーマットに従った文字列。
-	 * @return PersonInfoオブジェクト。
+	 * @param str 通信フォーマットに従った文字列
+	 * @return PersonInfoオブジェクト
 	 */
 	public static PersonInfo decode(String str) {
 		String[] parameters = str.split(COMMA);
@@ -79,8 +79,8 @@ public class PersonInfo {
 
 	/**
 	 * 個人情報を文字列に変換し、その文字列を返します。
-	 * @param info PersonInfoオブジェクト。
-	 * @return String 通信フォーマットに従った文字列。
+	 * @param info PersonInfoオブジェクト
+	 * @return 通信フォーマットに従った文字列
 	 */
 	public static String encode(PersonInfo info) {
 		return info.name + COMMA + info.address + COMMA + info.phoneNumber;

@@ -8,7 +8,7 @@ import javax.swing.JTextField;
 /**
  * 配達を依頼する受取人個人情報を入力するページを作成するクラスです。
  * @author 池田はるか
- * @version 1.0(2019/01/13)
+ * @version 1.0
  */
 public class RequestingPage extends BasePage {
   /************************************************************************/
@@ -51,7 +51,7 @@ public class RequestingPage extends BasePage {
 
     /**
      * 配達を依頼する受取人個人情報を入力するページを作成します。
-     * @param frame メインフレーム
+     * @param frame MainFrameインスタンス
      */
     public RequestingPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));

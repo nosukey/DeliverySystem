@@ -13,7 +13,7 @@ import entity.inPC.Recipient;
  * 荷物宅配システムのコントローラクラスです。
  * CUI/GUIと各サブシステムを管理します。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/14)
+ * @version 1.0
 */
 public class DeliverySystem {
 
@@ -86,9 +86,9 @@ public class DeliverySystem {
 		myself.io = new Boundary();
 		myself.io.printMessage("DeliverySystem is started.");
 
-		// myself.headquarter.execute();
-		// myself.reception.execute();
-		// myself.recipient.execute();
+		myself.headquarter.execute();
+		myself.reception.execute();
+		myself.recipient.execute();
 
 		try {
 			Thread.sleep(DELAY);
@@ -207,6 +207,7 @@ public class DeliverySystem {
 				login(data.getName(), data.getAddress(), data.getPhoneNumber());
 				break;
 			case LOGOUT:
+				view.resetConfirmSelection();
 				logout();
 				break;
 			case REQUEST:
@@ -216,7 +217,7 @@ public class DeliverySystem {
 				break;
 			case REFER:
 				this.record = this.headquarter.referRecord(data.getRequestId());
-				view.setComfirmResults(new ParamData(record), this.record.isWrongRecipient());
+				view.setConfirmResults(new ParamData(record), this.record.isWrongRecipient());
 				break;
 			case FIX:
 				PersonInfo altInfo = new PersonInfo(data.getName(), data.getAddress(), data.getPhoneNumber());
@@ -227,7 +228,7 @@ public class DeliverySystem {
 				this.recipient.setIsHome(data.getBools());
 				break;
 			case LOGGING:
-				view.setComfirmSelection(headquarter.getIds(userInfo));
+				view.setConfirmSelection(headquarter.getIds(userInfo));
 				break;
 			default:
 				break;

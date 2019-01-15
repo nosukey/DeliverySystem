@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 /**
  * 参照を希望した依頼IDの配達記録を参照するページを作成するクラスです。
  * @author 池田はるか
- * @version 1.0(2019/01/13)
+ * @version 1.0
  */
 public class ConfirmResultPage extends BasePage {
     /*ラベルの文字の大きさ*/

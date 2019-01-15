@@ -14,8 +14,8 @@ import lejos.utility.Delay;
 /**
  *サブシステム「収集担当ロボット」クラスです。
  *他のサブシステム「宅配受付所」クラス、「中継所」クラスと通信を行います。
- *@author 池田はるか
- *@version 1.0(2019/01/13)
+ *@author 池田はるか 吉野鷹
+ *@version 1.0
  */
 public class Collector extends Robot {
 
@@ -78,21 +78,15 @@ public class Collector extends Robot {
 	 * 通信が正常に確立されたことを表示します。
 	 */
 	public void connected() {
-		LCD.drawString("Connected.", 0, 1);
+		final String REFRESH_DISPLAY = "\n\n\n\n\n\n\n";
+		System.out.println(REFRESH_DISPLAY);
 
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
+		LCD.drawString("Connected.", 0, 1);
 	}
 
 	/**
 	 * 宅配受付所で渡された荷物を宅配受付所から中継所まで搬送します。
-	 * @param parcels 宅配受付所で渡される荷物リスト。
+	 * @param parcels 宅配受付所で渡される荷物リスト
 	 */
 	public void transportParcels(List<Parcel> parcels) {
 		this.transportedParcels.addAll(parcels);

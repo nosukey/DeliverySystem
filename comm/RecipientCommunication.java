@@ -16,7 +16,7 @@ import lejos.utility.Delay;
  * 受取人宅専用の通信クラスです。
  * 他のサブシステムとの通信を確立し、データの受け渡しをサポートします。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/14)
+ * @version 1.0
 */
 public class RecipientCommunication extends Communication implements Runnable {
 
@@ -44,6 +44,7 @@ public class RecipientCommunication extends Communication implements Runnable {
 		try {
 			connect();
 		} catch(IOException e) {
+			System.out.println("Exception: Recipient's connection failed.");
 			Delay.msDelay(DELAY_TIME);
 			System.exit(1);
 		}

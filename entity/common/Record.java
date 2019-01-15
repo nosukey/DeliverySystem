@@ -2,7 +2,7 @@ package entity.common;
 
 /**
  * 配達記録クラスです。
- * @author
+ * @author 大久保美涼
  * @version 1.0
 */
 public class Record {
@@ -47,140 +47,140 @@ public class Record {
 	}
 
 	/**
-	 * requestIdを取得します。
-	 * @return {@link #requestId}
+	 * 依頼IDを取得します。
+	 * @return 依頼ID
 	 */
 	public int getRequestId() {
 		return this.requestId;
 	}
 
 	/**
-	 * clientInfoを取得します。
-	 * @return {@link #clientInfo}
+	 * 依頼人個人情報を取得します。
+	 * @return 依頼人個人情報
 	 */
 	public PersonInfo getClientInfo() {
 		return this.clientInfo;
 	}
 
 	/**
-	 * recipientInfoに値を代入します。
-	 * @param info {@link #recipientInfo}
+	 * 受取人個人情報に値を代入します。
+	 * @param info 受取人個人情報
 	 */
 	public void setRecipientInfo(PersonInfo info) {
 		this.recipientInfo = info;
 	}
 
 	/**
-	 * recipientInfoを取得します。
-	 * @return {@link #recipientInfo}
+	 * 依頼人個人情報を取得します。
+	 * @return 依頼人個人情報
 	 */
 	public PersonInfo getRecipientInfo() { return this.recipientInfo; }
 
 	/**
-	 * receptionDateを取得します。
-	 * @return {@link #receptionDate}
+	 * 受付時間を取得します。
+	 * @return 受付時間
 	 */
 	public Date getReceptionDate() { return this.receptionDate; }
 
 	/**
-	 * transportStartingDateに値を代入します。
-	 * @param date {@link #transportStartingDate}
+	 * 発送時間に値を代入します。
+	 * @param date 発送時間
 	 */
 	public void setTransportStartingDate(Date date) {
 		this.transportStartingDate = date;
 	}
 
 	/**
-	 * transportStartingDateを取得します。
-	 * @return {@link #transportStartingDate}
+	 * 発送時間を取得します。
+	 * @return 発送時間
 	 */
 	public Date getTransportStartingDate() {
 		return this.transportStartingDate;
 	}
 
 	/**
-	 * transportSuccessDateに値を代入します。
-	 * @param date {@link #transportSuccessDate}
+	 * 中継所到着時間に値を代入します。
+	 * @param date 中継所到着時間
 	 */
 	public void setTransportSuccessDate(Date date) {
 		this.transportSuccessDate = date;
 	}
 
 	/**
-	 * transportSuccessDateを取得します。
-	 * @return {@link #transportSuccessDate}
+	 * 中継所到着時間を取得します。
+	 * @return 中継所到着時間
 	 */
 	public Date getTransportSuccessDate() {
 		return this.transportSuccessDate;
 	}
 
 	/**
-	 * deliveryStartingDateに値を代入します。
-	 * @param date {@link #deliveryStartingDate}
+	 * 中継所到着時間に値を代入します。
+	 * @param date 中継所到着時間
 	 */
 	public void setDeliveryStartingDate(Date date) {
 		this.deliveryStartingDate = date;
 	}
 
 	/**
-	 * deliveryStartingDateを取得します。
-	 * @return {@link #deliveryStartingDate}
+	 * 配達開始時間を取得します。
+	 * @return 配達開始時間
 	 */
 	public Date getDeliveryStartingDate() {
 		return this.deliveryStartingDate;
 	}
 
 	/**
-	 * receivingDateに値を代入します。
-	 * @param date {@link #receivingDate}
+	 * 受取時間に値を代入します。
+	 * @param date 受取時間
 	 */
 	public void setReceivingDate(Date date) {
 		this.receivingDate = date;
 	}
 
 	/**
-	 * receivingDateを取得します。
-	 * @return {@link #receivingDate}
+	 * 受取時間を取得します。
+	 * @return 受取時間
 	 */
 	public Date getReceivingDate() {
 		return this.receivingDate;
 	}
 	/**
-	 * deliverySuccessDateに値を代入します。
-	 * @param date {@link #deliverySuccessDate}
+	 * 配達完了時間に値を代入します。
+	 * @param date 配達完了時間
 	 */
 	public void setDeliverySuccessDate(Date date) {
 		this.deliverySuccessDate = date;
 	}
 
 	/**
-	 * deliverySuccessDateを取得します。
-	 * @return {@link #deliverySuccessDate}
+	 * 配達完了時間を取得します。
+	 * @return 配達完了時間
 	 */
 	public Date getDeliverySuccessDate() {
 		return this.deliverySuccessDate;
 	}
 
 	/**
-	 * stateに値を代入します。
-	 * @param state {@link #state}
+	 * 配達状況に値を代入します。
+	 * @param state 配達状況
 	 */
 	public void setState(State state) {
 		this.state = state;
 	}
 
 	/**
-	 * stateを取得します。
-	 * @return {@link #state}
+	 * 配達状況を取得します。
+	 * @return 配達状況
 	 */
 	public State getState() {
 		return this.state;
 	}
 
 	/**
-	 * 配達状況 == 宛先間違い
-	 * を判定する。
-	 * @return boolean
+	 * 配達状況が「宛先間違い」であるか
+	 * 判定する。
+	 * @return 宛先間違いならtrueを返す
 	 */
 	public boolean isWrongRecipient() {
 		return this.state == State.WRONG_RECIPIENT;
@@ -188,10 +188,8 @@ public class Record {
 
 	/**
 	 * 文字列できた情報から配達記録クラスのインスタンスを返します。
-	 *
-	 * TODO もっと良いアルゴリズムに変更したい
-	 * @param str 通信フォーマットに従った文字列。
-	 * @return Recordオブジェクト。
+	 * @param str 通信フォーマットに従った文字列
+	 * @return Recordオブジェクト
 	 */
 	public static Record decode(String str) {
 		String[] parameters = str.split(COMMA);
@@ -212,8 +210,8 @@ public class Record {
 
 	/**
 	 * 配達記録を文字列に変換し、その文字列を返します。
-	 * @param record Recordオブジェクト。
-	 * @return String 通信フォーマットに従った文字列。
+	 * @param record Recordオブジェクト
+	 * @return 通信フォーマットに従った文字列
 	 */
 	public static String encode(Record record) {
 		String result = record.requestId + COMMA + PersonInfo.encode(record.clientInfo) + COMMA + PersonInfo.encode(record.recipientInfo) + COMMA;
@@ -224,7 +222,7 @@ public class Record {
 
 	/**
 	 * RecordオブジェクトをStringに変換し、返します。
-	 * @return String 配達記録の文字列表現。
+	 * @return 配達記録の文字列表現
 	 */
 	public String toString() {
 		final String NOTHING = "--/--/--/ --:--";

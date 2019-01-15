@@ -18,7 +18,7 @@ import lejos.utility.Delay;
  * サブシステム間の通信を実現する抽象クラスです。
  * 他のサブシステムとの通信を確立し、データの受け渡しをサポートします。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/14)
+ * @version 1.0
 */
 public abstract class Communication {
 
@@ -300,7 +300,7 @@ public abstract class Communication {
 			result.append(LIST_SEPARATION);
 		}
 
-		if(result.isEmpty())
+		if(result.toString().isEmpty())
 			return DUMMY;
 		else
 			return result.substring(0, result.length()-1);
@@ -331,7 +331,7 @@ public abstract class Communication {
 			result.append(LIST_SEPARATION);
 		}
 
-		if(result.isEmpty())
+		if(result.toString().isEmpty())
 			return DUMMY;
 		else
 			return result.substring(0, result.length()-1);
@@ -363,7 +363,7 @@ public abstract class Communication {
 			result.append(LIST_SEPARATION);
 		}
 
-		if(result.isEmpty())
+		if(result.toString().isEmpty())
 			return DUMMY;
 		else
 			return result.substring(0, result.length()-1);
@@ -397,7 +397,7 @@ public abstract class Communication {
 			result.append(LIST_SEPARATION);
 		}
 
-		if(result.isEmpty())
+		if(result.toString().isEmpty())
 			return DUMMY;
 		else
 			return result.substring(0, result.length()-1);

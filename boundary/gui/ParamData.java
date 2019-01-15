@@ -8,7 +8,7 @@ import entity.common.State;
 /**
  * システムのコントローラとメインフレーム間の情報の受け渡しのデータクラスです。
  * @author 澤田悠暉
- * @version 1.0 (2019/01/14)
+ * @version 1.0
 */
 public class ParamData {
     private int method;

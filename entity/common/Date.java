@@ -5,8 +5,8 @@ import java.util.Calendar;
 /**
  * java.util.Calenderのラップクラスです。
  * 現在時刻を取得するによって日時インスタンスを取得することができます。
- * @author 山下京之介
- * @version 1.0 (2019/01/14)
+ * @author 澤田悠暉
+ * @version 1.0
  */
 public class Date {
 
@@ -34,7 +34,7 @@ public class Date {
 
 	/**
 	 * APIの日時クラスで現在時刻を取得し, 現在時刻の日時クラスのインスタンスを返します。
-	 * @return Dateインスタンス。
+	 * @return Dateインスタンス
 	 */
 	public static Date getCurrentDate() {
 		final int MONTH_GAP = 1;
@@ -51,8 +51,8 @@ public class Date {
 
 	/**
 	 * 文字列できた情報から日時クラスのインスタンスを返します。
-	 * @param str 通信フォーマットに従った文字列。
-	 * @return Dateインスタンス。 Returns {@code null} if strが日付を表現する文字列でなかったとき。
+	 * @param str 通信フォーマットに従った文字列
+	 * @return Dateインスタンス（Returns {@code null} if strが日付を表現する文字列でない場合）
 	 */
 	public static Date decode(String str) {
 		if(str.equals(NOTHING)) {
@@ -71,8 +71,8 @@ public class Date {
 
 	/**
 	 * 日時を文字列に変換し、その文字列を返します。
-	 * @param date Dataインスタンス。
-	 * @return String　通信フォーマットに従った文字列。 Returns {@code null} if dateがnullであるとき。
+	 * @param date Dataインスタンス
+	 * @return String　通信フォーマットに従った文字列（Returns {@code null} if dateがnullである場合）
 	 */
 	public static String encode(Date date) {
 		if(date == null)
@@ -84,7 +84,7 @@ public class Date {
 	/**
 	 * DataインスタンスをStringに変換し、返します。
 	 * {@inheritDoc}
-	 * @return String 日時の文字列表現。
+	 * @return String 日時の文字列表現
 	 */
 	 @Override
 	public String toString() {

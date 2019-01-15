@@ -8,8 +8,8 @@ import javax.swing.JLabel;
 
 /**
  * 依頼した依頼IDを選択するページクラスです。
- * @author 大久保美鈴
- * @version 1.0(2019/01/13)
+ * @author 澤田悠輝
+ * @version 1.0
  */
 public class ConfirmingPage extends BasePage {
     private final int COMBO_X = 200;
@@ -103,7 +103,6 @@ public class ConfirmingPage extends BasePage {
      * @return 選択した依頼ID
      */
     public int getRequestId() {
-        System.out.println("" + this.comboBox.getSelectedIndex());
         return this.comboBox.getItemAt(this.comboBox.getSelectedIndex()).intValue();
     }
 

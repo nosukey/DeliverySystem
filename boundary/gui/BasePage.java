@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 /**
  * GUIページのベースとなる抽象クラスです。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/14)
+ * @version 1.0
 */
 public abstract class BasePage extends JPanel {
     protected MainFrame parent;

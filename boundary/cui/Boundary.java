@@ -5,7 +5,7 @@ import entity.common.Record;
 /**
  * システムに合わせた標準入出力を実現するクラスです。
  * @author 澤田 悠暉
- * @version 1.0 (2019/01/13)
+ * @version 1.0
  */
 public class Boundary {
 
@@ -87,7 +87,7 @@ public class Boundary {
 	}
 
 	/**
-     * 配達記録インスタンスを特定のフォーマットに従って標準出力します。
+   * 配達記録インスタンスを特定のフォーマットに従って標準出力します。
 	 * @param record 標準出力したい配達記録
 	 */
 	public synchronized void printRecord(Record record) {

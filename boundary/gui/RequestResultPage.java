@@ -7,8 +7,8 @@ import javax.swing.JLabel;
 
 /**
  * 依頼情報の確認ページを作成するクラスです。
- * @author 池田はるか
- * @version 1.0(2019/01/13)
+ * @author 大久保美涼
+ * @version 1.0
  */
 public class RequestResultPage extends BasePage {
   /* ラベルの位置と文字のサイズ */
@@ -44,7 +44,7 @@ public class RequestResultPage extends BasePage {
 
     /**
      * 依頼情報の確認ページを作成します。
-     * @param frame メインフレーム
+     * @param frame MainFrameインスタンス
     */
     public RequestResultPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));

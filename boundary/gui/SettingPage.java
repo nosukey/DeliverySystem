@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 /**
  * 受取人宅の在否をチェックボックスで設定するページのクラスです。
  * @author 大場貴斗
- * @version 1.0(2019/01/13)
+ * @version 1.0
  */
 public class SettingPage extends BasePage{
     /*配列ckboxの行と列の大きさ*/
@@ -18,7 +18,7 @@ public class SettingPage extends BasePage{
 
     /*ckboxを作成するための座標・幅・高さ*/
     private final int CKBOX_X = 60;
-    private final int CKBOX_Y = 90; //80
+    private final int CKBOX_Y = 90;
     private final int CKBOX_W = 90;
     private final int CKBOX_H = 90;
 
@@ -37,7 +37,7 @@ public class SettingPage extends BasePage{
 
     /**
      * 受取人宅の在否をチェックボックスで設定するページを作成します。
-     * @param frame メインフレーム
+     * @param frame MainFrameインスタンス
     */
     public SettingPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));

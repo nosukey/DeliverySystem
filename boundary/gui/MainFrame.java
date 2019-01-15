@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  * GUIのフレームのクラスです。
  * ページ遷移の管理をし、コントローラーと情報のやりとりをします。
  * @author 澤田 悠暉
- * @version 1.0(2019/01/13)
+ * @version 1.0
  */
 public class MainFrame extends JFrame {
     private DeliverySystem system;
@@ -237,7 +237,7 @@ public class MainFrame extends JFrame {
      * 依頼ID選択ページにユーザの保有している配達記録の依頼IDを設定します。
      * @param ids 配達記録の依頼IDの配列
     */
-    public void setComfirmSelection(Integer[] ids) {
+    public void setConfirmSelection(Integer[] ids) {
         ((ConfirmingPage)this.pageMap.get(PageName.CONFIRMING)).setRequestIds(ids);
     }
 
@@ -245,7 +245,7 @@ public class MainFrame extends JFrame {
      * 設定された配達記録の依頼IDを削除します。
     */
     //TODO これ現在は使われていない。けどでバックとか何かに使う？？
-    public void resetComfirmSelection() {
+    public void resetConfirmSelection() {
         ((ConfirmingPage)this.pageMap.get(PageName.CONFIRMING)).removeRequestIds();
     }
 
@@ -254,7 +254,7 @@ public class MainFrame extends JFrame {
      * @param data 参照結果
      * @param bool 参照した配達記録が宛先間違いであればtrue、そうでなければfalse
     */
-    public void setComfirmResults(ParamData data, boolean bool) {
+    public void setConfirmResults(ParamData data, boolean bool) {
         ConfirmResultPage page = (ConfirmResultPage)this.pageMap.get(PageName.CONFIRM_RESULT);
         page.setButtonVisible(bool);
         page.setOutputs(data);

@@ -16,8 +16,8 @@ import lejos.utility.Delay;
 /**
  * サブシステム「配達担当ロボット」クラスです。
  * 他のサブシステム「中継所」クラス、「受取人宅」クラスと通信を行います。
- * @author 山下京之介
- * @version 1.0(2019/01/14)
+ * @author 大場貴斗 大竹知幸
+ * @version 1.0
  */
 public class Deliverer extends Robot {
 
@@ -50,7 +50,7 @@ public class Deliverer extends Robot {
 	private class ButtonEventListener implements KeyListener {
 		/**
 		 * 配達担当ロボットのボタンが押された場合に動作準備を始めます。
-		 * @param key Keyクラス
+		 * @param key Keyインスタンス
 		 */
 		public void keyPressed(Key key) {
 			switch(key.getId()) {
@@ -66,7 +66,7 @@ public class Deliverer extends Robot {
 
 		/**
 		 * 配達担当ロボットのボタンが離された時に何も行いません。
-		 * @param key Keyクラス
+		 * @param key Keyインスタンス
 		 */
 		public void keyReleased(Key key) {}
 	}
@@ -115,16 +115,10 @@ public class Deliverer extends Robot {
 	 * 通信を確立された場合に呼び出され、状況を確認することができます。
 	 */
 	public void connected() {
-		LCD.drawString("Connected.", 0, 1);
+		final String REFRESH_DISPLAY = "\n\n\n\n\n\n\n";
+		System.out.println(REFRESH_DISPLAY);
 
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
+		LCD.drawString("Connected.", 0, 1);
 	}
 
 	/**
@@ -392,7 +386,9 @@ public class Deliverer extends Robot {
 			 * 現在の番地と次の番地が同じ行にある場合
 			 */
 			if(CURRENT_LINE == NEXT_LINE) {
-				moveRecipientSide();
+				for(int i=CURRENT_ROW; i<NEXT_ROW; i++) {
+					moveRecipientSide();
+				}
 			}else {
 				/*
 				 * 現在の列が基準となる列（受取人基準点のある列）にいる場合
