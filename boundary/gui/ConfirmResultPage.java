@@ -34,7 +34,7 @@ public class ConfirmResultPage extends BasePage {
 
     /**
      * 参照を希望した依頼IDの配達記録を参照するページを作成します。
-     * @param frame メインフレーム
+     * @param frame MainFrameインスタンス
      */
     public ConfirmResultPage(MainFrame frame) {
         super(frame, NAME, new JLabel(NAME.toString()));
@@ -53,7 +53,6 @@ public class ConfirmResultPage extends BasePage {
 
         /*ラベルのy座標の差*/
         final int DIFFERENCE_Y = 50;
-
 
         JLabel[] leftHeading = {
             new JLabel("依頼ID : "),

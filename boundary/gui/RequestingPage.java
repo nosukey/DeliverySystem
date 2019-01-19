@@ -11,9 +11,8 @@ import javax.swing.JTextField;
  * @version 1.0
  */
 public class RequestingPage extends BasePage {
-  /************************************************************************/
+    /*配列の要素数(一列に並べる配達記録の数)*/
     private final int INPUT_NUM = 3;
-  /************************************************************************/
 
     private JTextField[] text;
     private static final PageName NAME = PageName.REQUESTING;
@@ -55,6 +54,7 @@ public class RequestingPage extends BasePage {
         final int BACK_BUTTON_W = 120;
         final int BACK_BUTTON_H = 40;
 
+        /*ラベルのy座標の差*/
         final int DISTANCE  = 50;
 
 

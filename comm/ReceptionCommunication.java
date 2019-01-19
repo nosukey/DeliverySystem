@@ -64,18 +64,11 @@ public class ReceptionCommunication extends Communication implements Runnable {
 			System.exit(1);
 		}
 
-		// TODO 削除
 		reception.connected();
 
 		waitForInvoke();
 	}
 
-	/**
-	 * 宅配受付所のメソッドを呼び出します。
-	 * @param methodName メソッド名
-	 * @param data パラメータの文字列データ
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void selectMethod(String methodName, String data) {
 		switch(methodName) {
@@ -90,10 +83,6 @@ public class ReceptionCommunication extends Communication implements Runnable {
 		}
 	}
 
-	/**
-	 * ポート番号が設定されているインスタンスならばPCと通信を確立し、そうでなければEV3と通信を確立する。
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void connect() throws IOException {
 		if(port == DEFAULT_PORT)
@@ -102,9 +91,6 @@ public class ReceptionCommunication extends Communication implements Runnable {
 			connectToPC();
 	}
 
-	/**
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void waitForConnection() throws IOException {
 

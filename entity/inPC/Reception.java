@@ -1,8 +1,6 @@
 package entity.inPC;
 
-// TODO 削除
 import boundary.cui.Boundary;
-
 import comm.ReceptionCommunication;
 import controller.ReceptionObserver;
 import entity.common.*;
@@ -33,10 +31,6 @@ public class Reception {
 
 	private static final int MAX_STORAGE = 10;
 
-	/**
-	 * 新規の依頼IDを割り当てるために保持している
-	 * 依頼IDを割り当てた直後に+1する
-	 */
 	private int newId;
 
 	private static final String HEADQUARTER_ADDRESS = "localhost";
@@ -67,7 +61,6 @@ public class Reception {
 		this.commToCollector   = new ReceptionCommunication(this, COLLECTOR_ADDRESS);
 		new Thread(commToCollector).start();
 
-		// TODO 削除
 		Boundary io = new Boundary();
 		io.printMessage("Reception is started.");
 	}
@@ -101,7 +94,6 @@ public class Reception {
 
 		newId++;
 
-		// オブザーバー更新するを追加する箇所
 		observer.update(undeliveredParcels.size() + redeliveryParcels.size());
 
 		return record;
@@ -132,11 +124,8 @@ public class Reception {
  				deliveryParcels.add(parcel);
  			}
  		}
- 		// 収集担当ロボットとの通信
  		commToCollector.writeMethodWithParcels("transportParcels", deliveryParcels);
- 		// 操作を書き込む
  		reportTransportStarting(recordsForTransport, redeliveryIdList);
- 		// オブザーバー初期化する
  		observer.init(undeliveredParcels.size() + redeliveryParcels.size());
  	}
 

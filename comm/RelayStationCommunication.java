@@ -68,12 +68,6 @@ public class RelayStationCommunication extends Communication implements Runnable
 		waitForInvoke();
 	}
 
-	/**
-	 * 中継所のメソッドを呼び出します。
-	 * @param methodName メソッド名
-	 * @param data パラメータの文字列データ
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void selectMethod(String methodName, String data) {
 		String[] params;
@@ -111,9 +105,6 @@ public class RelayStationCommunication extends Communication implements Runnable
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void connect() throws IOException {
 		connection = connector.connect(target, BTConnection.RAW);
@@ -124,9 +115,6 @@ public class RelayStationCommunication extends Communication implements Runnable
 		setDos(connection.openDataOutputStream());
 	}
 
-	/**
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void waitForConnection() throws IOException {
 		final String REFRESH_DISPLAY = "\n\n\n\n\n\n\n";

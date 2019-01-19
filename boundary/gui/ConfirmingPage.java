@@ -7,10 +7,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 /**
- * 依頼した依頼IDを選択するページクラスです。
- * @author 澤田悠輝
- * @version 1.0
- */
+* 依頼した依頼IDを選択するページクラスです。
+* @author 澤田悠輝
+* @version 1.0
+*/
 public class ConfirmingPage extends BasePage {
     private static final PageName NAME = PageName.CONFIRMING;
 
@@ -20,9 +20,9 @@ public class ConfirmingPage extends BasePage {
     private JButton moveShowRecordButton;
 
     /**
-     * 依頼した依頼IDを選択するページを作成します。
-     * @param frame メインフレーム
-     */
+    * 依頼した依頼IDを選択するページを作成します。
+    * @param frame MainFrameインスタンス
+    */
     public ConfirmingPage(MainFrame frame){
         super(frame, NAME, new JLabel(NAME.toString()));
 
@@ -36,7 +36,7 @@ public class ConfirmingPage extends BasePage {
     }
 
     /**
-     * {@inheritDoc}
+    * {@inheritDoc}
     */
     @Override
     public void refresh(){
@@ -90,7 +90,7 @@ public class ConfirmingPage extends BasePage {
     }
 
     /**
-     * {@inheritDoc}
+    * {@inheritDoc}
     */
     @Override
     public boolean canChangePage(PageName page) {
@@ -98,23 +98,23 @@ public class ConfirmingPage extends BasePage {
     }
 
     /**
-     * 選択した依頼IDを取得します。
-     * @return 選択した依頼ID
-     */
+    * 選択した依頼IDを取得します。
+    * @return 選択した依頼ID
+    */
     public int getRequestId() {
         return this.comboBox.getItemAt(this.comboBox.getSelectedIndex()).intValue();
     }
 
     /**
-     * 配達記録に依頼IDを登録します。
-     * @param ids 依頼IDの配列
-     */
+    * 配達記録に依頼IDを登録します。
+    * @param ids 依頼IDの配列
+    */
     public void setRequestIds(Integer[] ids) {
         this.ids = ids;
     }
 
     /**
-     * 登録されていた依頼IDを全て削除します。
+    * 登録されていた依頼IDを全て削除します。
     */
     public void removeRequestIds() {
         this.ids = null;

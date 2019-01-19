@@ -1,8 +1,6 @@
 package entity.inPC;
 
-// TODO 削除
 import boundary.cui.Boundary;
-
 import comm.RecipientCommunication;
 import entity.common.Date;
 import entity.common.PersonInfo;
@@ -53,7 +51,6 @@ public class Recipient {
 		this.commToDeliverer = new RecipientCommunication(this, DELIVERER_ADDRESS);
 		new Thread(commToDeliverer).start();
 
-		// TODO 削除
 		Boundary io = new Boundary();
 		io.printMessage("Recipient is started.");
 	}

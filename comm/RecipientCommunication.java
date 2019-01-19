@@ -49,18 +49,11 @@ public class RecipientCommunication extends Communication implements Runnable {
 			System.exit(1);
 		}
 
-		// TODO 削除
 		recipient.connected();
 
 		waitForInvoke();
 	}
 
-	/**
-	 * 受取人宅のメソッドを呼び出します。
-	 * @param methodName メソッド名
-	 * @param data パラメータの文字列データ
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void selectMethod(String methodName, String data) {
 		switch(methodName) {
@@ -79,9 +72,6 @@ public class RecipientCommunication extends Communication implements Runnable {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void connect() throws IOException {
 		connection = Connector.open(target);
@@ -90,9 +80,6 @@ public class RecipientCommunication extends Communication implements Runnable {
 		setDos(new DataOutputStream(((OutputConnection)connection).openOutputStream()));
 	}
 
-	/**
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void waitForConnection() throws IOException {
 

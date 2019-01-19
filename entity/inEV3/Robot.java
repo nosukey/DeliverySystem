@@ -54,18 +54,10 @@ public class Robot {
 
 	private float[] irSamples;
 
-	/**
-	 * isRightSideに値を代入します。
-	 * @param isRightSide {@link #isRightSide}
-	 */
+
 	void setIsRightSide(boolean isRightSide){ this.isRightSide = isRightSide; }
 
-	/**
-	 * ロボットに取り付けられたセンサ（光センサ・ジャイロセンサ・IRセンサ）を稼働させるために呼び出します。
-	 * 光センサのポート			:1番
-	 * ジャイロセンサのポート	:2番
-	 * IRセンサのポート			:3番
-	 */
+
 	void openSensor() {
 		try {
 			colorSensor  = new EV3ColorSensor(SensorPort.S1);
@@ -87,23 +79,14 @@ public class Robot {
 		}
 	}
 
-	/**
-	 * ロボットに取り付けられたセンサ（光センサ・ジャイロセンサ・IRセンサ）の接続を切断する処理をします。
-	 */
+
 	void closeSensor(){
 		colorSensor.close();
 		gyroSensor.close();
 		ev3IRSensor.close();
 	}
 
-	/**
-	 *
-	 * 指定された速度で指定された距離をライントレースで移動します。
-	 * フィールド上のisRightSideによりで搬送路の右側または左側をトレースします。
-	 *
-	 * @param distance ロボットを移動させたい距離
-	 * @param speed ロボットを走らせるときの速度
-	 */
+
 	void lineTrace(float distance, int speed) {
 		try{
 			EV3LargeRegulatedMotor motorA;
@@ -136,7 +119,6 @@ public class Robot {
 				colorMode.fetchSample(colorSamples, 0);
 	            if(turn == 0) Sound.beep();
 
-				// TODO ここ処理時間削減できるよ
 				p = P_GAIN * (colorSamples[0] - GRAY_THRESHOLD) * DIFFERENCE_BLACK_WHITE;
 				d = D_GAIN * (colorSamples[0] - eval) * DIFFERENCE_BLACK_WHITE;
 				i += I_GAIN * (colorSamples[0] - GRAY_THRESHOLD) * DIFFERENCE_BLACK_WHITE * DELTA_TIME;
@@ -158,13 +140,7 @@ public class Robot {
 		}
 	}
 
-	/**
-	 * 引数で与えられた角度だけ回転します。
-	 * 例）90  : 反時計回りへ90度回転
-	 * 例）-180: 時計回りへ180度回転
-	 *
-	 * @param angle 機体を回転させたい回転角
-	 */
+
 	void rotate(int angle) {
 
 		final int SPEED  = 100;
@@ -215,9 +191,7 @@ public class Robot {
 	    Button.LEDPattern(LED_OFF);
     }
 
-    /**
-     * 搬送路のトレースする側面をそのままに方向転換をするためのメソッドです。
-     */
+
 	void turn() {
 		try {
 			EV3LargeRegulatedMotor motorA;
@@ -250,10 +224,7 @@ public class Robot {
 			}
 	}
 
-	/**
-	 *ロボットが始動した場所にて帰還した際に位置調整をするための距離を記録するための処理です。
-	 *ロボットの起動時にENTERボタンで距離を決定します。
-	 */
+
 	void setParkingDistance() {
 		parkingDistance = 0;
 		final int DISPLAY_X = 0;
@@ -269,9 +240,7 @@ public class Robot {
 		}
 	}
 
-	/**
-	 * ロボットが始動した場所へ帰還後、ロボット発進時に置いた位置へ調整して停止します。
-	 */
+
 	void parking() {
 		try {
 			Button.LEDPattern(LED_GREEN);
@@ -305,12 +274,7 @@ public class Robot {
 		}
 	}
 
-	/**
-	 * モータ動作後、モータを停止するための処理を行うメソッドです。
-	 *
-	 * @param motorA 停止させたいモータ
-	 * @param motorB 停止させたいモータ
-	 */
+
 	private void stopMotor(EV3LargeRegulatedMotor motorA,EV3LargeRegulatedMotor motorB) {
 		motorA.setSpeed(0);
 		motorB.setSpeed(0);

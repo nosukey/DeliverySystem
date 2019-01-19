@@ -55,7 +55,6 @@ public abstract class BasePage extends JPanel {
         label.setBackground(new Color(102, 153, 255));
         label.setFont(new Font("ＭＳ ゴシック", Font.BOLD, LABEL_FONT));
         add(label);
-
     }
 
     /**
@@ -79,13 +78,6 @@ public abstract class BasePage extends JPanel {
         return name;
     }
 
-    /**
-	 * 名前・番地・電話番号が正しいかを判定し、正当である場合はtrueを返します。
-	 * @param name 判定する名前
-	 * @param address 判定する番地
-	 * @param phoneNumber 判定する電話番号
-	 * @return 名前・番地・電話番号がすべて正当である場合はtrue
-	 */
     protected boolean isCorrectPersonInfo(String name, int address, String phoneNumber) {
 		return isCorrectName(name) && isCorrectAddress(address) && isCorrectPhoneNumber(phoneNumber);
 	}

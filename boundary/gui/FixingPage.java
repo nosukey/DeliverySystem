@@ -11,9 +11,8 @@ import javax.swing.JTextField;
  * @version 1.0
  */
 public class FixingPage extends BasePage {
-  /************************************************************************/
-    private final int INPUT_NUM = 3; // textとlabelの配列の数
-  /************************************************************************/
+    /*配列の要素数(一列に並べる配達記録の数)*/
+    private final int INPUT_NUM = 3;
 
     private JTextField[] text;
     private static final PageName NAME = PageName.FIXING;
@@ -48,8 +47,8 @@ public class FixingPage extends BasePage {
         final int CFM_BUTTON_W = 160;
         final int CFM_BUTTON_H = 50;
 
-        final int DISTANCE = 50; // なんかいい名前（テキストとテキストの幅）
-
+        /*ラベルのy座標の差*/
+        final int DISTANCE = 50;
 
         JLabel[] label = new JLabel[INPUT_NUM];
         label[0] = new JLabel("受取人 名前");

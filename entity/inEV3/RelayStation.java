@@ -40,13 +40,13 @@ public class RelayStation {
 
 	private static final int THRESHOLD_COMING_COUNT = 3;
 
-	private static final String COLLECTOR_NAME = "Collector1";
+	private static final String COLLECTOR_ADDRESS = "00:16:53:42:04:16";
 
-	private static final String DELIVERER_NAME = "Delivery1";
+	private static final String DELIVERER_ADDRESS = "00:16:53:42:3D:A3";
 
-	private static final int CONNECTION_DELAY = 60000;
+	private static final int CONNECTION_DELAY = 10000;
 
-	private static final int ENTRY_DELAY = 10000;
+	private static final int ENTRY_DELAY = 5000;
 
 	/**
 	 * 中継所を起動します。
@@ -55,8 +55,8 @@ public class RelayStation {
 	*/
 	public static void main(String[] args) {
 		RelayStation myself = new RelayStation();
-		myself.commToCollector   = new RelayStationCommunication(myself, COLLECTOR_NAME);
-		myself.commToDeliverer   = new RelayStationCommunication(myself, DELIVERER_NAME);
+		myself.commToCollector   = new RelayStationCommunication(myself, COLLECTOR_ADDRESS);
+		myself.commToDeliverer   = new RelayStationCommunication(myself, DELIVERER_ADDRESS);
 		myself.commToHeadquarter = new RelayStationCommunication(myself);
 
 		LCD.clear();
@@ -193,7 +193,7 @@ public class RelayStation {
 		commToHeadquarter.writeMethodWithIds("receiveTransportSuccessReport", ids);
 	}
 
-	 private void reportDeliveryStarting() {
+	private void reportDeliveryStarting() {
  		List<Integer> ids = newRequestIdList(storedParcels);
 
  		commToHeadquarter.writeMethodWithIds("receiveDeliveryStartingReport", ids);
@@ -221,7 +221,6 @@ public class RelayStation {
 	private boolean canStartDelivery() {
 		timesCameDeliveryRobot++;
 
-		// 前半：3つ以上の荷物があるときGo　　　　　　　　　　　　　　　　　　　　　　後半３回以上の仕事確認 && 荷物が１こ以上ある。
 		if((storedParcels.size() >= THRESHOLD_AMOUNT) || (timesCameDeliveryRobot >= THRESHOLD_COMING_COUNT && (!storedParcels.isEmpty()))){
 			timesCameDeliveryRobot = 0;
 			return true;

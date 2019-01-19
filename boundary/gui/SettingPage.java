@@ -43,7 +43,7 @@ public class SettingPage extends BasePage{
 
         this.ckbox = new JCheckBox[LINE_SIZE][COLUMN_SIZE];
 
-        int block=1;  //番地の値(1から16まで)
+        int block=1;
         for(int i = 0 ; i < LINE_SIZE ; i++){
             for(int j = 0 ; j < COLUMN_SIZE ; j++){
                 ckbox[i][j] = new JCheckBox( block + "番地", true);
@@ -62,7 +62,6 @@ public class SettingPage extends BasePage{
             addY+=DIFFERENCE_Y;
         }
 
-        // ボタンを作成
         JButton button = new JButton("決定");
         button.addActionListener(parent.new MovePageActionListener(parent, NAME, PageName.SETTING));
         super.addComponent(button, BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H);

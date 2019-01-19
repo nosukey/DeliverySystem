@@ -56,39 +56,17 @@ public abstract class Communication {
 		}
 	}
 
-	/**
-	 * DataInputStreamに値を代入します。
-	 * @param dis DataInputStreamのインスタンス
-	 */
 	void setDis(DataInputStream dis){ this.dis = dis;}
 
-	/**
-	 * DataOutputStreamに値を代入します。
-	 * @param dos DataOutputStreamのインスタンス
-	 */
 	void setDos(DataOutputStream dos){ this.dos = dos;}
 
 
-	/**
-	 * サブシステムのメソッドを呼び出します。
-	 * @param methodName メソッド名
-	 * @param data パラメータの文字列データ
-	*/
 	protected abstract void selectMethod(String methodName, String data);
 
-	/**
-	 * 接続待ち状態になっているターゲットとなるサブシステムに接続します。
-	*/
  	protected abstract void connect() throws IOException;
 
-	/**
-	 * 他のサブシステムからの接続待ち状態に入ります。
-	*/
 	protected abstract void waitForConnection() throws IOException;
 
-	/**
-	 * 他のサブシステムからの命令待ち状態に入ります。
-	*/
 	protected void waitForInvoke() {
 		while(true) {
 			String buffer = readString();
@@ -275,11 +253,6 @@ public abstract class Communication {
 			return packs[1];
 	}
 
-	/**
-	 * 文字列を依頼IDのリストに変換する。
-	 * @param str 依頼IDリストの文字列データ
-	 * @return 依頼IDのリスト
-	*/
 	protected List<Integer> decodeRequestIds(String str) {
 		List<Integer> requestIds = new LinkedList<Integer>();
 
@@ -306,11 +279,6 @@ public abstract class Communication {
 			return result.substring(0, result.length()-1);
 	}
 
-	/**
-	 * 文字列を荷物のリストに変換する。
-	 * @param str 荷物リストの文字列データ
-	 * @return 荷物のリスト
-	*/
 	protected List<Parcel> decodeParcels(String str) {
 		List<Parcel> parcels = new LinkedList<Parcel>();
 
@@ -337,11 +305,6 @@ public abstract class Communication {
 			return result.substring(0, result.length()-1);
 	}
 
-	/**
-	 * 文字列を配達記録のリストに変換する。
-	 * @param str 配達記録リストの文字列データ
-	 * @return 配達記録のリスト
-	*/
 	protected List<Record> decodeRecords(String str) {
 		List<Record> records = new LinkedList<Record>();
 
@@ -369,11 +332,6 @@ public abstract class Communication {
 			return result.substring(0, result.length()-1);
 	}
 
-	/**
-	 * 文字列を受取時間表に変換する。
-	 * @param str 受取時間表の文字列データ
-	 * @return 受取時間表
-	*/
 	protected Map<Integer, Date> decodeDateMap(String str) {
 		Map<Integer, Date> map = new HashMap<Integer, Date>();
 

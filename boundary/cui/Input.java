@@ -5,15 +5,15 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 
 /**
- * 標準入力を実現するクラスです。
- * @author 澤田 悠暉
- * @version 1.0
+* 標準入力を実現するクラスです。
+* @author 澤田 悠暉
+* @version 1.0
 */
 class Input {
     /**
-     * 整数値を標準入力します。
-     * @param msg 入力を促すメッセージ
-     * @return 標準入力された整数値
+    * 整数値を標準入力します。
+    * @param msg 入力を促すメッセージ
+    * @return 標準入力された整数値
     */
     public int inputInt(String msg) {
         final String ERROR_INPUT_INT = "Input value is not int value.\n";
@@ -27,9 +27,9 @@ class Input {
     }
 
     /**
-     * 文字列を標準入力します。
-     * @param msg 入力を促すメッセージ
-     * @return 標準入力された文字列
+    * 文字列を標準入力します。
+    * @param msg 入力を促すメッセージ
+    * @return 標準入力された文字列
     */
     public String inputString(String msg) {
         final String ERROR_INPUT_STR = "Input value is not string value.\n";

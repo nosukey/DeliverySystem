@@ -1,8 +1,6 @@
 package entity.inPC;
 
-// TODO 削除
 import boundary.cui.Boundary;
-
 import comm.HeadquarterCommunication;
 import entity.common.Date;
 import entity.common.Record;
@@ -52,7 +50,6 @@ public class Headquarter {
 		this.commToRelayStation = new HeadquarterCommunication(this, RELAY_STA_ADDRESS);
 		new Thread(commToRelayStation).start();
 
-		// TODO 削除
 		Boundary io = new Boundary();
 		io.printMessage("Headquarter is started.");
 	}
@@ -181,7 +178,7 @@ public class Headquarter {
      * 宛先間違いだった場合の配達記録に新しい受取人個人情報を書き換えます
      * @param record 宛先間違いが含まれている配達記録
      * @param recipientInfo 新しい入力された受取人個人情報
-     * @return record 受取人個人情報が更新された配達記録
+     * @return 受取人個人情報が更新された配達記録
      */
 	public synchronized Record fixWrongRecipient(Record record, PersonInfo recipientInfo) {
         record.setRecipientInfo(recipientInfo);

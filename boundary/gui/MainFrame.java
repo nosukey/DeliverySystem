@@ -52,8 +52,13 @@ public class MainFrame extends JFrame {
             if(page.canChangePage(this.to)) {
                 ParamData data = newDataFormat(this.from, this.to);
                 if(system.canExecuteSubSystem(data)) {
-                    changePage(this.to);
-                    system.executeSubSystem(data);
+                    if(this.to == PageName.CONFIRMING) {
+                        system.executeSubSystem(data);
+                        changePage(this.to);
+                    } else {
+                        changePage(this.to);
+                        system.executeSubSystem(data);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(this.parent, ERROR_MESSAGE);
                 }

@@ -44,12 +44,6 @@ public class CollectorCommunication extends Communication implements Runnable {
 		waitForInvoke();
 	}
 
-	/**
-	 * 収集担当ロボットのメソッドを呼び出します。
-	 * @param methodName メソッド名
-	 * @param data パラメータの文字列データ
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void selectMethod(String methodName, String data) {
 		switch(methodName) {
@@ -70,17 +64,12 @@ public class CollectorCommunication extends Communication implements Runnable {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	*/
+
 	@Override
 	protected void connect() throws IOException {
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	*/
 	@Override
 	protected void waitForConnection() throws IOException {
 		connection = connector.waitForConnection(TIMEOUT, BTConnection.RAW);

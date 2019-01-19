@@ -28,7 +28,7 @@ public class Parcel {
 	}
 
 	/**
-	 * requestIdを取得します。
+	 * 依頼IDを取得します。
 	 * @return 依頼ID
 	 */
 	public int getRequestId() {
@@ -36,7 +36,7 @@ public class Parcel {
 	}
 
 	/**
-	 * recipientInfoを取得します。
+	 * 受取人個人情報を取得します。
 	 * @return 受取人個人情報
 	 */
 	public PersonInfo getRecipientInfo() {
@@ -44,7 +44,7 @@ public class Parcel {
 	}
 
 	/**
-	 * recipientInfoに値を代入します。
+	 * 受取人個人情報に値を代入します。
 	 * @param recipientInfo 修正する受取人個人情報
 	 */
 	public void setRecipientInfo(PersonInfo recipientInfo) {

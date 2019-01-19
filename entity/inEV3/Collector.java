@@ -53,7 +53,7 @@ public class Collector extends Robot {
 	*/
 	public static void main(String[] args) {
 
-		final int CONNECTION_INTERVAL = 60000;
+		final int CONNECTION_INTERVAL = 10000;
 
 		Collector myself = new Collector();
 
@@ -140,12 +140,6 @@ public class Collector extends Robot {
 		notifySuccess();
 	}
 
-	/**
-	 * 現段階では,
-	 * 宅配受付所から中継所までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
-	 */
 	private void moveFromReceptionToRelaySta() {
 		final int ENTRY_WAITING_TIME = 1000;
 		final int ADJAST_MINUTE_ANGLE = 3;
@@ -153,7 +147,6 @@ public class Collector extends Robot {
 
 		moveFromReceptionToEntryPoint();
 
-		//何秒か待つ
 		while(!checkCanEntry()){
 			Delay.msDelay(ENTRY_WAITING_TIME);
 		}
@@ -163,15 +156,9 @@ public class Collector extends Robot {
 		rotate(STRAIGHT_ANGLE-ADJAST_MINUTE_ANGLE);
 	}
 
-	/**
-	 * 現段階では,
-	 * 中継所から宅配受付所までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
-	 */
 	private void moveFromRelayStaToReception() {
 		final float DISTANCE_RELAYSTA_TO_ENTRYPOINT = 80f;
-		final float DISTANCE_ENTRYPOINT_TO_RECEPTION = 455.5f;
+		final float DISTANCE_ENTRYPOINT_TO_RECEPTION = 462.5f;
 		final int FOURTH_GEAR_SPEED = 200;
 
 		setIsRightSide(true);
@@ -180,32 +167,19 @@ public class Collector extends Robot {
 		lineTrace(DISTANCE_ENTRYPOINT_TO_RECEPTION,THIRD_GEAR_SPEED);
 	}
 
-	/**
-	 * 現段階では,
-	 * 宅配受付所から中継所進入点までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
-	 */
 	private void moveFromReceptionToEntryPoint() {
-		final float DISTANCE_RECEPTION_TO_ENTRYPOINT = 203f;
+		final float DISTANCE_RECEPTION_TO_ENTRYPOINT = 191f;
 
 		lineTrace(DISTANCE_RECEPTION_TO_ENTRYPOINT,THIRD_GEAR_SPEED);
 	}
 
-	/**
-	 * 現段階では,
-	 * 中継所進入点から中継所までの距離をローカル定数として保持している
-	 * その距離を用いて「ライントレースする」を呼び出す
-	 * 形をとる予定である
-	 */
 	private void moveFromEntryPointToRelaySta() {
 
-		final float DISTANCE_MINUTE = 8f;
+		final float DISTANCE_MINUTE = 20f;
 		final float DISTANCE_ENTRYPOINT_TO_RELAYSTA = 43f;
 		final int FOURTH_GEAR_SPEED = 200;
-		final int FIFTH_GEAR_SPEED = 365;
 
-		lineTrace(DISTANCE_MINUTE, FIFTH_GEAR_SPEED);
+		lineTrace(DISTANCE_MINUTE, FOURTH_GEAR_SPEED);
 
 		rotate(6);
 		setIsRightSide(false);

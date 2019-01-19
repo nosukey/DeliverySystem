@@ -22,7 +22,7 @@ public class ReceptionObserver {
 
 	private static final int WAIT_TIME = 90000;
 
-	class TimeWatcher extends Thread {
+	private class TimeWatcher extends Thread {
 		public void run() {
 			try {
 				Thread.sleep(WAIT_TIME);

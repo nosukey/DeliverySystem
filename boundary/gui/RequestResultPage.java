@@ -44,8 +44,8 @@ public class RequestResultPage extends BasePage {
         final int OK_BUTTON_W = 160;
         final int OK_BUTTON_H = 50;
 
-        final int OUTPUT_NUM  = 4; // 配列の数
-        final int DISTANCE = 50;   // テキストとテキストの幅
+        final int OUTPUT_NUM  = 4;
+        final int DISTANCE = 50;
 
         JLabel leftHading[] = new JLabel[OUTPUT_NUM];
         leftHading[0] = new JLabel("依頼ID : ");

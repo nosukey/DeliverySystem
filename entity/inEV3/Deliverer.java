@@ -37,21 +37,10 @@ public class Deliverer extends Robot {
 
 	private final int RIGHT_ANGLE = 90;
 
-
-	/*
-	 * ロボットの方向転換時に限定角（0,90,-90,180)から搬送路の片側の適切な位置に調整するための角度を設定
-	 */
 	private final int ADJAST_ANGLE = 6;
 
-	/**
-	 * イベントリスナークラスです。
-	 * 配達担当ロボットのButtonが押されたことを認識するためのクラスです。
-	 */
 	private class ButtonEventListener implements KeyListener {
-		/**
-		 * 配達担当ロボットのボタンが押された場合に動作準備を始めます。
-		 * @param key Keyインスタンス
-		 */
+
 		public void keyPressed(Key key) {
 			switch(key.getId()) {
 				case Button.ID_UP:
@@ -64,16 +53,9 @@ public class Deliverer extends Robot {
 			}
 		}
 
-		/**
-		 * 配達担当ロボットのボタンが離された時に何も行いません。
-		 * @param key Keyインスタンス
-		 */
 		public void keyReleased(Key key) {}
 	}
 
-	/**
-	 * 配達担当ロボットインスタンスを生成します。
-	 */
 	private Deliverer() {
 		this.deliveredParcels        = new LinkedList<Parcel>();
 		this.receivingDateMap        = new HashMap<Integer, Date>();
@@ -90,7 +72,7 @@ public class Deliverer extends Robot {
 	 */
 	public static void main(String[] args) {
 
-		final int CONNECTION_INTERVAL = 60000;
+		final int CONNECTION_INTERVAL = 10000;
 
 		Deliverer myself = new Deliverer();
 
@@ -131,15 +113,9 @@ public class Deliverer extends Robot {
 
 		setIsRightSide(false);
 
-		/*
-		 * 中継所から合流点まで移動する
-		 */
-        moveFromRelayStaToIntersection();
+		moveFromRelayStaToIntersection();
         rotate(RIGHT_ANGLE);
 
-        /*
-         * 合流点から待機所まで移動する
-         */
         moveFromIntersectionToStandbySta();
         rotate(STRAIGHT_ANGLE-ADJAST_ANGLE);
 
@@ -167,21 +143,12 @@ public class Deliverer extends Robot {
         this.deliveredParcels.addAll(parcels);
         setIsRightSide(false);
 
-        /*
-         * 中継所から合流点へ移動する
-         */
         moveFromRelayStaToIntersection();
         rotate(90-ADJAST_ANGLE);
 
-        /*
-         * 合流点から中継所進入点へ移動する
-         */
         moveFromIntersectionToEntryPoint();
         rotate(90-ADJAST_ANGLE);
 
-        /*
-         * 中継所進入点から受取人宅基準点へ移動する
-         */
         moveFromEntryPointToStartingPoint();
 
         currentAddress = STARTING_ADDRESS;
@@ -194,7 +161,6 @@ public class Deliverer extends Robot {
 
 			rotate(HAND_OVER_ANGLE);
 
-             //TODO 受取人宅に取得した受取人個人情報をを送る
             this.commToRecipient.writeMethod("verifyRecipientInfo", currentAddress, parcel.getRecipientInfo());
 
 			String result = commToRecipient.readString(WAIT_RECEIVE_TIME);
@@ -209,7 +175,6 @@ public class Deliverer extends Robot {
 				}
 			}
 
-			// TODO ピープ音いれるかも
 			rotate(-HAND_OVER_ANGLE);
         }
 
@@ -218,72 +183,38 @@ public class Deliverer extends Robot {
         notifyDeliveryResults();
 	}
 
-	/**
-	 * 中継所に対して配達の有無の確認を行います。
-	 */
 	private void goCheck() {
 		setIsRightSide(true);
-		/*
-         *待機所から中継所進入点へ移動する
-         */
-        moveFromStandbyStaToEntryPoint();
+		moveFromStandbyStaToEntryPoint();
+		moveFromEntryPointToRelaySta();
 
-        /*
-         * 中継所進入点から中継所へ移動する
-         */
-        moveFromEntryPointToRelaySta();
-
-		//TODO 中継所に配達の有無の確認要求を送るメソッドが入る
 		commToRelayStation.writeMethod("sendParcels");
 	}
 
-	/**
-	 * 中継所に対して配達結果の連絡を行います。
-	 */
+
 	private void notifyDeliveryResults() {
-
-
         setIsRightSide(true);
-        /*
-         *受取人宅基準点から中継所進入点まで移動する
-         */
         moveFromStartingPointToEntryPoint();
         rotate(-RIGHT_ANGLE+ADJAST_ANGLE);
-        /*
-         *中継所進入点から中継所へ移動する
-         */
         moveFromEntryPointToRelaySta();
-        /*
-         *中継所に受取時間表・受取人不在の荷物リスト・宛先間違いの荷物リストを送る
-         */
         this.commToRelayStation.writeMethod("receiveFinishDeliveryNotification", receivingDateMap, withoutRecipientParcels, wrongRecipientParcels);
 
         init();
 	}
 
-	/**
-	 * 待機所から中継所進入点に移動します。
-	 */
 	private void moveFromStandbyStaToEntryPoint() {
-		final float DISTANCE_FROM_STANDBYSTA_TO_ENTRYPOINT = 76f;
+		final float DISTANCE_FROM_STANDBYSTA_TO_ENTRYPOINT = 77.5f;
 
         lineTrace(DISTANCE_FROM_STANDBYSTA_TO_ENTRYPOINT ,THIRD_GEAR_SPEED);
 	}
 
-	/**
-	 * 合流点から待機所に移動します。
-	 */
 	private void moveFromIntersectionToStandbySta() {
 		final float DISTANCE_INTERSECTION_TO_STANDBYSTA = 118.5f;
 
         lineTrace(DISTANCE_INTERSECTION_TO_STANDBYSTA ,THIRD_GEAR_SPEED);
 	}
 
-	/**
-	 * 中継所進入点から中継所に移動します。
-	 */
 	private void moveFromEntryPointToRelaySta() {
-
 		final int ENTRY_WAITING_TIME = 1000;
 
 		while(!checkCanEntry()) {
@@ -297,45 +228,30 @@ public class Deliverer extends Robot {
 		rotate(-STRAIGHT_ANGLE);
 	}
 
-	/**
-	 * 中継所進入点から合流点に移動します。
-	 */
 	private void moveFromEntryPointToIntersection() {
-		final float DISTANCE_ENTRYPOINT_TO_INTERSECTION = 39.5f;
+		final float DISTANCE_ENTRYPOINT_TO_INTERSECTION = 38.0f;
 
         lineTrace(DISTANCE_ENTRYPOINT_TO_INTERSECTION,SECOND_GEAR_SPEED);
 	}
 
-	/**
-	 * 合流点から中継所進入点に移動します。
-	 */
 	private void moveFromIntersectionToEntryPoint() {
 		final float DISTANCE_INTERSECTION_TO_ENTRYPOINT = 38.0f;
 
         lineTrace(DISTANCE_INTERSECTION_TO_ENTRYPOINT,SECOND_GEAR_SPEED);
 	}
 
-	/**
-	 * 合流点から中継所に移動します。
-	 */
 	private void moveFromIntersectionToRelaySta() {
 		final float DISTANCE_INTERSECTION_TO_RELAYSTA = 60f;
 
         lineTrace(DISTANCE_INTERSECTION_TO_RELAYSTA,SECOND_GEAR_SPEED);
 	}
 
-	/**
-	 * 中継所から合流点に移動します。
-	 */
 	private void moveFromRelayStaToIntersection() {
 		final float DISTANCE_RELAYSTA_TO_INTERSECTION = 58.5f;
 
         lineTrace(DISTANCE_RELAYSTA_TO_INTERSECTION,SECOND_GEAR_SPEED);
 	}
 
-	/**
-	 * 中継所進入点から受取人宅基準点移動します。
-	 */
 	private void moveFromEntryPointToStartingPoint() {
 		final float DISTANCE_ENTRYPOINT_TO_CURVE = 50f;
 		final float DISTANCE_CURVE_TO_STARTINGPOINT = 124.0f;
@@ -344,22 +260,14 @@ public class Deliverer extends Robot {
 		lineTrace(DISTANCE_CURVE_TO_STARTINGPOINT, THIRD_GEAR_SPEED);
 	}
 
-	/**
-	 * 受取人宅基準点から中継所進入点に移動します。
-	 */
 	private void moveFromStartingPointToEntryPoint() {
 		final float DISTANCE_STARTINGPOINT_TO_CURVE = 121f;
-		final float DISTANCE_CURVE_TO_ENTRYPOINT = 53f;
+		final float DISTANCE_CURVE_TO_ENTRYPOINT = 51.5f;
 
 		lineTrace(DISTANCE_STARTINGPOINT_TO_CURVE, THIRD_GEAR_SPEED);
 		lineTrace(DISTANCE_CURVE_TO_ENTRYPOINT, SECOND_GEAR_SPEED);
 	}
 
-	/**
-	 * 現在いる番地から配達先の番地へ移動します。
-	 * @param from 現在いる番地
-	 * @param to 配達先の番地
-	 */
 	private void moveNextRecipient(int from, int to) {
 		int currentAddress 	= from-1;
 		int nextAddress 		= to-1;
@@ -372,9 +280,6 @@ public class Deliverer extends Robot {
 		final int ROW_STANDARD			= 0;
 		final int ADJAST_MINUTE_ANGLE 	= 2;
 
-		System.out.println("move "+from+" --> "+to);
-
-        //基準点に戻る場合
 		if(currentAddress > nextAddress) {
 			goBackToStartingPoint(from);
 		} else if(currentAddress == nextAddress) {
@@ -382,17 +287,11 @@ public class Deliverer extends Robot {
 			initRotate();
 			setIsRightSide(true);
 		} else {
-			/*
-			 * 現在の番地と次の番地が同じ行にある場合
-			 */
 			if(CURRENT_LINE == NEXT_LINE) {
 				for(int i=CURRENT_ROW; i<NEXT_ROW; i++) {
 					moveRecipientSide();
 				}
 			}else {
-				/*
-				 * 現在の列が基準となる列（受取人基準点のある列）にいる場合
-				 */
 				if(CURRENT_ROW == ROW_STANDARD) {
 					rotate(RIGHT_ANGLE);
 					initRotate();
@@ -401,9 +300,6 @@ public class Deliverer extends Robot {
 					initRotate();
 					setIsRightSide(true);
 
-					/*
-					 * 受取人基準点まで行方向に移動
-					 */
 					for(int i=0;i<CURRENT_ROW;i++) {
 						moveRecipientSide();
 					}
@@ -427,10 +323,6 @@ public class Deliverer extends Robot {
 		}
 	}
 
-	/**
-	 * 現在いる番地から受取人宅基準点に移動する。
-	 * @param from 現在いる番地
-	 */
     private void goBackToStartingPoint(int from) {
 		int currentAddress = from-1;
     	final int RECIPIENT_BLOCK 		= 4;
@@ -442,17 +334,12 @@ public class Deliverer extends Robot {
     	rotate(STRAIGHT_ANGLE-ADJAST_ANGLE);
     	initRotate();
 		setIsRightSide(true);
-    	/*
-    	 * 現在いる列が受取人基準点の列でない場合
-    	 */
+
     	if(CURRENT_ROW != ROW_STANDARD) {
     		for(int i=0;i<CURRENT_ROW;i++) {
     			moveRecipientSide();
     		}
     	}
-    	/*
-    	 * 現在いる行が受取人基準点の行でない場合
-    	 */
     	if(CURRENT_LINE != LINE_STANDARD){
     		rotate(RIGHT_ANGLE);
     		for(int i=0;i<CURRENT_LINE;i++) {
@@ -463,37 +350,25 @@ public class Deliverer extends Robot {
     	}
    }
 
-	/**
-	 * 行方面に一区画分移動する。
-	 */
     private void moveRecipientSide() {
     	final float WIDTH_BETWEEN_RECIPIENT = 44.8f;
 
     	lineTrace(WIDTH_BETWEEN_RECIPIENT,THIRD_GEAR_SPEED);
 		initRotate();
     }
-	/**
-	 * 列方面に一区画分移動する。
-	 */
+
     private void moveRecipientHeight() {
     	final float HEIGHT_BETWEEN_RECIPIENT = 44.2f;
 		lineTrace(HEIGHT_BETWEEN_RECIPIENT,THIRD_GEAR_SPEED);
     }
 
-	/**
-	 * 配達用の荷物リスト, 受取時間表, 受取人不在の荷物リスト, 宛先間違いの荷物リストを空にする。
-	 */
 	private void init() {
-         this.deliveredParcels.clear();
+        this.deliveredParcels.clear();
         this.withoutRecipientParcels.clear();
         this.wrongRecipientParcels.clear();
         this.receivingDateMap.clear();
 
 	}
-    /**
-	 * 中継所へ侵入確認を行います。
-	 * @return boolean
-	 */
      private boolean checkCanEntry(){
 		 commToRelayStation.writeMethod("canEntry");
 		 return commToRelayStation.readBoolean();
